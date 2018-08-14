@@ -154,7 +154,8 @@ void ID_Decode_IDCheck(void)
                            if(FG_auto_manual_mode==1)//Manual_override_TIMER=13500;   //2分30秒自动无效
                               Manual_override_TIMER=24480;   //4分30秒自动无效
 		           if((DATA_Packet_Control&0x14)==0x14){if(TIMER1s==0)TIMER1s=3800-30;}
-			   else  TIMER1s=1000;
+			   else if(DATA_Packet_Control==0x04)TIMER1s=300;
+                           else TIMER1s=1000;
 			}
 //                    }
 //                    else TIMER1s=1000;
@@ -328,7 +329,8 @@ void ID_Decode_OUT(void)
                                 Receiver_OUT_OPEN=FG_NOT_allow_out;
                                 Receiver_OUT_STOP=FG_NOT_allow_out;
 				Receiver_OUT_VENT=FG_NOT_allow_out;
-                                Receiver_OUT_CLOSE=FG_allow_out;
+                                if(TIMER1s>800)Receiver_OUT_CLOSE=FG_NOT_allow_out;
+                                else Receiver_OUT_CLOSE=FG_allow_out;
                                 break;
                      case 0x04:                           //stop
                                 Receiver_LED_OUT=1;
@@ -342,7 +344,8 @@ void ID_Decode_OUT(void)
                                 Receiver_OUT_STOP=FG_NOT_allow_out;
                                 Receiver_OUT_CLOSE=FG_NOT_allow_out;
 				Receiver_OUT_VENT=FG_NOT_allow_out;
-                                Receiver_OUT_OPEN=FG_allow_out;
+                                if(TIMER1s>980)Receiver_OUT_OPEN=FG_NOT_allow_out;
+                                else   Receiver_OUT_OPEN=FG_allow_out;
                                 break;
                      case 0x0C:                         //open+stop
                                 Receiver_LED_OUT=1;
