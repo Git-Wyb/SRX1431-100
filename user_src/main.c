@@ -20,7 +20,7 @@
   */  
 	
 /* Includes ------------------------------------------------------------------*/
-#include  <iostm8l151g6.h>				// CPU型号
+#include  <iostm8l151g4.h>				// CPU型号
 //#include "stm8l15x.h"
 #include "Pin_define.h"		// 管脚定义
 #include "initial.h"		// 初始化  预定义

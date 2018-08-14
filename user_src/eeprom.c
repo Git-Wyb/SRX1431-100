@@ -7,7 +7,7 @@
 /*  Mark        :STM8S207C8的CODE空间为64K                             */
 /*              :STM8S207C8的EEPROM的大小为1536字节,即:3页,512节/页    */
 /***********************************************************************/
-#include  <iostm8l151g6.h>				// CPU型号
+#include  <iostm8l151g4.h>				// CPU型号
 //#include "stm8l15x.h"
 #include "Pin_define.h"		// 管脚定义
 #include "initial.h"		// 初始化  预定义
@@ -165,7 +165,6 @@ void eeprom_sys_load(void){
     UINT16 i,j,q,p;
     UINT8 xm[3]={0};
     uni_rom_id xn;
-      
         
     for(i=0;i<256;i++)ID_Receiver_DATA[i]=0;//ID_Receiver_DATA[ID_DATA_PCS]=0;
     xm[0] = ReadByteEEPROM( addr_eeprom_sys+0x3FE );
@@ -206,25 +205,7 @@ void eeprom_sys_load(void){
     
 } 
 
-void ALL_ID_EEPROM_Erase(void)
-{
-  UINT16 m2,i;
-  UINT8 xm[3]={0};
-       xm[0]=0;
-       xm[1]=0;
-       xm[2]=0;
-       for(i=0;i<260;i++){
-           m2=3*i;
-           UnlockFlash( UNLOCK_EEPROM_TYPE );
-	   WriteByteToFLASH( addr_eeprom_sys+m2, xm[0]);
-	   m2++;
-	   WriteByteToFLASH( addr_eeprom_sys+m2, xm[1]);
-	   m2++;
-	   WriteByteToFLASH( addr_eeprom_sys+m2, xm[2]);
-           LockFlash( UNLOCK_EEPROM_TYPE );  
-           ClearWDT(); // Service the WDT
-       }
-}
+
 void ID_EEPROM_write(void)
 {
     UINT8 xm[3]={0};
@@ -403,9 +384,9 @@ void ID_learn(void)
                  else{
                      BEEP_and_LED();
                      TIME_Login_EXIT_rest=5380;       //追加多次ID登录
-                     if((FLAG_ID_Login==1)&&(ID_Receiver_Login!=0xFFFFFE))ID_EEPROM_write();
-                     else if((FLAG_ID_Erase_Login==1)&&(ID_Receiver_Login!=0xFFFFFE)){
-                         if(FLAG_ID_Erase_Login_PCS==1){FLAG_ID_Erase_Login_PCS=0;ID_DATA_PCS=0;ALL_ID_EEPROM_Erase();}//追加多次ID登录
+                     if(FLAG_ID_Login==1)ID_EEPROM_write();
+                     else if(FLAG_ID_Erase_Login==1){
+                         if(FLAG_ID_Erase_Login_PCS==1){FLAG_ID_Erase_Login_PCS=0;ID_DATA_PCS=0;}      //追加多次ID登录
                          ID_EEPROM_write();
                      }
                  }//end else
