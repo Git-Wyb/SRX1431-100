@@ -543,35 +543,92 @@ void dd_set_TX_mode_1010pattern(void)
 //以下是带宽4K，F_BW =12.5K
 void dd_set_RX_mode(void)
 {
-	ADF70XX_REG_T register_value;
-
+//	ADF70XX_REG_T register_value;
+//
+//	//write R1, turn on VCO
+//	register_value.whole_reg = ROM_adf7012_value[1].whole_reg;
+//	dd_write_7021_reg(&register_value.byte[0]);
+//        
+//        register_value.whole_reg =0x00D00882;
+//	dd_write_7021_reg(&register_value.byte[0]);        
+//
+//	//write R3, turn on TX/RX clocks
+//	register_value.whole_reg = 0x29920893;
+//	dd_write_7021_reg(&register_value.byte[0]);
+//
+//	//write R0, turn on PLL
+//	register_value.whole_reg = 0x0954C7B0;    //CH=426.075MHz
+//	dd_write_7021_reg(&register_value.byte[0]);
+//	Delayus(122);		//delay 40us
+//
+//	//write R4, turn on demodulation
+//	//register_value.whole_reg = 0x0024E294;     //F_BW =12.5K
+//	register_value.whole_reg = 0x8024E294;    //F_BW =25K
+//	dd_write_7021_reg(&register_value.byte[0]);
+//
+//       	//write R10, turn on PLL
+//	//register_value.whole_reg = 0x049668EA;   //close AFC
+//	register_value.whole_reg = 0x049668FA;
+//	dd_write_7021_reg(&register_value.byte[0]);
+//	Delayus(122);		//delay 40us  
+  
+  
+        ADF70XX_REG_T register_value;
 	//write R1, turn on VCO
-	register_value.whole_reg = ROM_adf7012_value[1].whole_reg;
+	register_value.whole_reg = 0x031B5011; 
 	dd_write_7021_reg(&register_value.byte[0]);
-        
-        register_value.whole_reg =0x00D00882;
-	dd_write_7021_reg(&register_value.byte[0]);        
+        Delayus(122);		//delay 40us
+
+        register_value.whole_reg =0x00800882;  
+	dd_write_7021_reg(&register_value.byte[0]);
 
 	//write R3, turn on TX/RX clocks
 	register_value.whole_reg = 0x29920893;
 	dd_write_7021_reg(&register_value.byte[0]);
 
-	//write R0, turn on PLL
-	register_value.whole_reg = 0x0954C7B0;    //CH=426.075MHz
-	dd_write_7021_reg(&register_value.byte[0]);
-	Delayus(122);		//delay 40us
+//        register_value.whole_reg = 0x00001915;
+//	dd_write_7021_reg(&register_value.byte[0]);
+//        Delayus(300);   //0.2ms
 
-	//write R4, turn on demodulation
-	//register_value.whole_reg = 0x0024E294;     //F_BW =12.5K
-	register_value.whole_reg = 0x8024E294;    //F_BW =25K
+        register_value.whole_reg = 0x0504C996;
 	dd_write_7021_reg(&register_value.byte[0]);
 
-       	//write R10, turn on PLL
-	//register_value.whole_reg = 0x049668EA;   //close AFC
-	register_value.whole_reg = 0x049668FA;
+	register_value.whole_reg = 0x00001915;
 	dd_write_7021_reg(&register_value.byte[0]);
-	Delayus(122);		//delay 40us  
+           //5ms
+        Delayus(244);		//delay 80us
+        Delayus(244);		//delay 80us
+        Delayus(244);		//delay 80us
+        Delayus(244);		//delay 80us
+        Delayus(244);		//delay 80us
+        Delayus(244);		//delay 80us
+        
+        register_value.whole_reg = 0x0954C7B0; //CH=426.075MHz
+        dd_write_7021_reg(&register_value.byte[0]);
+        Delayus(122);		//delay 40us
+        	//write R4, turn on demodulation
+        register_value.whole_reg = 0x00280294;
+	dd_write_7021_reg(&register_value.byte[0]);
+
+	//write R10, turn on PLL
+	register_value.whole_reg = 0x029668FA;
+	dd_write_7021_reg(&register_value.byte[0]);
+	Delayus(122);		//delay 40us 
 }
+
+void dd_set_ADF7021_Freq(void)
+{
+      ADF70XX_REG_T register_value;
+      
+      register_value.whole_reg = 0x0954C7B0;
+      dd_write_7021_reg(&register_value.byte[0]);
+      Delayus(122);		//delay 40us 
+      
+      register_value.whole_reg = 0x029668FA;
+      dd_write_7021_reg(&register_value.byte[0]);
+      Delayus(122);		//delay 40us 
+}
+
 //以下是带宽4K，F_BW =12.5K
 void dd_set_RX_mode_test(void)
 {  
@@ -741,16 +798,24 @@ void dd_set_RX_mode_test(void)
 void dd_set_ADF7021_Power_on(void)
 {
   UINT8 i;
-	if (ADF7021_CE == 0)
-	{
-		ADF7021_CE = 1;
-		//phy_state = PHY_POWERON;
-		//if ( is_use_crystal == TRUE ) 	dd_short_delay(25);	
-               //     Delayus(1000);             //delay 1ms
+//	if (ADF7021_CE == 0)
+//	{
+//		ADF7021_CE = 1;
+//		//phy_state = PHY_POWERON;
+//		//if ( is_use_crystal == TRUE ) 	dd_short_delay(25);	
+//               //     Delayus(1000);             //delay 1ms
+//	      for(i=0;i<12;i++)
+//                Delayus(250);             //delay 80us
+//
+//	}
+  
+  
+              ADF7021_CE=0;
 	      for(i=0;i<12;i++)
-                Delayus(250);             //delay 80us
-
-	}
+                Delayus(250);             //delay 80us 
+              ADF7021_CE=1;
+	      for(i=0;i<12;i++)
+                Delayus(250);             //delay 80us               
 }
 
 //const unsigned char gain_correction[] = 

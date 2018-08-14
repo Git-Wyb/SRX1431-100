@@ -304,5 +304,10 @@ void RF_test_mode(void )
     Receiver_LED_RX=0;
     FG_Receiver_LED_RX=0;
     Receiver_LED_OUT=0;  
+    
+    FLAG_APP_RX=1;
+    dd_set_RX_mode();
+    TIME_Fine_Calibration=9000;
+    TIME_EMC=10;    
 }
 

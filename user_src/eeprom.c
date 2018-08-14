@@ -356,6 +356,7 @@ void ID_learn(void)
      if(TIME_Login_EXIT_Button)--TIME_Login_EXIT_Button;
      if(Manual_override_TIMER)--Manual_override_TIMER;
      if(time_Login_exit_256)--time_Login_exit_256;
+     if(TIME_Fine_Calibration)--TIME_Fine_Calibration;
 //     if(rssi_TIME)--rssi_TIME;
 //     if(TIMER60s)--TIMER60s;
 //     if(TIMER_err_1s)--TIMER_err_1s;
@@ -404,9 +405,9 @@ void ID_learn(void)
                      BEEP_and_LED();
                      TIME_Login_EXIT_rest=5380;       //追加多次ID登录
                      if((FLAG_ID_Login==1)&&(ID_Receiver_Login!=0xFFFFFE))ID_EEPROM_write();
-                     else if((FLAG_ID_Erase_Login==1)&&(ID_Receiver_Login!=0xFFFFFE)){
+                     else if(FLAG_ID_Erase_Login==1){
                          if(FLAG_ID_Erase_Login_PCS==1){FLAG_ID_Erase_Login_PCS=0;ID_DATA_PCS=0;ALL_ID_EEPROM_Erase();}//追加多次ID登录
-                         ID_EEPROM_write();
+                         if(ID_Receiver_Login!=0xFFFFFE)ID_EEPROM_write();
                      }
                  }//end else
              }//  end  if((FLAG_ID_Login_OK==1)&&(FLAG_ID_Login_OK_bank==0))

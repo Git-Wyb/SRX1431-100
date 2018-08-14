@@ -439,10 +439,18 @@ void  Freq_Scanning(void)
   
   
     //if((FLAG_Receiver_Scanning==1)&&(FLAG_APP_RX==1)&&(FLAG_UART_ok==0))
-    if(((FLAG_Receiver_Scanning==1)||(TIME_EMC==0))&&(FLAG_APP_RX==1))
+//    if(((FLAG_Receiver_Scanning==1)||(TIME_EMC==0))&&(FLAG_APP_RX==1))
+//    {
+//        FLAG_Receiver_Scanning=0;
+//        TIMER18ms=36;
+//        dd_set_RX_mode();
+//    }  
+  
+    if(((FLAG_Receiver_Scanning==1)||(TIME_EMC==0)||(TIME_Fine_Calibration==0))&&(FLAG_APP_RX==1))
     {
         FLAG_Receiver_Scanning=0;
+        if(TIME_Fine_Calibration==0){TIME_Fine_Calibration=9000;dd_set_ADF7021_Power_on();dd_set_RX_mode();}
+        dd_set_ADF7021_Freq();
         TIMER18ms=36;
-        dd_set_RX_mode();
     }  
 }

@@ -66,6 +66,10 @@ void main(void)
     
     RF_test_mode();
     
+    FLAG_APP_RX=1;
+    dd_set_RX_mode();
+    TIME_EMC=10;
+    //dd_set_TX_mode();
   while (1)
   {
     ClearWDT(); // Service the WDT
