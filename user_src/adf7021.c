@@ -753,22 +753,44 @@ void dd_set_ADF7021_Power_on(void)
 	}
 }
 
+//const unsigned char gain_correction[] = 
+//    { 2*86, 0, 0, 0, 2*58, 2*38, 2*24, 0, 
+//	0, 0, 0, 0, 0, 0, 0, 0 }; // 7021
+
 const unsigned char gain_correction[] = 
-    { 2*86, 0, 0, 0, 2*58, 2*38, 2*24, 0, 
+    { 2*86, 2*78, 2*68, 2*52, 2*58, 2*38, 2*24, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0 }; // 7021
 
 
 void dd_read_RSSI(void)
 {
 	ADF70XX_REG_T RSSI_value;
+        UINT8 value_x0;
 
 	RSSI_value = dd_read_7021_reg(0x14);
-
+        value_x0=RSSI_value.byte[3]&0x7F;
+        
 	RSSI_value.whole_reg += RSSI_value.whole_reg ;
 
     rssi = RSSI_value.byte[3];
-	rssi += gain_correction[RSSI_value.byte[2] & 0x0F] ;
+        if(value_x0<65)
+           rssi += gain_correction[RSSI_value.byte[2] & 0x0F] ;
     rssi = rssi /4 ;
 	//RSSI(dBm) = rssi + 130
 
+}
+
+void READ_RSSI_avg(void)
+{
+                   if(ADF7021_MUXOUT==1)
+                   {
+                        dd_read_RSSI(); 
+                        RAM_rssi_CNT++;
+                        RAM_rssi_SUM +=rssi;
+                        if(RAM_rssi_CNT>=200){
+                          RAM_rssi_AVG=RAM_rssi_SUM/RAM_rssi_CNT;
+                          RAM_rssi_CNT=0;
+                          RAM_rssi_SUM=0;
+                        }                       
+                   }  
 }

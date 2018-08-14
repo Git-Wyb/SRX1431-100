@@ -464,7 +464,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>Bunka STM8L151G6 RX Ver.hex</state>
+          <state>Bunka STM8L151 RX Ver.hex</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>

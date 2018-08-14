@@ -77,16 +77,11 @@ void main(void)
     ID_Decode_OUT();
     Freq_Scanning();
     ID_learn();
+    READ_RSSI_avg();
     
-
-    
-//    if(ADF7021_MUXOUT==1)
-//    {
-////      RSSI_value=dd_read_7021_reg(0x14);
-////      if(RSSI_value.whole_reg <900)PIN_LED1=1;
-////      else PIN_LED1=0;      
-//      dd_read_RSSI();     
-//    }              
+    if((RAM_rssi_AVG>=26)||(FG_Receiver_LED_RX==1))Receiver_LED_RX=1;
+    else if((RAM_rssi_AVG<=25)&&(FG_Receiver_LED_RX==0))Receiver_LED_RX=0;
+             
   }
 }
 

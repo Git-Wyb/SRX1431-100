@@ -211,7 +211,7 @@ void RF_test_mode(void )
   
   Receiver_LED_OUT=1;
   for(Boot_i=0;Boot_i<6;Boot_i++){    
-      for(time_3sec=0;time_3sec<5000;time_3sec++){
+      for(time_3sec=0;time_3sec<6000;time_3sec++){
          Delayus(250);   //80us
          ClearWDT(); // Service the WDT
       }
@@ -302,6 +302,7 @@ void RF_test_mode(void )
     TIMER1s=0;
     Receiver_LED_TX=0;
     Receiver_LED_RX=0;
+    FG_Receiver_LED_RX=0;
     Receiver_LED_OUT=0;  
 }
 
