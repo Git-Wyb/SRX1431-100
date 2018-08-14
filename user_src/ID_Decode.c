@@ -95,12 +95,13 @@ void ID_Decode_IDCheck(void)
         {
             eeprom_IDcheck();
             if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1)){
-                if((FLAG_ID_Login_OK==0)&&(DATA_Packet_Control!=0x40)&&(DATA_Packet_ID!=0))
+                if((FLAG_ID_Login_OK==0)&&(DATA_Packet_Control!=0x40)&&(DATA_Packet_ID!=0))    
 		{FLAG_ID_Login_OK=1;ID_Receiver_Login=DATA_Packet_ID;}
             }
             else if((FLAG_IDCheck_OK==1)||(DATA_Packet_ID==0xFFFFFE))
             {
                 FLAG_IDCheck_OK=0;
+                if(DATA_Packet_ID==0xFFFFFE)DATA_Packet_Control=DATA_Packet_Contro_buf;      //2015.3.24修正 Control缓存起 ID判断是否学习过后才能使用
 //                if(Freq_Scanning_CH_bak==0){Freq_Scanning_CH_save=1;Freq_Scanning_CH_save_HA=0; }  //当前收到426M控制   但保存记录下收到信号的频率信道,0代表426M
 //                else Freq_Scanning_CH_save_HA=1;  //                       1代表429M
 //                DATA_Packet_Control_0=DATA_Packet_Control;
@@ -194,7 +195,7 @@ void Signal_DATA_Decode(UINT8 NUM_Type)
           FLAG_Signal_DATA_OK=1;
           DATA_Packet_ID=(data_NRZ[1]&0x00FF)*65536+data_NRZ[0];
           if(DATA_Packet_ID==0)FLAG_Signal_DATA_OK=0;    //2014.3.21追加  不允许使用ID=0
-          DATA_Packet_Control=(data_NRZ[1]&0xFF00)>>8;
+          DATA_Packet_Contro_buf=(data_NRZ[1]&0xFF00)>>8;  //2015.3.24修正 Control缓存起 ID判断是否学习过后才能使用 
 //          if(Freq_Scanning_CH_bak==1)
 //              Control_bak=DATA_Packet_Control;
       }
@@ -205,8 +206,8 @@ void eeprom_IDcheck(void)
 {
     UINT16 i;
    for(i=0;i<ID_DATA_PCS;i++){
-       if(ID_Receiver_DATA[i]==DATA_Packet_ID){INquiry=i;i=ID_DATA_PCS;FLAG_IDCheck_OK=1;}
-       if((FLAG_ID_Erase_Login==1)&&(FLAG_ID_Erase_Login_PCS==1)){i=ID_DATA_PCS;FLAG_IDCheck_OK=0;}         //追加多次ID登录
+       if(ID_Receiver_DATA[i]==DATA_Packet_ID){INquiry=i;i=ID_DATA_PCS;FLAG_IDCheck_OK=1;DATA_Packet_Control=DATA_Packet_Contro_buf;}      //2015.3.24修正 Control缓存起 ID判断是否学习过后才能使用
+       if((FLAG_ID_Erase_Login==1)&&(FLAG_ID_Erase_Login_PCS==1)){i=ID_DATA_PCS;FLAG_IDCheck_OK=0;DATA_Packet_Control=DATA_Packet_Contro_buf;}         //追加多次ID登录
    }
 }
 

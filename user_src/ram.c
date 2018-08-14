@@ -103,6 +103,7 @@ UINT8  DATA_Packet_Code_g=0;
 UINT8  DATA_Packet_Code_i=0;
 UINT32 DATA_Packet_ID=0;
 UINT8  DATA_Packet_Control=0;
+UINT8  DATA_Packet_Contro_buf=0;   //2015.3.24ÐÞÕý
 UINT32 ID_Receiver_Login=0;
 UINT8 TIME_EMC=0;   //¾²µç²âÊÔ
 

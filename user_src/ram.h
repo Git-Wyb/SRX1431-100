@@ -143,6 +143,7 @@ extern UINT8  DATA_Packet_Code_g;
 extern UINT8  DATA_Packet_Code_i;
 extern UINT32 DATA_Packet_ID;
 extern UINT8  DATA_Packet_Control;
+extern UINT8  DATA_Packet_Contro_buf;   //2015.3.24ÐÞÕý
 extern UINT32 ID_Receiver_Login;
 extern UINT8 TIME_EMC;   //¾²µç²âÊÔ
 
