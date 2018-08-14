@@ -95,7 +95,7 @@ void ID_Decode_IDCheck(void)
         {
             eeprom_IDcheck();
             if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1)){
-                if((FLAG_ID_Login_OK==0)&&(DATA_Packet_Control!=0x40)&&(DATA_Packet_ID!=0xFFFFFE)&&(DATA_Packet_ID!=0))
+                if((FLAG_ID_Login_OK==0)&&(DATA_Packet_Control!=0x40)&&(DATA_Packet_ID!=0))
 		{FLAG_ID_Login_OK=1;ID_Receiver_Login=DATA_Packet_ID;}
             }
             else if((FLAG_IDCheck_OK==1)||(DATA_Packet_ID==0xFFFFFE))
@@ -149,6 +149,7 @@ void ID_Decode_IDCheck(void)
 			else{
 			   FG_auto_out=0;
 			   TIME_auto_close=0;
+                           FG_auto_open_time=0;
                            if(FG_auto_manual_mode==1)//Manual_override_TIMER=13500;   //2分30秒自动无效
                               Manual_override_TIMER=24480;   //4分30秒自动无效
 		           if((DATA_Packet_Control&0x14)==0x14){if(TIMER1s==0)TIMER1s=3800-30;}
