@@ -276,29 +276,29 @@ void ID_Decode_OUT(void)
                                 break;
                      case 0x02:
                                 Receiver_LED_OUT=1;
-                                Receiver_OUT_OPEN=FG_NOT_allow_out;
+                      //          Receiver_OUT_OPEN=FG_NOT_allow_out;
                                 //LATACLR=0x0002;
-                                Receiver_OUT_STOP=FG_NOT_allow_out;
+                      //          Receiver_OUT_STOP=FG_NOT_allow_out;
                                 Receiver_OUT_CLOSE=FG_allow_out;
                                 break;
                      case 0x04:
                                 Receiver_LED_OUT=1;
-                                Receiver_OUT_OPEN=FG_NOT_allow_out;
+                      //          Receiver_OUT_OPEN=FG_NOT_allow_out;
                                 //LATACLR=0x0002;
-                                Receiver_OUT_CLOSE=FG_NOT_allow_out;
+                      //          Receiver_OUT_CLOSE=FG_NOT_allow_out;
                                 Receiver_OUT_STOP=FG_allow_out;
                                 break;
                      case 0x08:
                                 Receiver_LED_OUT=1;
-                                Receiver_OUT_STOP=FG_NOT_allow_out;
-                                Receiver_OUT_CLOSE=FG_NOT_allow_out;
+                     //           Receiver_OUT_STOP=FG_NOT_allow_out;
+                     //           Receiver_OUT_CLOSE=FG_NOT_allow_out;
                                 Receiver_OUT_OPEN=FG_allow_out;
                                 //LATASET=0x0002;
                                 break;
                      case 0x0C:
                                 Receiver_LED_OUT=1;
                                 TIMER250ms_STOP=250;
-                                Receiver_OUT_CLOSE=FG_NOT_allow_out;
+                      //          Receiver_OUT_CLOSE=FG_NOT_allow_out;
                                 Receiver_OUT_STOP=FG_allow_out;
                                 Receiver_OUT_OPEN=FG_allow_out;
                                 //LATASET=0x0002;
@@ -306,7 +306,7 @@ void ID_Decode_OUT(void)
                      case 0x06:
                                 Receiver_LED_OUT=1;
                                 TIMER250ms_STOP=250;
-                                Receiver_OUT_OPEN=FG_NOT_allow_out;
+                      //          Receiver_OUT_OPEN=FG_NOT_allow_out;
                                 //LATACLR=0x0002;
                                 Receiver_OUT_STOP=FG_allow_out;
                                 Receiver_OUT_CLOSE=FG_allow_out;   
@@ -333,10 +333,10 @@ void ID_Decode_OUT(void)
            FLAG_Receiver_BEEP=0;
            if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1));
            else Receiver_LED_OUT=0;
-           Receiver_OUT_OPEN=FG_NOT_allow_out;
+    //       Receiver_OUT_OPEN=FG_NOT_allow_out;
            //LATACLR=0x0002;
-           Receiver_OUT_CLOSE=FG_NOT_allow_out;
-           if(TIMER250ms_STOP==0)Receiver_OUT_STOP=FG_NOT_allow_out;
+    //       Receiver_OUT_CLOSE=FG_NOT_allow_out;
+    //       if(TIMER250ms_STOP==0)Receiver_OUT_STOP=FG_NOT_allow_out;
           }
     if(TIMER300ms==0)Receiver_LED_RX=0;
 }
