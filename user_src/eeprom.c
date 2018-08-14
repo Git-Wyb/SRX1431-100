@@ -257,17 +257,14 @@ void ID_learn(void)
 {
 //    UINT16 i;
 // #if defined(__Product_PIC32MX2_Receiver__)
- if(FG_10ms){                //90==1秒
+ if(FG_10ms){
      FG_10ms = 0;
 
 //     if(time_3sec)--time_3sec;
      if(TIME_EMC)--TIME_EMC;
      if(TIME_auto_out)--TIME_auto_out;
      if(TIME_auto_close)--TIME_auto_close;
-     if(TIME_OUT_OPEN_CLOSE)--TIME_OUT_OPEN_CLOSE;
-     if(TIME_Receiver_LED_OUT)--TIME_Receiver_LED_OUT;
-     if(TIME_Login_EXIT_Button)--TIME_Login_EXIT_Button;
-     if(Manual_override_TIMER)--Manual_override_TIMER;
+     if(TIME_Manual_out)--TIME_Manual_out;
 //     if(rssi_TIME)--rssi_TIME;
 //     if(TIMER60s)--TIMER60s;
 //     if(TIMER_err_1s)--TIMER_err_1s;
@@ -280,33 +277,26 @@ void ID_learn(void)
          if(Receiver_Login==0){
              TIME_Receiver_Login++;
              TIME_Receiver_Login_restrict=350;
-             if((COUNT_Receiver_Login>=2)&&(FLAG_ID_Erase_Login==0)&&(FLAG_ID_Login==0))
-	     {FLAG_ID_Login=1;TIME_Login_EXIT_rest=5380;TIME_Login_EXIT_Button=500;}   //6000
-                 if(((FLAG_ID_Erase_Login==1)&&(COUNT_Receiver_Login>=1))||
-		    ((FLAG_ID_Login==1)&&(COUNT_Receiver_Login>=3))){
-		     if(TIME_Login_EXIT_Button==0)ID_Login_EXIT_Initial();
-		    }
+             if(COUNT_Receiver_Login>=2){FLAG_ID_Login=1;TIME_Login_EXIT_rest=6000;}
+             if(((FLAG_ID_Erase_Login==1)&&(COUNT_Receiver_Login>=1))||
+                ((FLAG_ID_Login==1)&&(COUNT_Receiver_Login>=3)))ID_Login_EXIT_Initial();
          }
          if(Receiver_Login==1){
-	     if(TIME_Receiver_Login>3){
-	        if(COUNT_Receiver_Login<10)COUNT_Receiver_Login++;
-	     }
+             if(TIME_Receiver_Login>3)COUNT_Receiver_Login++;
              if(FLAG_ID_Login_EXIT==1){FLAG_ID_Login_EXIT=0;COUNT_Receiver_Login=0;}
              TIME_Receiver_Login=0;
          }
-         if(TIME_Receiver_Login>=250){
+         if(TIME_Receiver_Login>=300){
              TIME_Receiver_Login=0;
              FLAG_ID_Erase_Login=1;
              FLAG_ID_Erase_Login_PCS=1;    //追加多次ID登录
-             TIME_Login_EXIT_rest=5380;
-	     TIME_Login_EXIT_Button=500;
+             TIME_Login_EXIT_rest=6000;
          }
          if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1)){
              TIME_Receiver_Login_led++;
-             if(TIME_Receiver_Login_led>=46){
+             if(TIME_Receiver_Login_led>=30){
                  TIME_Receiver_Login_led=0;
-		 if(TIME_Receiver_LED_OUT>0)Receiver_LED_OUT=1;
-                 else Receiver_LED_OUT=!Receiver_LED_OUT;
+                 Receiver_LED_OUT=!Receiver_LED_OUT;
              }
              if((FLAG_ID_Login_OK==1)&&(FLAG_ID_Login_OK_bank==0)){
                  //FLAG_ID_Login_OK_bank=1;             //追加多次ID登录
@@ -314,7 +304,7 @@ void ID_learn(void)
                  if(FLAG_IDCheck_OK==1)FLAG_IDCheck_OK=0;
                  else{
                      BEEP_and_LED();
-                     TIME_Login_EXIT_rest=5380;       //追加多次ID登录
+                     TIME_Login_EXIT_rest=6000;       //追加多次ID登录
                      if(FLAG_ID_Login==1)ID_EEPROM_write();
                      else if(FLAG_ID_Erase_Login==1){
                          if(FLAG_ID_Erase_Login_PCS==1){FLAG_ID_Erase_Login_PCS=0;ID_DATA_PCS=0;}      //追加多次ID登录
@@ -342,7 +332,6 @@ void ID_Login_EXIT_Initial(void)
      FLAG_ID_Login=0;
      FLAG_ID_Erase_Login=0;
      Receiver_LED_OUT=0;
-     COUNT_Receiver_Login=0;
 //#endif
 //#if defined(__Product_PIC32MX2_WIFI__)
 //     FLAG_ID_Login_EXIT=1;

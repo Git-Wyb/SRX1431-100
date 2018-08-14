@@ -20,7 +20,7 @@ void TIM4_Init(void){
 	TIM4_IER |= 0x01;						// Timer 4 OVR interrupt
 }
 
-void TIM4_UPD_OVF(void){                             //725==1√Î
+void TIM4_UPD_OVF(void){
     if(TIMER1s)--TIMER1s;
     if(TIMER300ms)--TIMER300ms;
     if(TIMER18ms)--TIMER18ms;

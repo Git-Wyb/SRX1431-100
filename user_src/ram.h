@@ -103,8 +103,8 @@ extern volatile union{
 	//------------------------------------------------
         #define		BIT_SIO          	FLAG_test1.BIT.Bit0
         #define		FG_auto_out	        FLAG_test1.BIT.Bit1
-        #define		FG_OUT_OPEN_CLOSE	FLAG_test1.BIT.Bit2    //历史记录   误码率测试用
-//        #define		FG_auto_outbz		FLAG_test1.BIT.Bit3          
+//        #define		X_HIS	                FLAG_test1.BIT.Bit2    //历史记录   误码率测试用
+        #define		FG_auto_Manual_out	FLAG_test1.BIT.Bit3          
 //        #define		FG_test_tx_off	        FLAG_test1.BIT.Bit4          
 //        #define		FG_test_mode	        FLAG_test1.BIT.Bit5
 //        #define		FG_test1	        FLAG_test1.BIT.Bit6
@@ -153,8 +153,4 @@ extern UINT16 TIME_Receiver_Login;
 extern UINT16 TIME_Login_EXIT_rest;
 extern UINT16 TIME_Receiver_Login_led;
 
-extern UINT8 TIME_OUT_OPEN_CLOSE;
-extern UINT16 TIME_Receiver_LED_OUT;
-extern UINT16 TIME_Login_EXIT_Button;
-
-extern UINT16 Manual_override_TIMER;
+extern UINT16 TIME_Manual_out;
