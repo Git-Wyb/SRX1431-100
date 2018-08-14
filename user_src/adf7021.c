@@ -614,9 +614,10 @@ void dd_set_RX_mode(void)
         	//write R4, turn on demodulation
         register_value.whole_reg = 0x00280294;
 	dd_write_7021_reg(&register_value.byte[0]);
+        Delayus(122);		//delay 40us
         
         	//write R9
-        register_value.whole_reg = 0x000231E9;
+        register_value.whole_reg = 0x000231E9;  //0x005631E9;
 	dd_write_7021_reg(&register_value.byte[0]);   
         Delayus(122);		//delay 40us
 
@@ -713,7 +714,7 @@ void dd_set_RX_mode_test(void)
         	//write R4, turn on demodulation
         register_value.whole_reg = 0x00280294;
 	dd_write_7021_reg(&register_value.byte[0]);
-
+        
 	//write R10, turn on PLL
 	register_value.whole_reg = 0x029668EA;
 	dd_write_7021_reg(&register_value.byte[0]);
@@ -884,7 +885,8 @@ void dd_read_RSSI(void)
 	ADF70XX_REG_T RSSI_value;
         UINT8 value_x0;
 
-	RSSI_value = dd_read_7021_reg(0x14);        
+	RSSI_value = dd_read_7021_reg(0x14);    
+        RSSI_value_buf= RSSI_value;
         value_x0=RSSI_value.byte[3]&0x7F;
         
 	RSSI_value.whole_reg += RSSI_value.whole_reg ;

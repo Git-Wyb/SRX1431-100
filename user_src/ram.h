@@ -168,5 +168,7 @@ extern UINT16 time_Login_exit_256;
 
 extern UINT16 TIME_Fine_Calibration;   //窄带下中频滤波器100KHz精校
 
+extern ADF70XX_REG_T RSSI_value_buf;  //RSSI 测试
+
 
 
