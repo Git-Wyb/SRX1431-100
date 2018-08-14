@@ -50,8 +50,7 @@ void ID_Decode_function(void)
                 if(ADF7021_DATA_rx)DATA_Packet_Head+=1;
                 //DATA_Packet_Head=DATA_Packet_Head&0x0000FFFF;
                 if(TIMER18ms==0)rxphase=0;
-                //if(DATA_Packet_Head==0x5515){rxphase=2;DATA_Packet_Syn=0;DATA_Packet_Head=0;DATA_Packet_Code_i=0;}   //文化
-                if(DATA_Packet_Head==0x5456){rxphase=2;DATA_Packet_Syn=0;DATA_Packet_Head=0;DATA_Packet_Code_i=0;}    //新生精
+                if(DATA_Packet_Head==0x5515){rxphase=2;DATA_Packet_Syn=0;DATA_Packet_Head=0;DATA_Packet_Code_i=0;}
 		break;
         case 2:
                 DATA_Packet_Code_g=DATA_Packet_Code_i/32;
@@ -155,7 +154,7 @@ void ID_Decode_IDCheck(void)
                            if(FG_auto_manual_mode==1)//Manual_override_TIMER=13500;   //2分30秒自动无效
                               Manual_override_TIMER=24480;   //4分30秒自动无效
 		           if((DATA_Packet_Control&0x14)==0x14){if(TIMER1s==0)TIMER1s=3800-30;}
-			   else  if(TIMER1s<500)TIMER1s=1000;
+			   else  TIMER1s=1000;
 			}
 //                    }
 //                    else TIMER1s=1000;
@@ -216,8 +215,9 @@ void eeprom_IDcheck(void)
 void BEEP_and_LED(void)
 {
    UINT16 i;
+// #if defined(__Product_PIC32MX2_Receiver__)
      Receiver_LED_OUT=1;
-     for(i=0;i<4160;i++){
+     for(i=0;i<1;i++){
          //Receiver_Buzzer=!Receiver_Buzzer;   //蜂鸣器频率2.08KHZ
          if(FG_beep_on==0){FG_beep_on=1;FG_beep_off=0;BEEP_CSR2_BEEPEN=1;}
          //Delayus(240);
@@ -230,60 +230,19 @@ void BEEP_and_LED(void)
      FG_beep_on=0;
      BEEP_CSR2_BEEPEN=0;     
      //Receiver_LED_OUT=0;
-     TIME_Receiver_LED_OUT=185;
+     TIME_Receiver_LED_OUT=20;
+     FG_Login_led=1;
+//#endif
+//#if defined(__Product_PIC32MX2_WIFI__)
+//     WIFI_LED_RX=1;
+//     for(i=0;i<8000;i++){        
+//         Delayus(190);       //2.08KHZ
+//         ClearWDT(); // Service the WDT
+//     }
+//     WIFI_LED_RX=0;
+//#endif
 }
 
-void BEEP_and_LED_ID_Login(void)
-{
-   UINT16 i;
-     Receiver_LED_OUT=1;
-     for(i=0;i<4160;i++){
-         //Receiver_Buzzer=!Receiver_Buzzer;   //蜂鸣器频率2.08KHZ
-         if(FG_beep_off==0){FG_beep_off=1;FG_beep_on=0;BEEP_CSR2_BEEPEN=0;}
-         //Delayus(240);
-	 Delayus(250);   //80us
-	 Delayus(250);   //80us
-	 Delayus(250);   //80us
-         ClearWDT(); // Service the WDT
-     }
-     for(i=0;i<4160;i++){
-         //Receiver_Buzzer=!Receiver_Buzzer;   //蜂鸣器频率2.08KHZ
-         if(FG_beep_on==0){FG_beep_on=1;FG_beep_off=0;BEEP_CSR2_BEEPEN=1;}
-         //Delayus(240);
-	 Delayus(250);   //80us
-	 Delayus(250);   //80us
-	 Delayus(250);   //80us
-         ClearWDT(); // Service the WDT
-     }    
-     Receiver_LED_OUT=0;
-      for(i=0;i<4160;i++){
-         //Receiver_Buzzer=!Receiver_Buzzer;   //蜂鸣器频率2.08KHZ
-         if(FG_beep_off==0){FG_beep_off=1;FG_beep_on=0;BEEP_CSR2_BEEPEN=0;}
-         //Delayus(240);
-	 Delayus(250);   //80us
-	 Delayus(250);   //80us
-	 Delayus(250);   //80us
-         ClearWDT(); // Service the WDT
-     }    
-     FG_beep_off=0;    
-     TIME_Receiver_LED_OUT=0;  
-}
-
-void BEEP_and_LED_ID_Erase_Login(void)
-{
-   UINT16 i;
-     for(i=0;i<7100;i++){
-         //Receiver_Buzzer=!Receiver_Buzzer;   //蜂鸣器频率2.08KHZ
-         if(FG_beep_on==0){FG_beep_on=1;FG_beep_off=0;BEEP_CSR2_BEEPEN=1;}
-         //Delayus(240);
-	 Delayus(250);   //80us
-	 Delayus(250);   //80us
-	 Delayus(250);   //80us
-         ClearWDT(); // Service the WDT
-     } 
-     BEEP_CSR2_BEEPEN=0;
-     FG_beep_on=0;     
-}
 
 void Receiver_BEEP(void)
 {

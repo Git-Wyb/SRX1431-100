@@ -29,6 +29,9 @@ void TIM4_UPD_OVF(void){                             //725==1秒
     else{                            // 10mS FLAG
 	  TIME_10ms = 10;
 	  FG_10ms = 1;
+          
+          if(TIME_Receiver_LED_OUT)--TIME_Receiver_LED_OUT;
+          if((FG_Login_led==1)&&(TIME_Receiver_LED_OUT==0)){FG_Login_led=0;Receiver_LED_OUT=0;}
     }
 	TIM4_SR1_bit.UIF=0;						// 清除中断标记
 }
