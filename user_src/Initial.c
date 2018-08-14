@@ -5,7 +5,7 @@
 /*  CPU TYPE    :STM8L151G6     Crystal: 16M HSI                       */
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
-#include  <iostm8l151g4.h>
+#include  <iostm8l151g6.h>
 //#include        "stm8l15x.h"
 #include "Pin_define.h"		// 管脚定义
 #include "initial.h"		// 初始化  预定义
@@ -210,7 +210,7 @@ void RF_test_mode(void )
 //    Receiver_LED_OUT=0;
   
   Receiver_LED_OUT=1;
-  for(Boot_i=0;Boot_i<6;Boot_i++){    
+  for(Boot_i=0;Boot_i<2;Boot_i++){    
       for(time_3sec=0;time_3sec<6000;time_3sec++){
          Delayus(250);   //80us
          ClearWDT(); // Service the WDT

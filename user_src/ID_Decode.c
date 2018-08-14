@@ -6,7 +6,7 @@
 /*  DESCRIPTION :                                                      */
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
-#include  <iostm8l151g4.h>				// CPU型号 
+#include  <iostm8l151g6.h>				// CPU型号 
 #include "Pin_define.h"		// 管脚定义
 #include "initial.h"		// 初始化  预定义
 #include "ram.h"		// RAM定义
@@ -115,7 +115,7 @@ void ID_Decode_IDCheck(void)
                             eeprom_IDcheck();
                             if(DATA_Packet_Control==0xFF){
                                 if(FLAG_IDCheck_OK==1)FLAG_IDCheck_OK=0;
-                                 else{
+                                 else if(ID_DATA_PCS<256){
                                      BEEP_and_LED();
                                      ID_Receiver_Login=DATA_Packet_ID;
                                      ID_EEPROM_write();
@@ -138,6 +138,7 @@ void ID_Decode_IDCheck(void)
 //#if defined(__Product_PIC32MX2_Receiver__)
 //                    if(Freq_Scanning_CH_bak==0){
                         if((DATA_Packet_Control==0x40)&&(Manual_override_TIMER==0)){
+                          FG_auto_manual_mode=1;
                           TIME_auto_out=890;    // 900
                           if(FG_First_auto==0){
                               FG_First_auto=1;
@@ -148,7 +149,8 @@ void ID_Decode_IDCheck(void)
 			else{
 			   FG_auto_out=0;
 			   TIME_auto_close=0;
-                           Manual_override_TIMER=13500;   //2分30秒自动无效
+                           if(FG_auto_manual_mode==1)//Manual_override_TIMER=13500;   //2分30秒自动无效
+                              Manual_override_TIMER=24480;   //4分30秒自动无效
 		           if((DATA_Packet_Control&0x14)==0x14){if(TIMER1s==0)TIMER1s=3800-30;}
 			   else  TIMER1s=1000;
 			}
@@ -299,7 +301,8 @@ void ID_Decode_OUT(void)
 				    Receiver_OUT_CLOSE=FG_NOT_allow_out;
                                     if(TIMER1s>2000){Receiver_OUT_STOP=FG_allow_out;Receiver_OUT_OPEN=FG_NOT_allow_out;}   //1830
                                     else if(TIMER1s>1000){Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_OPEN=FG_NOT_allow_out;}   //810
-				    else {FG_First_auto=0;FG_auto_out=1;Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_OPEN=FG_allow_out;}
+				    else {FG_auto_open_time=1;Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_OPEN=FG_allow_out;}
+                                    
 		                }
                                 break;
                      case 0x01:                              //VENT
@@ -402,7 +405,7 @@ void ID_Decode_OUT(void)
                 else if(TIME_auto_close>90){Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_CLOSE=FG_NOT_allow_out;}   //100
 	        else {Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_CLOSE=FG_allow_out;}	     
 	   }
-	   else   Receiver_OUT_CLOSE=FG_NOT_allow_out;
+	   else   {FG_auto_manual_mode=0;Receiver_OUT_CLOSE=FG_NOT_allow_out;}
            FG_First_auto=0;
            FLAG_Receiver_BEEP=0;
            if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1)||(TIME_auto_close));
@@ -410,6 +413,7 @@ void ID_Decode_OUT(void)
 	   else Receiver_LED_OUT=0;
            Receiver_OUT_OPEN=FG_NOT_allow_out;
 	   Receiver_OUT_VENT=FG_NOT_allow_out;
+           if(FG_auto_open_time==1){FG_First_auto=0;FG_auto_out=1;FG_auto_open_time=0;}
            if((TIMER250ms_STOP==0)&&(TIME_auto_close==0)){Receiver_OUT_STOP=FG_NOT_allow_out;FG_OUT_OPEN_CLOSE=0;}
           }
     if(TIMER300ms==0)FG_Receiver_LED_RX=0;   //Receiver_LED_RX=0;

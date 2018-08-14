@@ -6,7 +6,7 @@
 /*  DESCRIPTION :                                                      */
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
-#include  <iostm8l151g4.h>				// CPU型号
+#include  <iostm8l151g6.h>				// CPU型号
 //#include "stm8l15x.h"
 #include "Pin_define.h"		// 管脚定义
 #include "initial.h"		// 初始化  预定义
@@ -122,3 +122,5 @@ UINT16 Manual_override_TIMER=0;
 UINT16 RAM_rssi_SUM=0;
 UINT8 RAM_rssi_CNT=0;
 UINT8 RAM_rssi_AVG=0;
+
+UINT16 time_Login_exit_256=0;

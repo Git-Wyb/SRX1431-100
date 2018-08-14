@@ -2801,7 +2801,7 @@ Combo3(2).ListIndex = 1  'Frequency Deviation
 
 Text4(0).Text = "00884000"
 Text4(1).Text = "00154DC1"
-Text4(2).Text = "011209A6"
+Text4(2).Text = "012209A6"
 Text4(3).Text = "0021D04F"
 
  For i0 = 0 To 3
@@ -2839,19 +2839,19 @@ TextR(15).Text = "0000000F"
  Next
 
 
-''---------------------------to fty
-'Frame4.Enabled = False
-'Frame6.Enabled = False
-' For i0 = 0 To 3
-'   Label9(i0).ForeColor = &H80000010
-'   Text4(i0).Enabled = False
-'   Command5(i0).Enabled = False
-' Next
-'  For i0 = 0 To 15
-'   Label10(i0).ForeColor = &H80000010
-'   TextR(i0).Enabled = False
-'   CommandR(i0).Enabled = False
-' Next
+'---------------------------to fty
+Frame4.Enabled = False
+Frame6.Enabled = False
+ For i0 = 0 To 3
+   Label9(i0).ForeColor = &H80000010
+   Text4(i0).Enabled = False
+   Command5(i0).Enabled = False
+ Next
+  For i0 = 0 To 15
+   Label10(i0).ForeColor = &H80000010
+   TextR(i0).Enabled = False
+   CommandR(i0).Enabled = False
+ Next
 
 End Sub
 

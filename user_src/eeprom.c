@@ -7,7 +7,7 @@
 /*  Mark        :STM8S207C8的CODE空间为64K                             */
 /*              :STM8S207C8的EEPROM的大小为1536字节,即:3页,512节/页    */
 /***********************************************************************/
-#include  <iostm8l151g4.h>				// CPU型号
+#include  <iostm8l151g6.h>				// CPU型号
 //#include "stm8l15x.h"
 #include "Pin_define.h"		// 管脚定义
 #include "initial.h"		// 初始化  预定义
@@ -162,16 +162,19 @@ void eeprom_sys_load(void){
 	//	eeprom_sys_buff[i] = ReadByteEEPROM( addr_eeprom_sys+i );
 	//--------------------------------------
   
-    UINT16 i,j;
+    UINT16 i,j,q,p;
     UINT8 xm[3]={0};
     uni_rom_id xn;
+        
     for(i=0;i<256;i++)ID_Receiver_DATA[i]=0;//ID_Receiver_DATA[ID_DATA_PCS]=0;
     xm[0] = ReadByteEEPROM( addr_eeprom_sys+0x3FE );
     xm[1] = ReadByteEEPROM( addr_eeprom_sys+0x3FF );
     ID_DATA_PCS=xm[0]*256+xm[1];
     if(ID_DATA_PCS==0xFFFF)ID_DATA_PCS=0;
     else if(ID_DATA_PCS>256)ID_DATA_PCS=256;
-    for(i=0;i<ID_DATA_PCS;i++){
+    q=ID_DATA_PCS;
+    p=0;
+    for(i=0;i<q;i++){
         j=3*i;
         xm[0] = ReadByteEEPROM( addr_eeprom_sys+j);
 	j++;
@@ -182,7 +185,10 @@ void eeprom_sys_load(void){
         xn.IDB[1]=xm[0];
         xn.IDB[2]=xm[1];
         xn.IDB[3]=xm[2];
-        ID_Receiver_DATA[i]=xn.IDL;
+        if((xn.IDL==0)||(xn.IDL==0xFFFFFF))q++;
+        else ID_Receiver_DATA[p++]=xn.IDL;
+        if(q>260)break;
+        ClearWDT(); // Service the WDT
     }
     
     
@@ -203,8 +209,8 @@ void eeprom_sys_load(void){
 void ID_EEPROM_write(void)
 {
     UINT8 xm[3]={0};
-    UINT16 m1;
-    uni_rom_id xn;
+    UINT16 i,j,m1;
+    uni_rom_id xn,xd;
      ID_DATA_PCS++;
      xm[0]=ID_DATA_PCS%256;
      xm[1]=ID_DATA_PCS/256;
@@ -216,10 +222,26 @@ void ID_EEPROM_write(void)
 	
      ID_Receiver_DATA[ID_DATA_PCS-1]=ID_Receiver_Login;
      xn.IDL=ID_Receiver_Login;
+     
+     for(i=0;i<260;i++){
+        j=3*i;
+        xm[0] = ReadByteEEPROM( addr_eeprom_sys+j);
+	j++;
+        xm[1] = ReadByteEEPROM( addr_eeprom_sys+j);
+	j++;
+        xm[2] = ReadByteEEPROM( addr_eeprom_sys+j);	
+        xd.IDB[0]=0;
+        xd.IDB[1]=xm[0];
+        xd.IDB[2]=xm[1];
+        xd.IDB[3]=xm[2];
+        if((xd.IDL==0)||(xd.IDL==0xFFFFFF))break;
+        ClearWDT(); // Service the WDT
+    }    
+          
      xm[0]=xn.IDB[1];
      xm[1]=xn.IDB[2];
      xm[2]=xn.IDB[3];
-     m1=(ID_DATA_PCS-1)*3;
+     m1=j-2;
      UnlockFlash( UNLOCK_EEPROM_TYPE );
 	WriteByteToFLASH( addr_eeprom_sys+m1, xm[0]);
 	m1++;
@@ -228,18 +250,44 @@ void ID_EEPROM_write(void)
 	WriteByteToFLASH( addr_eeprom_sys+m1, xm[2]);
      LockFlash( UNLOCK_EEPROM_TYPE );
 
+     if(ID_DATA_PCS>=256){ID_Login_EXIT_Initial();DATA_Packet_Control=0;time_Login_exit_256=110;}
 }
 
 
 void ID_EEPROM_write_0x00(void)
 {
    UINT8 xm[3]={0};
-   UINT16 m1;
+   UINT16 i,j,m1,q,p;
+   uni_rom_id xn,xd;
+   
+     ID_DATA_PCS--;
+     xm[0]=ID_DATA_PCS%256;
+     xm[1]=ID_DATA_PCS/256;
+     
+     UnlockFlash( UNLOCK_EEPROM_TYPE );
+	WriteByteToFLASH( addr_eeprom_sys+0x3FE, xm[1]);
+	WriteByteToFLASH( addr_eeprom_sys+0x3FF, xm[0]);
+     LockFlash( UNLOCK_EEPROM_TYPE );  
+   
+      for(i=0;i<260;i++){
+        j=3*i;
+        xm[0] = ReadByteEEPROM( addr_eeprom_sys+j);
+	j++;
+        xm[1] = ReadByteEEPROM( addr_eeprom_sys+j);
+	j++;
+        xm[2] = ReadByteEEPROM( addr_eeprom_sys+j);	
+        xd.IDB[0]=0;
+        xd.IDB[1]=xm[0];
+        xd.IDB[2]=xm[1];
+        xd.IDB[3]=xm[2];
+        if(xd.IDL==DATA_Packet_ID)break;
+        ClearWDT(); // Service the WDT
+    }     
+         
      xm[0]=0;
      xm[1]=0;
      xm[2]=0;
-     ID_Receiver_DATA[INquiry]=0x00;
-     m1=INquiry*3;
+     m1=i*3;
      UnlockFlash( UNLOCK_EEPROM_TYPE );
 	WriteByteToFLASH( addr_eeprom_sys+m1, xm[0]);
 	m1++;
@@ -247,6 +295,26 @@ void ID_EEPROM_write_0x00(void)
 	m1++;
 	WriteByteToFLASH( addr_eeprom_sys+m1, xm[2]);
      LockFlash( UNLOCK_EEPROM_TYPE );
+     
+     q=ID_DATA_PCS;
+    p=0;
+    for(i=0;i<q;i++){
+        j=3*i;
+        xm[0] = ReadByteEEPROM( addr_eeprom_sys+j);
+	j++;
+        xm[1] = ReadByteEEPROM( addr_eeprom_sys+j);
+	j++;
+        xm[2] = ReadByteEEPROM( addr_eeprom_sys+j);	
+        xn.IDB[0]=0;
+        xn.IDB[1]=xm[0];
+        xn.IDB[2]=xm[1];
+        xn.IDB[3]=xm[2];
+        if((xn.IDL==0)||(xn.IDL==0xFFFFFF))q++;
+        else ID_Receiver_DATA[p++]=xn.IDL;
+        if(q>260)break;
+        ClearWDT(); // Service the WDT
+    }    
+     
 }
 
 
@@ -268,6 +336,7 @@ void ID_learn(void)
      if(TIME_Receiver_LED_OUT)--TIME_Receiver_LED_OUT;
      if(TIME_Login_EXIT_Button)--TIME_Login_EXIT_Button;
      if(Manual_override_TIMER)--Manual_override_TIMER;
+     if(time_Login_exit_256)--time_Login_exit_256;
 //     if(rssi_TIME)--rssi_TIME;
 //     if(TIMER60s)--TIMER60s;
 //     if(TIMER_err_1s)--TIMER_err_1s;
@@ -276,11 +345,11 @@ void ID_learn(void)
      if(TIME_Receiver_Login_restrict)--TIME_Receiver_Login_restrict;
        else if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1));
           else {TIME_Receiver_Login=0;COUNT_Receiver_Login=0;}
-
+  
          if(Receiver_Login==0){
              TIME_Receiver_Login++;
              TIME_Receiver_Login_restrict=350;
-             if((COUNT_Receiver_Login>=2)&&(FLAG_ID_Erase_Login==0)&&(FLAG_ID_Login==0))
+             if((COUNT_Receiver_Login>=2)&&(FLAG_ID_Erase_Login==0)&&(FLAG_ID_Login==0)&&(ID_DATA_PCS<256))
 	     {FLAG_ID_Login=1;TIME_Login_EXIT_rest=5380;TIME_Login_EXIT_Button=500;}   //6000
                  if(((FLAG_ID_Erase_Login==1)&&(COUNT_Receiver_Login>=1))||
 		    ((FLAG_ID_Login==1)&&(COUNT_Receiver_Login>=3))){

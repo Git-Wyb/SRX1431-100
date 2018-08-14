@@ -105,8 +105,8 @@ extern volatile union{
         #define		FG_auto_out	        FLAG_test1.BIT.Bit1
         #define		FG_OUT_OPEN_CLOSE	FLAG_test1.BIT.Bit2    //历史记录   误码率测试用
 //        #define		FG_auto_outbz		FLAG_test1.BIT.Bit3          
-//        #define		FG_test_tx_off	        FLAG_test1.BIT.Bit4          
-//        #define		FG_test_mode	        FLAG_test1.BIT.Bit5
+        #define		FG_auto_open_time	        FLAG_test1.BIT.Bit4          
+        #define		FG_auto_manual_mode	        FLAG_test1.BIT.Bit5      //1=auto,0=manual
         #define		FG_Receiver_LED_RX	FLAG_test1.BIT.Bit6
         #define		FG_First_auto		FLAG_test1.BIT.Bit7
 	//************************************************
@@ -162,3 +162,5 @@ extern UINT16 Manual_override_TIMER;
 extern UINT16 RAM_rssi_SUM;
 extern UINT8 RAM_rssi_CNT;
 extern UINT8 RAM_rssi_AVG;
+
+extern UINT16 time_Login_exit_256;

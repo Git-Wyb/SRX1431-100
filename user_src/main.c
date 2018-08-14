@@ -20,7 +20,7 @@
   */  
 	
 /* Includes ------------------------------------------------------------------*/
-#include  <iostm8l151g4.h>				// CPU型号
+#include  <iostm8l151g6.h>				// CPU型号
 //#include "stm8l15x.h"
 #include "Pin_define.h"		// 管脚定义
 #include "initial.h"		// 初始化  预定义
@@ -74,7 +74,7 @@ void main(void)
   {
     ClearWDT(); // Service the WDT
     ID_Decode_IDCheck();
-    ID_Decode_OUT();
+    if(time_Login_exit_256==0)ID_Decode_OUT();
     Freq_Scanning();
     ID_learn();
     READ_RSSI_avg();
