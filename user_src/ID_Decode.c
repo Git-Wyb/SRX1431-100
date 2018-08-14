@@ -293,7 +293,7 @@ void ID_Decode_OUT(void)
                                 break;
                      case 0x01:                              //VENT
                                 Receiver_LED_OUT=1;
-				if(Receiver_vent==1){         //受信机换气联动OFF
+				if(Receiver_vent==0){         //受信机换气联动OFF
 				    Receiver_OUT_STOP=FG_NOT_allow_out;
 				    Receiver_OUT_VENT=FG_NOT_allow_out;
                                     Receiver_OUT_OPEN=FG_allow_out;
