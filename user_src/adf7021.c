@@ -472,12 +472,12 @@ void dd_set_RX_mode(void)
 	register_value.whole_reg = ROM_adf7012_value[1].whole_reg;//0x031B5011;//0x031BD011;      //2013年11月22日修改  天线驱动偏执电流   2.1mA-->1.5mA
 	dd_write_7021_reg(&register_value.byte[0]);
         
-        register_value.whole_reg =0x00500882; //0x00680882;        //2013年11月22日修改  TX频偏 1.6K（0x00500882）-->2K（0x00680882）
+        register_value.whole_reg =0x00500882; //0x00680882;        //2013年11月22日修改  TX频偏 1.6K（0x00500882）-->2K（0x00680882）-->3.2K（0x00A80882）-->4K（0x00D00882）
         //register_value.whole_reg =0x00680882; //0x00680882;        //2013年11月29日修改  TX频偏 1.6K（0x00500882）-->2K（0x00680882）
 	dd_write_7021_reg(&register_value.byte[0]);        
 
 	//write R3, turn on TX/RX clocks
-	register_value.whole_reg = 0x29915CD3;
+	register_value.whole_reg = 0x29915CD3;     //1.6K（0x29915CD3）-->2K（0x29915CD3）-->3.2K（0x29920893）-->4K（0x29920893）
 	dd_write_7021_reg(&register_value.byte[0]);
 
 	//write R6 here, if fine IF filter cal is wanted
@@ -510,7 +510,8 @@ void dd_set_RX_mode(void)
 	Delayus(122);		//delay 40us
 
 	//write R4, turn on demodulation
-	register_value.whole_reg = 0x00289A14;//0x00268614;       //2013年11月22日修改  频偏 1.6K 2FSK correlator（0x00289A14）-->2K 2FSK correlator（0x00268614）
+	register_value.whole_reg = 0x80289A14;//0x00268614;       //IF_BW =25K   频偏 1.6K 2FSK correlator（0x00289A14）-->2K（0x00268614）-->3.2K（0x00261094）-->4K（0x0024E294）
+	//register_value.whole_reg = 0x00289A14;//0x00268614;       //2013年11月22日修改  频偏 1.6K 2FSK correlator（0x00289A14）-->2K（0x00268614）-->3.2K（0x00261094）-->4K（0x0024E294）
         //register_value.whole_reg = 0x00200004;                    //2013年11月29日修改   2FSK linear（0x00200004）  频偏不设置
 	dd_write_7021_reg(&register_value.byte[0]);
 
@@ -549,7 +550,8 @@ void dd_set_RX_mode_test(void)
 	Delayus(122);		//delay 40us
 
 	//write R4, turn on demodulation
-	register_value.whole_reg = 0x00289A14;//0x00268614;       //2013年11月22日修改  频偏 1.6K 2FSK correlator（0x00289A14）-->2K 2FSK correlator（0x00268614）
+	register_value.whole_reg = 0x80289A14;//0x00268614;       //IF_BW =25K   频偏 1.6K 2FSK correlator（0x00289A14）-->2K（0x00268614）-->3.2K（0x00261094）-->4K（0x0024E294）
+	//register_value.whole_reg = 0x00289A14;//0x00268614;       //2013年11月22日修改  频偏 1.6K 2FSK correlator（0x00289A14）-->2K（0x00268614）-->3.2K（0x00261094）-->4K（0x0024E294）
         //register_value.whole_reg = 0x00200004;                    //2013年11月29日修改   2FSK linear（0x00200004）  频偏不设置
 	dd_write_7021_reg(&register_value.byte[0]);
 

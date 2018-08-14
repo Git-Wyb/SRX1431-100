@@ -2801,7 +2801,7 @@ Combo3(2).ListIndex = 1  'Frequency Deviation
 
 Text4(0).Text = "00884000"
 Text4(1).Text = "00154DC1"
-Text4(2).Text = "011209A6"
+Text4(2).Text = "012209A6"
 Text4(3).Text = "0021D04F"
 
  For i0 = 0 To 3

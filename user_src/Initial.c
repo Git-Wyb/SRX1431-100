@@ -93,10 +93,12 @@ CR1寄存器  输出 Output（1=推挽、0=OC）
       Receiver_Login_direc = Input;// Input   受信机登录键   低电平有效
       Receiver_Login_CR1=1;
       
-      Receiver_Buzzer_direc = Output;// Output   受信机蜂鸣器  高电平有效
-      Receiver_Buzzer_CR1=1;
-      Receiver_Buzzer=0;
-      
+//      Receiver_Buzzer_direc = Output;// Output   受信机蜂鸣器  高电平有效
+//      Receiver_Buzzer_CR1=1;
+//      Receiver_Buzzer=0;
+      Receiver_vent_direc = Input;// Input   受信机换气联动ON/OFF
+      Receiver_vent_CR1=1;     
+           
       PIN_BEEP_direc = Output;    // Output   蜂鸣器
       PIN_BEEP_CR1 = 1;
       PIN_BEEP=0;
@@ -132,7 +134,7 @@ CR1寄存器  输出 Output（1=推挽、0=OC）
       
       Receiver_OUT_VENT_direc = Output;
       Receiver_OUT_VENT_CR1=1;
-      Receiver_OUT_VENT=0;
+      Receiver_OUT_VENT=FG_NOT_allow_out;
       
       Receiver_test_direc=Input;    // 输入     test脚
       Receiver_test_CR1=1;
@@ -199,16 +201,26 @@ unsigned char x;                   //延时T=((timer-1)*0.313+2 us
 
 void RF_test_mode(void )
 {
-  UINT8 uart_data;
-    Receiver_LED_OUT=1;    
-    for(time_3sec=0;time_3sec<9000;time_3sec++){
-      Delayus(250);   //80us
-      ClearWDT(); // Service the WDT
-    }
-    Receiver_LED_OUT=0;
+  UINT8 uart_data,Boot_i;
+//    Receiver_LED_OUT=1;    
+//    for(time_3sec=0;time_3sec<9000;time_3sec++){
+//      Delayus(250);   //80us
+//      ClearWDT(); // Service the WDT
+//    }
+//    Receiver_LED_OUT=0;
+  
+  Receiver_LED_OUT=1;
+  for(Boot_i=0;Boot_i<6;Boot_i++){    
+      for(time_3sec=0;time_3sec<5000;time_3sec++){
+         Delayus(250);   //80us
+         ClearWDT(); // Service the WDT
+      }
+      Receiver_LED_OUT=!Receiver_LED_OUT;    
+  }
+  Receiver_LED_OUT=0;
   
   
-  
+   
     while(Receiver_test==0){
         ClearWDT(); // Service the WDT	
         //if(HA_ERR_signal==0){      //test ADF7021 TX 

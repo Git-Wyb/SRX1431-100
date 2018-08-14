@@ -102,7 +102,7 @@ extern volatile union{
 	#define 	FLAG_test1_BYTE		FLAG_test1.BYTE	 
 	//------------------------------------------------
         #define		BIT_SIO          	FLAG_test1.BIT.Bit0
-//        #define		FG_test_tx_1010	        FLAG_test1.BIT.Bit1
+        #define		FG_auto_out	        FLAG_test1.BIT.Bit1
 //        #define		X_HIS	                FLAG_test1.BIT.Bit2    //历史记录   误码率测试用
 //        #define		FG_test_tx_on		FLAG_test1.BIT.Bit3          
 //        #define		FG_test_tx_off	        FLAG_test1.BIT.Bit4          
@@ -130,6 +130,8 @@ extern UINT16  TIMER1s;
 extern UINT16  TIMER300ms;
 extern UINT16  TIMER18ms;
 extern UINT8   TIMER250ms_STOP;
+extern UINT16  TIME_auto_out;
+extern UINT16  TIME_auto_close;
 extern UINT16 time_3sec;
 extern UINT32 ID_Receiver_DATA[256];//写入EEPROM ID的数据
 extern UINT16 ID_DATA_PCS;

@@ -262,7 +262,8 @@ void ID_learn(void)
 
 //     if(time_3sec)--time_3sec;
      if(TIME_EMC)--TIME_EMC;
-
+     if(TIME_auto_out)--TIME_auto_out;
+     if(TIME_auto_close)--TIME_auto_close;
 //     if(rssi_TIME)--rssi_TIME;
 //     if(TIMER60s)--TIMER60s;
 //     if(TIMER_err_1s)--TIMER_err_1s;
