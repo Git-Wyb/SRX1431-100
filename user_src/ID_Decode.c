@@ -114,7 +114,7 @@ void ID_Decode_IDCheck(void)
                     Signal_DATA_Decode(1);
                     if(FLAG_Signal_DATA_OK==1){
                             eeprom_IDcheck();
-                            if(DATA_Packet_Control==0xFF){
+                            if(DATA_Packet_Contro_buf==0xFF){                   //2015.4.2ÐÞÕý  ËÍÐÅÆ÷ÅÔ±ßµÄµÇÂ¼¼ü ×·¼ÓµÇÂ¼²»ÐÐ
                                 if(FLAG_IDCheck_OK==1)FLAG_IDCheck_OK=0;
                                  else if(ID_DATA_PCS<256){
                                      BEEP_and_LED();
