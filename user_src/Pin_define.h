@@ -27,6 +27,7 @@
      /* 受信机使用的IO*/
 #define HA_L_signal             PA_IDR_IDR4      // Input   HA 下限信号   低电平有效
 #define HA_ERR_signal           PA_IDR_IDR5    // Input   HA 异常信号  低电平有效
+#define HA_ERR_signal_out       PA_ODR_ODR5    // Input   HA 异常信号  低电平有效
 #define HA_Sensor_signal        PA_IDR_IDR3    // Input   HA 传感器信号  低电平有效
 #define Receiver_Login          PC_IDR_IDR6    // Input   受信机登录键   低电平有效
 //#define Receiver_Buzzer         PC_ODR_ODR5  // Output   受信机蜂鸣器  高电平有效

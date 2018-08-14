@@ -68,6 +68,9 @@ void main(void)
     
     FLAG_APP_RX=1;
     dd_set_RX_mode();
+	HA_ERR_signal_direc = Output;// Input   HA 异常信号  低电平有效
+    HA_ERR_signal_CR1=1;
+	HA_ERR_signal_out=0;
     TIME_EMC=10;
     //dd_set_TX_mode();
   while (1)

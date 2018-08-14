@@ -608,7 +608,8 @@ void dd_set_RX_mode(void)
 //	dd_write_7021_reg(&register_value.byte[0]);   
 //        Delayus(122);		//delay 40us
         
-        register_value.whole_reg = 0x0954C7B0; //CH=426.075MHz
+        //register_value.whole_reg = 0x0954C7B0; //CH=426.075MHz
+        register_value.whole_reg = 0x4954C7B0; //CH=426.075MHz   MUXOUT=DIGITAL_LOCK_DETECT
         dd_write_7021_reg(&register_value.byte[0]);
         Delayus(122);		//delay 40us
         	//write R4, turn on demodulation
@@ -631,7 +632,8 @@ void dd_set_ADF7021_Freq(void)
 {
       ADF70XX_REG_T register_value;
       
-      register_value.whole_reg = 0x0954C7B0;
+      //register_value.whole_reg = 0x0954C7B0;
+      register_value.whole_reg = 0x4954C7B0; //CH=426.075MHz   MUXOUT=DIGITAL_LOCK_DETECT
       dd_write_7021_reg(&register_value.byte[0]);
       Delayus(122);		//delay 40us 
       
@@ -903,6 +905,8 @@ void READ_RSSI_avg(void)
 {
                    if(ADF7021_MUXOUT==1)
                    {
+                     HA_ERR_signal_out=0;
+/*
                         dd_read_RSSI(); 
                         RAM_rssi_CNT++;
                         RAM_rssi_SUM +=rssi;
@@ -911,5 +915,8 @@ void READ_RSSI_avg(void)
                           RAM_rssi_CNT=0;
                           RAM_rssi_SUM=0;
                         }                       
+*/
                    }  
+				   else HA_ERR_signal_out=1;
+
 }
