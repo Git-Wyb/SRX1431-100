@@ -1,11 +1,11 @@
 Type=Exe
 Form=Form1.frm
-Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\WINDOWS\system32\stdole2.tlb#OLE Automation
+Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\system32\stdole2.tlb#OLE Automation
 Object={648A5603-2C6E-101B-82B6-000000000014}#1.1#0; MSCOMM32.OCX
 ResFile32="工程1.RES"
 IconForm="Form1"
 Startup="Form1"
-ExeName32="Bunka-s Ver1.1.exe"
+ExeName32="Bunka-s Ver1.2.exe"
 Command32=""
 Name="工程1"
 HelpContextID="0"
