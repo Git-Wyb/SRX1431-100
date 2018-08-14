@@ -21,6 +21,17 @@ void RAM_clean(void){						// Çå³ýRAM
 	asm("cpw X,#0x6ff");	
 	asm("jrule clear_ram");
 }  
+void WDT_init(void)
+{
+  IWDG_KR=0x55;
+  IWDG_PR=3;
+  IWDG_PR=0xFF;
+  IWDG_KR=0xCC;
+}
+void ClearWDT(void)
+{
+  IWDG_KR=0xAA;
+}
 //========================GPIOËµÃ÷===============================================================
 //  GPIO_Mode_In_FL_No_IT      = (uint8_t)0x00,   /*!< Input floating, no external interrupt */
 //  GPIO_Mode_In_PU_No_IT      = (uint8_t)0x40,   /*!< Input pull-up, no external interrupt */
@@ -191,14 +202,14 @@ void RF_test_mode(void )
     Receiver_LED_OUT=1;    
     for(time_3sec=0;time_3sec<9000;time_3sec++){
       Delayus(250);   //80us
-      //ClearWDT(); // Service the WDT
+      ClearWDT(); // Service the WDT
     }
     Receiver_LED_OUT=0;
   
   
   
     while(Receiver_test==0){
-        //ClearWDT(); // Service the WDT	
+        ClearWDT(); // Service the WDT	
         if(HA_ERR_signal==0){      //test ADF7021 TX 
 	  FG_test_rx=0;
 	  Receiver_LED_RX=0;

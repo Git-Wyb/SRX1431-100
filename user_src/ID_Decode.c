@@ -204,7 +204,7 @@ void BEEP_and_LED(void)
 	 Delayus(250);   //80us
 	 Delayus(250);   //80us
 	 Delayus(250);   //80us
-         //ClearWDT(); // Service the WDT
+         ClearWDT(); // Service the WDT
      }
      //Receiver_Buzzer=0;
      FG_beep_on=0;
@@ -236,7 +236,7 @@ void Receiver_BEEP(void)
 	     Delayus(250);   //80us
 	     Delayus(250);   //80us
 	     Delayus(250);   //80us
-             //ClearWDT(); // Service the WDT
+             ClearWDT(); // Service the WDT
          }
          for(i=0;i<1800;i++){
             // Receiver_Buzzer=0;   //·äÃùÆ÷ÆµÂÊ2.08KHZ
@@ -245,7 +245,7 @@ void Receiver_BEEP(void)
 	     Delayus(250);   //80us
 	     Delayus(250);   //80us
 	     Delayus(250);   //80us
-             //ClearWDT(); // Service the WDT
+             ClearWDT(); // Service the WDT
          }
        }
        //Receiver_Buzzer=0;

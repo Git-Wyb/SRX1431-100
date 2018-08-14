@@ -52,6 +52,7 @@ void main(void)
 {    
     _DI();		// 关全局中断
     RAM_clean();       // 清除RAM 
+    WDT_init();
     VHF_GPIO_INIT();
     SysClock_Init();  
     InitialFlashReg();
@@ -71,6 +72,7 @@ void main(void)
     //dd_set_TX_mode();
   while (1)
   {
+    ClearWDT(); // Service the WDT
     ID_Decode_IDCheck();
     ID_Decode_OUT();
     Freq_Scanning();
