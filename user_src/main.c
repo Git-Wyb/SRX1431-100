@@ -67,11 +67,13 @@ void main(void)
     
     FLAG_APP_RX=1;
     dd_set_RX_mode();
+    TIME_EMC=10;
     //dd_set_TX_mode();
   while (1)
   {
     ID_Decode_IDCheck();
     ID_Decode_OUT();
+    Freq_Scanning();
     ID_learn();
     
 

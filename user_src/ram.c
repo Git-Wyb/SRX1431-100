@@ -79,6 +79,7 @@ UINT8  DATA_Packet_Code_i=0;
 UINT32 DATA_Packet_ID=0;
 UINT8  DATA_Packet_Control=0;
 UINT32 ID_Receiver_Login=0;
+UINT8 TIME_EMC=0;   //æ≤µÁ≤‚ ‘
 
 UINT16 INquiry=0;
 UINT16 TIME_Receiver_Login_restrict=0;

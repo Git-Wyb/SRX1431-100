@@ -13,6 +13,7 @@
 #include "ID_Decode.h"
 #include "eeprom.h"		// eeprom
 #include "uart.h"		// uart
+#include "adf7021.h"		// 初始化ADF7021
 
 void EXIT_init(void){
    EXTI_CR1=0x20;             //PORT B2  的中断触发位
@@ -24,18 +25,18 @@ void EXIT_init(void){
 
 void ID_Decode_function(void)
 {
-//UINT16 DATA_Packet_Syn_bak=0;
+  UINT16 DATA_Packet_Syn_bak=0;
   if(FLAG_APP_RX==1){
-//     TIME_EMC=10;
+     TIME_EMC=10;
      switch (rxphase){
         case 0:
                 DATA_Packet_Syn=DATA_Packet_Syn<<1;
                 if(ADF7021_DATA_rx)DATA_Packet_Syn+=1;
-//                if(TIMER18ms==0){
-//                                 DATA_Packet_Syn_bak=DATA_Packet_Syn&0x0000FFFF;
-//                                 if((DATA_Packet_Syn_bak==0x5555)||(DATA_Packet_Syn_bak==0xAAAA));
-//                                 else FLAG_Receiver_Scanning=1;
-//                                }
+                if(TIMER18ms==0){
+                                 DATA_Packet_Syn_bak=DATA_Packet_Syn&0x0000FFFF;
+                                 if((DATA_Packet_Syn_bak==0x5555)||(DATA_Packet_Syn_bak==0xAAAA));
+                                 else FLAG_Receiver_Scanning=1;
+                                }
                 //if(DATA_Packet_Syn==0x55555555){rxphase=1;TIMER18ms=65;DATA_Packet_Syn=0;DATA_Packet_Head=0;}
                 if((DATA_Packet_Syn&0xFFFFFFFF)==0x55555555){
 		    rxphase=1;TIMER18ms=2000;DATA_Packet_Syn=0;DATA_Packet_Head=0;
@@ -338,4 +339,31 @@ void ID_Decode_OUT(void)
            if(TIMER250ms_STOP==0)Receiver_OUT_STOP=FG_NOT_allow_out;
           }
     if(TIMER300ms==0)Receiver_LED_RX=0;
+}
+
+
+void  Freq_Scanning(void)
+{
+//    //if((FLAG_Receiver_Scanning==1)&&(FLAG_APP_RX==1)&&(FLAG_UART_ok==0))
+//    if(((FLAG_Receiver_Scanning==1)||(TIME_EMC==0))&&(FLAG_APP_RX==1)&&(FLAG_UART_ok==0))
+//    {
+//        FLAG_Receiver_Scanning=0;
+//        Freq_Scanning_CH++;
+//        if(Freq_Scanning_CH>6){Freq_Scanning_CH=1;dd_set_ADF7021_ReInitial();}
+//        dd_set_ADF7021_Freq(0,Freq_Scanning_CH);
+//
+//
+////        TIMER18ms=18;//18;
+//        if((Freq_Scanning_CH==1)||(Freq_Scanning_CH==3)||(Freq_Scanning_CH==5))TIMER18ms=36;
+//        else TIMER18ms=18;
+//    }
+  
+  
+    //if((FLAG_Receiver_Scanning==1)&&(FLAG_APP_RX==1)&&(FLAG_UART_ok==0))
+    if(((FLAG_Receiver_Scanning==1)||(TIME_EMC==0))&&(FLAG_APP_RX==1))
+    {
+        FLAG_Receiver_Scanning=0;
+        TIMER18ms=36;
+        dd_set_RX_mode();
+    }  
 }

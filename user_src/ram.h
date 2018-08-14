@@ -75,7 +75,7 @@ extern volatile union{
 	//************************************************
 	#define 	FLAG_test_BYTE		FLAG_test.BYTE	 
 	//------------------------------------------------
-//        #define			FLAG_test.BIT.Bit0
+        #define		FLAG_Receiver_Scanning	FLAG_test.BIT.Bit0
         #define		FG_test_tx_1010	        FLAG_test.BIT.Bit1
         #define		X_HIS	                FLAG_test.BIT.Bit2    //历史记录   误码率测试用
         #define		FG_test_tx_on		FLAG_test.BIT.Bit3          
@@ -110,7 +110,7 @@ extern UINT8  DATA_Packet_Code_i;
 extern UINT32 DATA_Packet_ID;
 extern UINT8  DATA_Packet_Control;
 extern UINT32 ID_Receiver_Login;
-
+extern UINT8 TIME_EMC;   //静电测试
 
 extern UINT16 INquiry;
 extern UINT16 TIME_Receiver_Login_restrict;

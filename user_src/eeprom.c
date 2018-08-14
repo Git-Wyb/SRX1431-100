@@ -248,7 +248,7 @@ void ID_learn(void)
      FG_10ms = 0;
 
 //     if(time_3sec)--time_3sec;
-//     if(TIME_EMC)--TIME_EMC;
+     if(TIME_EMC)--TIME_EMC;
 
 //     if(rssi_TIME)--rssi_TIME;
 //     if(TIMER60s)--TIMER60s;
