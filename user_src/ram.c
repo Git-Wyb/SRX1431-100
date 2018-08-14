@@ -73,7 +73,6 @@ volatile union{
 UINT16 X_COUNT = 0;
 UINT16 X_ERR  = 0 ;//记录错误的个数
 unsigned int rssi;
-unsigned int rssi_read=0;
 
 UINT8 SIO_cnt;
 UINT8 SIO_buff[16];
@@ -118,7 +117,4 @@ UINT8 TIME_OUT_OPEN_CLOSE=0;
 UINT16 TIME_Receiver_LED_OUT=0;
 UINT16 TIME_Login_EXIT_Button=0;
 
-UINT16 RAM_rssi_SUM=0;
-UINT8 RAM_rssi_CNT=0;
-UINT8 RAM_rssi_AVG=0;
-
+UINT16 Manual_override_TIMER=0;

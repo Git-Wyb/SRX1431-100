@@ -136,10 +136,15 @@ void ID_Decode_IDCheck(void)
 //#endif
 //#if defined(__Product_PIC32MX2_Receiver__)
 //                    if(Freq_Scanning_CH_bak==0){
-                        if(DATA_Packet_Control==0x40){TIMER1s=3000;TIME_auto_out=1000;}
+                        if((DATA_Packet_Control==0x40)&&(Manual_override_TIMER==0)){
+                            TIMER1s=2500;    //2500 
+                            TIME_auto_out=900;    // 900
+                        }       
+                        else if(DATA_Packet_Control==0x40);
 			else{
 			   FG_auto_out=0;
 			   TIME_auto_close=0;
+                           Manual_override_TIMER=13500;   //2分30秒自动无效
 		           if((DATA_Packet_Control&0x14)==0x14){if(TIMER1s==0)TIMER1s=3800-30;}
 			   else  TIMER1s=1000;
 			}
@@ -282,13 +287,13 @@ void ID_Decode_OUT(void)
                                                  Receiver_OUT_CLOSE=FG_allow_out;Receiver_BEEP();}
                                 break;
                      case 0x40:                            //自动送信
-		                if(FG_auto_out==0){
+		                if((FG_auto_out==0)&&(Manual_override_TIMER==0)){
                                     Receiver_LED_OUT=1;
                                     TIMER250ms_STOP=0;
 				    Receiver_OUT_VENT=FG_NOT_allow_out;
 				    Receiver_OUT_CLOSE=FG_NOT_allow_out;
-                                    if(TIMER1s>2000){Receiver_OUT_STOP=FG_allow_out;Receiver_OUT_OPEN=FG_NOT_allow_out;}
-                                    else if(TIMER1s>1000){Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_OPEN=FG_NOT_allow_out;}   
+                                    if(TIMER1s>1830){Receiver_OUT_STOP=FG_allow_out;Receiver_OUT_OPEN=FG_NOT_allow_out;}   //1830
+                                    else if(TIMER1s>810){Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_OPEN=FG_NOT_allow_out;}   //810
 				    else {FG_auto_out=1;Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_OPEN=FG_allow_out;}
 		                }
                                 break;
@@ -386,10 +391,10 @@ void ID_Decode_OUT(void)
      else {
 //           if(FLAG_APP_Reply==1){FLAG_APP_Reply=0;ID_data.IDL=DATA_Packet_ID;Control_code=HA_Status;FLAG_HA_START=1;}
 //           if(FLAG_426MHz_Reply==1){FLAG_426MHz_Reply=0;ID_data.IDL=DATA_Packet_ID;Control_code=HA_Status+4;FLAG_HA_START=1;}   //受信器自动发送HA状态码为实际HA码+4
-           if((FG_auto_out==1)&&(TIME_auto_out==0)){FG_auto_out=0;TIME_auto_close=300;Receiver_LED_OUT=1;}
+           if((FG_auto_out==1)&&(TIME_auto_out==0)){FG_auto_out=0;TIME_auto_close=270;Receiver_LED_OUT=1;}   //300
 	   if(TIME_auto_close){
-                if(TIME_auto_close>200){Receiver_OUT_STOP=FG_allow_out;Receiver_OUT_CLOSE=FG_NOT_allow_out;}
-                else if(TIME_auto_close>100){Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_CLOSE=FG_NOT_allow_out;}   
+                if(TIME_auto_close>180){Receiver_OUT_STOP=FG_allow_out;Receiver_OUT_CLOSE=FG_NOT_allow_out;}  //200
+                else if(TIME_auto_close>90){Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_CLOSE=FG_NOT_allow_out;}   //100
 	        else {Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_CLOSE=FG_allow_out;}	     
 	   }
 	   else   Receiver_OUT_CLOSE=FG_NOT_allow_out;

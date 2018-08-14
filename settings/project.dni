@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1683797901
+Checksum=-1212201296
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -57,11 +57,8 @@ ByteLimit=50
 ShowArgs=0
 [Disassembly]
 MixedMode=1
-[struct_types]
-Fmt0=ADF70XX_REG_T-whole_reg	3	0
 [watch_formats]
 Fmt0={W}0:COUNT_Receiver_Login	3	0
-Fmt1={W}0:RAM_rssi_AVG	3	0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

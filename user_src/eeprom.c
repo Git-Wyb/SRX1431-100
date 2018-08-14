@@ -257,7 +257,7 @@ void ID_learn(void)
 {
 //    UINT16 i;
 // #if defined(__Product_PIC32MX2_Receiver__)
- if(FG_10ms){
+ if(FG_10ms){                //90==1√Î
      FG_10ms = 0;
 
 //     if(time_3sec)--time_3sec;
@@ -267,6 +267,7 @@ void ID_learn(void)
      if(TIME_OUT_OPEN_CLOSE)--TIME_OUT_OPEN_CLOSE;
      if(TIME_Receiver_LED_OUT)--TIME_Receiver_LED_OUT;
      if(TIME_Login_EXIT_Button)--TIME_Login_EXIT_Button;
+     if(Manual_override_TIMER)--Manual_override_TIMER;
 //     if(rssi_TIME)--rssi_TIME;
 //     if(TIMER60s)--TIMER60s;
 //     if(TIMER_err_1s)--TIMER_err_1s;

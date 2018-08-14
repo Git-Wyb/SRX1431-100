@@ -211,7 +211,7 @@ void RF_test_mode(void )
   
   Receiver_LED_OUT=1;
   for(Boot_i=0;Boot_i<6;Boot_i++){    
-      for(time_3sec=0;time_3sec<5000;time_3sec++){
+      for(time_3sec=0;time_3sec<6000;time_3sec++){
          Delayus(250);   //80us
          ClearWDT(); // Service the WDT
       }
@@ -272,34 +272,21 @@ void RF_test_mode(void )
               X_COUNT = 0;    
 	      if(X_ERR>=60)Receiver_LED_RX=0;
 	      else Receiver_LED_RX=1;
-//              uart_data = (X_ERR/1000) + 48;//48;//£¨X_ERR/1000) + 48;
-//	      Send_char(uart_data);
-//              X_ERR = X_ERR%1000;
-//              uart_data = (X_ERR/100) + 48;//X_ERR/256;
-//	      Send_char(uart_data);
-//              X_ERR = X_ERR%100;
-//              uart_data =(X_ERR/10) + 48;
-//	      Send_char(uart_data);
-//              X_ERR = X_ERR%10;
-//              uart_data = X_ERR +48;
-//	      Send_char(uart_data);
-//              uart_data = 13;//|×Ö·û
-//	      Send_char(uart_data);
+              uart_data = (X_ERR/1000) + 48;//48;//£¨X_ERR/1000) + 48;
+	      Send_char(uart_data);
+              X_ERR = X_ERR%1000;
+              uart_data = (X_ERR/100) + 48;//X_ERR/256;
+	      Send_char(uart_data);
+              X_ERR = X_ERR%100;
+              uart_data =(X_ERR/10) + 48;
+	      Send_char(uart_data);
+              X_ERR = X_ERR%10;
+              uart_data = X_ERR +48;
+	      Send_char(uart_data);
+              uart_data = 13;//|×Ö·û
+	      Send_char(uart_data);
               X_ERR = 0;
-            }	
-            
-                   if(ADF7021_MUXOUT==1)
-                   {
-                        dd_read_RSSI(); 
-                        RAM_rssi_CNT++;
-                        RAM_rssi_SUM +=rssi;
-                        if(RAM_rssi_CNT>=50){
-                          RAM_rssi_AVG=RAM_rssi_SUM/RAM_rssi_CNT;
-                          RAM_rssi_CNT=0;
-                          RAM_rssi_SUM=0;
-                        }                       
-                   }
-            
+            }	    
 	  }
 	}
 	PC_PRG();	       // PC¿ØÖÆ 
