@@ -13,6 +13,7 @@
 #include "adf7021.h"		// ³õÊ¼»¯ADF7021
 #include "uart.h"		// uart
 
+
 void RAM_clean(void){						// Çå³ýRAM 
 	asm("ldw X,#0");
 	asm("clear_ram:");
@@ -229,6 +230,7 @@ void RF_test_mode(void )
 	    FG_test_tx_on=0;
 	    if(FG_test_tx_1010==0){FG_test_tx_1010=1;ADF7021_DATA_direc=Output;dd_set_TX_mode_1010pattern();}
 	  }
+	  PC_PRG();	       // PC¿ØÖÆ 
 	}
         else {           //test ADF7021 RX
 	  FG_test_rx=1;
@@ -238,32 +240,37 @@ void RF_test_mode(void )
 	  FG_test_tx_on=0;
 	  FG_test_tx_1010=0;
 	  if(FG_test_tx_off==0){FG_test_tx_off=1;dd_set_RX_mode();ADF7021_DATA_direc=Input;}
+	  if(HA_L_signal==0){
+            if(X_COUNT >= 1200){
+              X_COUNT = 0;        
+              uart_data = (X_ERR/1000) + 48;//48;//£¨X_ERR/1000) + 48;
+	      Send_char(uart_data);
+              X_ERR = X_ERR%1000;
+              uart_data = (X_ERR/100) + 48;//X_ERR/256;
+	      Send_char(uart_data);
+              X_ERR = X_ERR%100;
+              uart_data =(X_ERR/10) + 48;
+	      Send_char(uart_data);
+              X_ERR = X_ERR%10;
+              uart_data = X_ERR +48;
+	      Send_char(uart_data);
+              uart_data = 13;//|×Ö·û
+	      Send_char(uart_data);
+              X_ERR = 0;
+            }	    
+	  }
+	  else {
+	    PC_PRG();	       // PC¿ØÖÆ  
+	  }
 	}
 //	if((ADF7021_DATA_CLK==1)&&(FG_test_mode==1)&&(FG_test1==0)){
 //           ADF7021_DATA_tx=!ADF7021_DATA_tx;
 //           FG_test1=1;
 //        }
 //       if(ADF7021_DATA_CLK==0)FG_test1=0;
-       
-       if(X_COUNT >= 1200){
-        X_COUNT = 0;        
-        uart_data = (X_ERR/1000) + 48;//48;//£¨X_ERR/1000) + 48;
-	Send_char(uart_data);
-        X_ERR = X_ERR%1000;
-        uart_data = (X_ERR/100) + 48;//X_ERR/256;
-	Send_char(uart_data);
-        X_ERR = X_ERR%100;
-        uart_data =(X_ERR/10) + 48;
-	Send_char(uart_data);
-        X_ERR = X_ERR%10;
-        uart_data = X_ERR +48;
-	Send_char(uart_data);
-        uart_data = 13;//|×Ö·û
-	Send_char(uart_data);
-        X_ERR = 0;
-      }
-      
+             
     }
+    UART1_end();
     FG_test_rx=0;
     TIMER1s=0;
     Receiver_LED_TX=0;

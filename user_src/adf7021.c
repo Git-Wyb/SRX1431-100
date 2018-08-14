@@ -166,7 +166,7 @@ void dd_set_TX_mode(void)
 	ADF70XX_REG_T register_value;
           //dd_set_ADF7021_ReInitial();
         //write R1, turn on VCO
-	register_value.whole_reg = 0x031B5011;//0x031BD011;      //2013年11月22日修改  天线驱动偏执电流   2.1mA-->1.5mA
+	register_value.whole_reg = ROM_adf7012_value[1].whole_reg;//0x031B5011;//0x031BD011;      //2013年11月22日修改  天线驱动偏执电流   2.1mA-->1.5mA
 	//register_value.whole_reg = 0x031B5091;    //Colck OUT 5.00MHz
 	dd_write_7021_reg(&register_value.byte[0]);
 	//Delayus(800);		//delay 800us
@@ -259,7 +259,7 @@ void dd_set_TX_mode_carrier(void)
 	ADF70XX_REG_T register_value;
           //dd_set_ADF7021_ReInitial();
         //write R1, turn on VCO
-	register_value.whole_reg = 0x031B5011;//0x031BD011;      //2013年11月22日修改  天线驱动偏执电流   2.1mA-->1.5mA
+	register_value.whole_reg = ROM_adf7012_value[1].whole_reg;//0x031B5011;//0x031BD011;      //2013年11月22日修改  天线驱动偏执电流   2.1mA-->1.5mA
 	//register_value.whole_reg = 0x031B5091;    //Colck OUT 5.00MHz
 	dd_write_7021_reg(&register_value.byte[0]);
 	//Delayus(800);		//delay 800us
@@ -357,7 +357,7 @@ void dd_set_TX_mode_1010pattern(void)
 	ADF70XX_REG_T register_value;
           //dd_set_ADF7021_ReInitial();
         //write R1, turn on VCO
-	register_value.whole_reg = 0x031B5011;//0x031BD011;      //2013年11月22日修改  天线驱动偏执电流   2.1mA-->1.5mA
+	register_value.whole_reg = ROM_adf7012_value[1].whole_reg;//0x031B5011;//0x031BD011;      //2013年11月22日修改  天线驱动偏执电流   2.1mA-->1.5mA
 	//register_value.whole_reg = 0x031B5091;    //Colck OUT 5.00MHz
 	dd_write_7021_reg(&register_value.byte[0]);
 	//Delayus(800);		//delay 800us
@@ -469,7 +469,7 @@ void dd_set_RX_mode(void)
 	//	for ADF7021DB2 864M
 
 	//write R1, turn on VCO
-	register_value.whole_reg = 0x031B5011;//0x031BD011;      //2013年11月22日修改  天线驱动偏执电流   2.1mA-->1.5mA
+	register_value.whole_reg = ROM_adf7012_value[1].whole_reg;//0x031B5011;//0x031BD011;      //2013年11月22日修改  天线驱动偏执电流   2.1mA-->1.5mA
 	dd_write_7021_reg(&register_value.byte[0]);
         
         register_value.whole_reg =0x00500882; //0x00680882;        //2013年11月22日修改  TX频偏 1.6K（0x00500882）-->2K（0x00680882）

@@ -54,13 +54,35 @@ volatile union{
 	}BIT; 	
 }FLAG_test;
 
+volatile union{
+	unsigned char BYTE;	
+	struct { 
+		unsigned char	Bit0:	1;
+		unsigned char	Bit1:	1;
+		unsigned char	Bit2:	1;
+		unsigned char	Bit3:	1;
+		unsigned char	Bit4:	1;
+		unsigned char	Bit5:	1;
+		unsigned char	Bit6:	1;
+		unsigned char	Bit7:	1;
+	}BIT; 	
+}FLAG_test1;
+
 
 
 UINT16 X_COUNT = 0;
 UINT16 X_ERR  = 0 ;//记录错误的个数
 unsigned int rssi;
 
-
+UINT8 SIO_cnt;
+UINT8 SIO_buff[16];
+UINT8 SIO_DATA[16];
+ADF70XX_REG_T ROM_adf7012_value[16];
+const ADF70XX_REG_T Default_adf7012_value[16]={0x00000000,0x031B5011,0x00000000,0x00000000,
+                                               0x00000000,0x00000000,0x00000000,0x00000000,
+                                               0x00000000,0x00000000,0x00000000,0x00000000,
+                                               0x00000000,0x00000000,0x00000000,0x00000000,
+                                               };
 
 UINT8  TIME_10ms=0;
 UINT16  TIMER1s=0;

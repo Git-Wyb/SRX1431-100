@@ -10,3 +10,5 @@
 void UART1_INIT(void);
 void UART1_RX_RXNE(void);
 void Send_char(unsigned char ch);
+void UART1_end(void);
+void PC_PRG(void);

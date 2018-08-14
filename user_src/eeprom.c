@@ -184,6 +184,19 @@ void eeprom_sys_load(void){
         xn.IDB[3]=xm[2];
         ID_Receiver_DATA[i]=xn.IDL;
     }
+    
+    
+  for (i=1;i<2;i++)
+  {
+    j=0x380+i*4;
+    ROM_adf7012_value[i].byte[0]= ReadByteEEPROM( addr_eeprom_sys+j );
+    ROM_adf7012_value[i].byte[1]= ReadByteEEPROM( addr_eeprom_sys+j+1 );
+    ROM_adf7012_value[i].byte[2]= ReadByteEEPROM( addr_eeprom_sys+j+2 );
+    ROM_adf7012_value[i].byte[3]= ReadByteEEPROM( addr_eeprom_sys+j+3 );
+    if((ROM_adf7012_value[i].whole_reg==0)||(ROM_adf7012_value[i].whole_reg==0xFFFFFFFF))ROM_adf7012_value[i]=Default_adf7012_value[i];
+  }    
+    
+    
 } 
 
 

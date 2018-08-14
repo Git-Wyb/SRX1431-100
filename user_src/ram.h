@@ -85,12 +85,43 @@ extern volatile union{
         #define		FG_test_rx		FLAG_test.BIT.Bit7
 	//************************************************
 
+extern volatile union{
+	unsigned char BYTE;	
+	struct { 
+		unsigned char	Bit0:	1;
+		unsigned char	Bit1:	1;
+		unsigned char	Bit2:	1;
+		unsigned char	Bit3:	1;
+		unsigned char	Bit4:	1;
+		unsigned char	Bit5:	1;
+		unsigned char	Bit6:	1;
+		unsigned char	Bit7:	1;
+	}BIT; 	
+}FLAG_test1;
+	//************************************************
+	#define 	FLAG_test1_BYTE		FLAG_test1.BYTE	 
+	//------------------------------------------------
+        #define		BIT_SIO          	FLAG_test1.BIT.Bit0
+//        #define		FG_test_tx_1010	        FLAG_test1.BIT.Bit1
+//        #define		X_HIS	                FLAG_test1.BIT.Bit2    //历史记录   误码率测试用
+//        #define		FG_test_tx_on		FLAG_test1.BIT.Bit3          
+//        #define		FG_test_tx_off	        FLAG_test1.BIT.Bit4          
+//        #define		FG_test_mode	        FLAG_test1.BIT.Bit5
+//        #define		FG_test1	        FLAG_test1.BIT.Bit6
+//        #define		FG_test_rx		FLAG_test1.BIT.Bit7
+	//************************************************
+
 
 
 extern UINT16 X_COUNT;
 extern UINT16 X_ERR;//记录错误的个数
 extern unsigned int rssi;
 
+extern UINT8 SIO_cnt;
+extern UINT8 SIO_buff[16];
+extern UINT8 SIO_DATA[16];
+extern ADF70XX_REG_T ROM_adf7012_value[16];
+extern const ADF70XX_REG_T Default_adf7012_value[16];
 
 
 extern UINT8  TIME_10ms;
