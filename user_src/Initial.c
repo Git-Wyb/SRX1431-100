@@ -210,6 +210,9 @@ void RF_test_mode(void )
 //    Receiver_LED_OUT=0;
   
   Receiver_LED_OUT=1;
+  FG_beep_on=0;
+  FG_beep_off=0;
+  BEEP_CSR2_BEEPEN=1;
   for(Boot_i=0;Boot_i<2;Boot_i++){    
       for(time_3sec=0;time_3sec<6000;time_3sec++){
          Delayus(250);   //80us
@@ -217,6 +220,7 @@ void RF_test_mode(void )
       }
       Receiver_LED_OUT=!Receiver_LED_OUT;    
   }
+  BEEP_CSR2_BEEPEN=0;
   Receiver_LED_OUT=0;
   
   
