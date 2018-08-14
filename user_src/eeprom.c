@@ -373,17 +373,21 @@ void ID_learn(void)
 	     {FLAG_ID_Login=1;TIME_Login_EXIT_rest=5380;TIME_Login_EXIT_Button=500;}   //6000
                  if(((FLAG_ID_Erase_Login==1)&&(COUNT_Receiver_Login>=1))||
 		    ((FLAG_ID_Login==1)&&(COUNT_Receiver_Login>=3))){
-		     if(TIME_Login_EXIT_Button==0)ID_Login_EXIT_Initial();
+		     //if(TIME_Login_EXIT_Button==0)ID_Login_EXIT_Initial();
+                      ID_Login_EXIT_Initial();
 		    }
          }
          if(Receiver_Login==1){
-	     if(TIME_Receiver_Login>3){
+	     if(  ((FLAG_ID_Login==0)&&(TIME_Receiver_Login>3)&&(TIME_Receiver_Login<7))||
+                  ((FLAG_ID_Login==1)&&(TIME_Receiver_Login>15)&&(TIME_Receiver_Login<25))||
+                  ((FLAG_ID_Erase_Login==1)&&(TIME_Receiver_Login>15)&&(TIME_Receiver_Login<25))    ) 
+             {
 	        if(COUNT_Receiver_Login<10)COUNT_Receiver_Login++;
 	     }
              if(FLAG_ID_Login_EXIT==1){FLAG_ID_Login_EXIT=0;COUNT_Receiver_Login=0;}
              TIME_Receiver_Login=0;
          }
-         if(TIME_Receiver_Login>=250){
+         if(TIME_Receiver_Login>=110){  //250
              TIME_Receiver_Login=0;
              FLAG_ID_Erase_Login=1;
              FLAG_ID_Erase_Login_PCS=1;    //×·¼Ó¶à´ÎIDµÇÂ¼
