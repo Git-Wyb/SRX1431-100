@@ -562,7 +562,8 @@ void dd_set_RX_mode(void)
 	Delayus(122);		//delay 40us
 
 	//write R4, turn on demodulation
-	register_value.whole_reg = 0x0024E294;                  
+	//register_value.whole_reg = 0x0024E294;     //F_BW =12.5K
+	register_value.whole_reg = 0x8024E294;    //F_BW =25K
 	dd_write_7021_reg(&register_value.byte[0]);
 
        	//write R10, turn on PLL
@@ -593,8 +594,8 @@ void dd_set_RX_mode_test(void)
 	Delayus(122);		//delay 40us
 
 	//write R4, turn on demodulation
-	register_value.whole_reg = 0x0024E294;    
-	//register_value.whole_reg = 0x8024E294;    //F_BW =25K
+	//register_value.whole_reg = 0x0024E294;     //F_BW =12.5K
+	register_value.whole_reg = 0x8024E294;    //F_BW =25K
 	dd_write_7021_reg(&register_value.byte[0]);
 
         	//write R10, turn on PLL
