@@ -79,8 +79,8 @@ void main(void)
     ID_learn();
     READ_RSSI_avg();
     
-    if((RAM_rssi_AVG>=26)||(FG_Receiver_LED_RX==1))Receiver_LED_RX=1;
-    else if((RAM_rssi_AVG<=25)&&(FG_Receiver_LED_RX==0))Receiver_LED_RX=0;
+    if((RAM_rssi_AVG>=35)||(FG_Receiver_LED_RX==1))Receiver_LED_RX=1;   //26   35
+    else if((RAM_rssi_AVG<=34)&&(FG_Receiver_LED_RX==0))Receiver_LED_RX=0;  //25  34
              
   }
 }

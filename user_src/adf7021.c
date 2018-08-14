@@ -603,12 +603,22 @@ void dd_set_RX_mode(void)
         Delayus(244);		//delay 80us
         Delayus(244);		//delay 80us
         
+//        	//write R12
+//        register_value.whole_reg = 0x0000003C;
+//	dd_write_7021_reg(&register_value.byte[0]);   
+//        Delayus(122);		//delay 40us
+        
         register_value.whole_reg = 0x0954C7B0; //CH=426.075MHz
         dd_write_7021_reg(&register_value.byte[0]);
         Delayus(122);		//delay 40us
         	//write R4, turn on demodulation
         register_value.whole_reg = 0x00280294;
 	dd_write_7021_reg(&register_value.byte[0]);
+        
+        	//write R9
+        register_value.whole_reg = 0x000231E9;
+	dd_write_7021_reg(&register_value.byte[0]);   
+        Delayus(122);		//delay 40us
 
 	//write R10, turn on PLL
 	register_value.whole_reg = 0x029668FA;
@@ -869,13 +879,12 @@ const unsigned char gain_correction[] =
     { 2*86, 2*78, 2*68, 2*52, 2*58, 2*38, 2*24, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0 }; // 7021
 
-
 void dd_read_RSSI(void)
 {
 	ADF70XX_REG_T RSSI_value;
         UINT8 value_x0;
 
-	RSSI_value = dd_read_7021_reg(0x14);
+	RSSI_value = dd_read_7021_reg(0x14);        
         value_x0=RSSI_value.byte[3]&0x7F;
         
 	RSSI_value.whole_reg += RSSI_value.whole_reg ;

@@ -127,3 +127,6 @@ UINT8 RAM_rssi_AVG=0;
 UINT16 time_Login_exit_256=0;
 
 UINT16 TIME_Fine_Calibration=0;   //窄带下中频滤波器100KHz精校
+
+
+
