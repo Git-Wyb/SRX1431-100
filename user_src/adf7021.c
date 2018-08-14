@@ -93,6 +93,7 @@ ADF70XX_REG_T dd_read_7021_reg(UINT8 readback_config)
     /* Clock in data MSbit first */
     for (i=2; i<=3; i++)
     {
+        byte=0;
         for (j=8; j>0; j--)
         {
             ADF7021_SCLK = 1;
@@ -598,16 +599,60 @@ void dd_set_RX_mode_test(void)
 	register_value.whole_reg = 0x8024E294;    //F_BW =25K
 	dd_write_7021_reg(&register_value.byte[0]);
 
-        	//write R10, turn on PLL
-	register_value.whole_reg = 0x049668EA;   //close AFC
-	//register_value.whole_reg = 0x049668FA;
+       	//write R10, turn on PLL
+	//register_value.whole_reg = 0x049668EA;   //close AFC
+	register_value.whole_reg = 0x049668FA;
 	dd_write_7021_reg(&register_value.byte[0]);
-	Delayus(122);		//delay 40us  
-	
-//        	//write R9  AGC
-//	register_value.whole_reg = 0x01A231E9;   //
-//	dd_write_7021_reg(&register_value.byte[0]);
-//	Delayus(122);		//delay 40us 	
+	Delayus(122);		//delay 40us 
+  
+  
+//    ADF70XX_REG_T register_value;
+//
+//    //  for ADF7021DB2 864M
+//
+//    //write R1, turn on VCO
+//    register_value.whole_reg = 0x031BD011;
+//    dd_write_7021_reg(&register_value.byte[0]);
+//
+//    register_value.whole_reg =0x00500882; //0x00680882;
+//    dd_write_7021_reg(&register_value.byte[0]);
+//
+//    //write R3, turn on TX/RX clocks
+//    register_value.whole_reg = 0x29915CD3;
+//    dd_write_7021_reg(&register_value.byte[0]);
+//
+//    //write R6 here, if fine IF filter cal is wanted
+//
+////
+////  //write R5 to start IF filter cal
+////  register_value.whole_reg = 0x00001915;  //write R5 to start IF filter cal
+////  dd_write_7021_reg(&register_value.byte[0]);
+////  Delayus(122);      //delay 0.2ms
+////
+////  register_value.whole_reg = 0x0504C986;
+////  dd_write_7021_reg(&register_value.byte[0]);
+////
+////  register_value.whole_reg = 0x000231E9;
+////  dd_write_7021_reg(&register_value.byte[0]);
+////
+////  //write R11, configure sync word detect
+////  register_value.whole_reg = 0x329668EA;
+////  dd_write_7021_reg(&register_value.byte[0]);
+////
+////  register_value.whole_reg = 0x0000003B;
+////  dd_write_7021_reg(&register_value.byte[0]);   
+////
+////  register_value.whole_reg = 0x0000010C;
+////  dd_write_7021_reg(&register_value.byte[0]);
+//
+//    //write R0, turn on PLL
+//    register_value.whole_reg = 0x0954C7B0;    //CH=426.075MHz
+//    dd_write_7021_reg(&register_value.byte[0]);
+//    Delayus(40);        //delay 40us
+//
+//    //write R4, turn on demodulation
+//    register_value.whole_reg = 0x00289A14;//0x00268614;
+//    dd_write_7021_reg(&register_value.byte[0]);  
 }
 
 
@@ -753,21 +798,28 @@ void dd_set_ADF7021_Power_on(void)
 	}
 }
 
+//const unsigned char gain_correction[] = 
+//    { 2*86, 0, 0, 0, 2*58, 2*38, 2*24, 0, 
+//	0, 0, 0, 0, 0, 0, 0, 0 }; // 7021
+
 const unsigned char gain_correction[] = 
-    { 2*86, 0, 0, 0, 2*58, 2*38, 2*24, 0, 
+    { 2*86, 2*78, 2*68, 2*52, 2*58, 2*38, 2*24, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0 }; // 7021
 
 
 void dd_read_RSSI(void)
 {
 	ADF70XX_REG_T RSSI_value;
+        UINT8 value_x0;
 
 	RSSI_value = dd_read_7021_reg(0x14);
-
+        value_x0=RSSI_value.byte[3]&0x7F;
+        
 	RSSI_value.whole_reg += RSSI_value.whole_reg ;
 
     rssi = RSSI_value.byte[3];
-	rssi += gain_correction[RSSI_value.byte[2] & 0x0F] ;
+        if(value_x0<65)
+           rssi += gain_correction[RSSI_value.byte[2] & 0x0F] ;
     rssi = rssi /4 ;
 	//RSSI(dBm) = rssi + 130
 

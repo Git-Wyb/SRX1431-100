@@ -116,6 +116,7 @@ extern volatile union{
 extern UINT16 X_COUNT;
 extern UINT16 X_ERR;//记录错误的个数
 extern unsigned int rssi;
+extern unsigned int rssi_read;
 
 extern UINT8 SIO_cnt;
 extern UINT8 SIO_buff[16];
@@ -156,3 +157,7 @@ extern UINT16 TIME_Receiver_Login_led;
 extern UINT8 TIME_OUT_OPEN_CLOSE;
 extern UINT16 TIME_Receiver_LED_OUT;
 extern UINT16 TIME_Login_EXIT_Button;
+
+extern UINT16 RAM_rssi_SUM;
+extern UINT8 RAM_rssi_CNT;
+extern UINT8 RAM_rssi_AVG;
