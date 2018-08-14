@@ -125,7 +125,7 @@ void PC_PRG(void)								// ´®¿ÚÃüÁî
 		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		case 'W': 	  
 			//==================================== ADF7012
-			if (SIO_DATA[2]=='I')				// (WHxd0d1d2d3) 
+			if (SIO_DATA[2]=='I')				// (WIxd0d1d2d3) 
 			{
 			        i = asc_hex_2(0x30,SIO_buff[3]);
 				d0 = asc_hex_2(SIO_buff[4],SIO_buff[5]);
@@ -164,14 +164,31 @@ void PC_PRG(void)								// ´®¿ÚÃüÁî
 				Send_char(d2);		
 				Send_char(SIO_buff[3]);
 				
-			}		  
+			}	
+			
+			//==================================== ADF7012 TX/RXµ÷ÊÔ
+			if (SIO_DATA[2]=='J')				// (WJx) 
+			{
+			        Tx_Rx_mode = asc_hex_2(0x30,SIO_buff[3]);
+				//-------------------------------·µ»Ø  (WHx)
+				d1 = '(';
+				d2 = 'W';
+				Send_char(d1);
+				Send_char(d2);		
+				d1 = 'J';
+				d2 = ')';
+				Send_char(d1);
+				Send_char(d2);		
+				Send_char(SIO_buff[3]);
+				
+			}				
 		        break;
 		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		//%                 ¶Á²Ù×÷               %
 		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		case 'R':   	  
-			//==================================== ADF7012   //(RHx)
-			if (SIO_DATA[2]=='I')				// (RH)d0d1d2d3 
+			//==================================== ADF7012   //(RIx)
+			if (SIO_DATA[2]=='I')				// (RI)d0d1d2d3 
 			{
 			        i = asc_hex_2(0x30,SIO_buff[3]);
 			  	d1 = '(';

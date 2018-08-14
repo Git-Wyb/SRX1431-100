@@ -77,6 +77,7 @@ unsigned int rssi;
 UINT8 SIO_cnt;
 UINT8 SIO_buff[16];
 UINT8 SIO_DATA[16];
+UINT8 Tx_Rx_mode=0;
 ADF70XX_REG_T ROM_adf7012_value[16];
 const ADF70XX_REG_T Default_adf7012_value[16]={0x00000000,0x031B5011,0x00000000,0x00000000,
                                                0x00000000,0x00000000,0x00000000,0x00000000,

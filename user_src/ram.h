@@ -120,6 +120,7 @@ extern unsigned int rssi;
 extern UINT8 SIO_cnt;
 extern UINT8 SIO_buff[16];
 extern UINT8 SIO_DATA[16];
+extern UINT8 Tx_Rx_mode;
 extern ADF70XX_REG_T ROM_adf7012_value[16];
 extern const ADF70XX_REG_T Default_adf7012_value[16];
 
