@@ -212,6 +212,14 @@ void RF_test_mode(void )
     while(Receiver_test==0){
         ClearWDT(); // Service the WDT	
         //if(HA_ERR_signal==0){      //test ADF7021 TX 
+	if(HA_ERR_signal==0){
+	  if(HA_L_signal==0)Tx_Rx_mode=0;
+	  else Tx_Rx_mode=1;
+	}
+	else{
+	  if(HA_L_signal==0)Tx_Rx_mode=2;
+	  else Tx_Rx_mode=3;
+	}
 	if((Tx_Rx_mode==0)||(Tx_Rx_mode==1)){ 
 	  FG_test_rx=0;
 	  Receiver_LED_RX=0;
@@ -237,15 +245,21 @@ void RF_test_mode(void )
 	if((Tx_Rx_mode==2)||(Tx_Rx_mode==3)){
 	  FG_test_rx=1;
 	  Receiver_LED_OUT=0;
-	  Receiver_LED_RX=1; 
 	  FG_test_mode=0;
 	  FG_test_tx_on=0;
 	  FG_test_tx_1010=0;
-	  if(FG_test_tx_off==0){FG_test_tx_off=1;dd_set_RX_mode();ADF7021_DATA_direc=Input;}
+	  if(FG_test_tx_off==0){FG_test_tx_off=1;dd_set_RX_mode_test();ADF7021_DATA_direc=Input;}
 	  //if(HA_L_signal==0){
-	  if(Tx_Rx_mode==3){
+	  if(Tx_Rx_mode==2)	    
+	    if(TIMER1s==0){
+	      TIMER1s=500;
+	      Receiver_LED_RX=!Receiver_LED_RX;
+	    }
+	  if(Tx_Rx_mode==3){    
             if(X_COUNT >= 1200){
-              X_COUNT = 0;        
+              X_COUNT = 0;    
+	      if(X_ERR>=60)Receiver_LED_RX=0;
+	      else Receiver_LED_RX=1;
               uart_data = (X_ERR/1000) + 48;//48;//£¨X_ERR/1000) + 48;
 	      Send_char(uart_data);
               X_ERR = X_ERR%1000;

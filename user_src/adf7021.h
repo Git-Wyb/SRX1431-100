@@ -16,5 +16,6 @@ void dd_set_TX_mode_1010pattern(void);
 void dd_write_7021_reg(unsigned char* reg_bytes);
 void dd_set_ADF7021_Power_on(void);
 void dd_set_RX_mode(void);
+void dd_set_RX_mode_test(void);
 ADF70XX_REG_T dd_read_7021_reg(UINT8 readback_config);
 void dd_read_RSSI(void);
