@@ -27,18 +27,11 @@ void WDT_init(void)
   IWDG_KR=0xCC;
   IWDG_KR=0x55;
   IWDG_PR=3;
-  //IWDG_RLR=0xFF;
-  IWDG_KR=0xAA;
-    
-//  IWDG_KR=0x55;
-//  IWDG_PR=3;
-//  IWDG_KR=0xCC;  
+  IWDG_KR=0xAA;  
 }
 void ClearWDT(void)
 {
-  PIN_ID_no_LOGIN_TEST=1;
   IWDG_KR=0xAA;
-  PIN_ID_no_LOGIN_TEST=0;
 }
 //========================GPIO说明===============================================================
 //  GPIO_Mode_In_FL_No_IT      = (uint8_t)0x00,   /*!< Input floating, no external interrupt */
@@ -94,12 +87,8 @@ CR1寄存器  输出 Output（1=推挽、0=OC）
       HA_ERR_signal_direc = Input;// Input   HA 异常信号  低电平有效
       HA_ERR_signal_CR1=1;
       
-//      HA_Sensor_signal_direc = Input;// Input   HA 传感器信号  低电平有效
-//      HA_Sensor_signal_CR1=1;
-      
-      PIN_ID_no_LOGIN_TEST_direc = Output;    // Output   蜂鸣器
-      PIN_ID_no_LOGIN_TEST_CR1 = 1;
-      PIN_ID_no_LOGIN_TEST=0;      
+      HA_Sensor_signal_direc = Input;// Input   HA 传感器信号  低电平有效
+      HA_Sensor_signal_CR1=1;
       
       Receiver_Login_direc = Input;// Input   受信机登录键   低电平有效
       Receiver_Login_CR1=1;

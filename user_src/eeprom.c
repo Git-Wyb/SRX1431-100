@@ -230,7 +230,6 @@ void ID_EEPROM_write(void)
     UINT8 xm[3]={0};
     UINT16 i,j,m1;
     uni_rom_id xn,xd;
-    
      ID_DATA_PCS++;
      xm[0]=ID_DATA_PCS%256;
      xm[1]=ID_DATA_PCS/256;
@@ -242,7 +241,6 @@ void ID_EEPROM_write(void)
 	
      ID_Receiver_DATA[ID_DATA_PCS-1]=ID_Receiver_Login;
      xn.IDL=ID_Receiver_Login;
-     
      
      for(i=0;i<260;i++){
         j=3*i;
@@ -272,7 +270,6 @@ void ID_EEPROM_write(void)
      LockFlash( UNLOCK_EEPROM_TYPE );
 
      if(ID_DATA_PCS>=256){ID_Login_EXIT_Initial();DATA_Packet_Control=0;time_Login_exit_256=110;}
-     
 }
 
 
@@ -407,10 +404,10 @@ void ID_learn(void)
                  else{
                      BEEP_and_LED();
                      TIME_Login_EXIT_rest=5380;       //追加多次ID登录
-                     if((FLAG_ID_Login==1)&&(ID_Receiver_Login!=0xFFFFFE)){ID_EEPROM_write();}
+                     if((FLAG_ID_Login==1)&&(ID_Receiver_Login!=0xFFFFFE))ID_EEPROM_write();
                      else if(FLAG_ID_Erase_Login==1){
                          if(FLAG_ID_Erase_Login_PCS==1){FLAG_ID_Erase_Login_PCS=0;ID_DATA_PCS=0;ALL_ID_EEPROM_Erase();}//追加多次ID登录
-                         if(ID_Receiver_Login!=0xFFFFFE){ID_EEPROM_write();}
+                         if(ID_Receiver_Login!=0xFFFFFE)ID_EEPROM_write();
                      }
                  }//end else
              }//  end  if((FLAG_ID_Login_OK==1)&&(FLAG_ID_Login_OK_bank==0))

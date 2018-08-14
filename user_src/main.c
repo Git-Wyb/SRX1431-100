@@ -60,7 +60,7 @@ void main(void)
     EXIT_init();
     TIM4_Init();
     UART1_INIT();  // UART1 for PC Software 
-    _EI();       // 允许中断   
+    _EI();       // 允许中断
     beep_init();
     dd_set_ADF7021_Power_on();
     
