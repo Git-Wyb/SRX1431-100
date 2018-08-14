@@ -214,8 +214,9 @@ void BEEP_and_LED(void)
      }
      //Receiver_Buzzer=0;
      FG_beep_on=0;
-     BEEP_CSR2_BEEPEN=0;
-     Receiver_LED_OUT=0;
+     BEEP_CSR2_BEEPEN=0;     
+     //Receiver_LED_OUT=0;
+     TIME_Receiver_LED_OUT=185;
 //#endif
 //#if defined(__Product_PIC32MX2_WIFI__)
 //     WIFI_LED_RX=1;
@@ -333,7 +334,8 @@ void ID_Decode_OUT(void)
                                 Receiver_OUT_CLOSE=FG_NOT_allow_out;
 				Receiver_OUT_VENT=FG_NOT_allow_out;
                                 Receiver_OUT_STOP=FG_allow_out;
-                                Receiver_OUT_OPEN=FG_allow_out;
+				if(FG_OUT_OPEN_CLOSE==0){FG_OUT_OPEN_CLOSE=1;TIME_OUT_OPEN_CLOSE=25;}
+                                if(TIME_OUT_OPEN_CLOSE==0)Receiver_OUT_OPEN=FG_allow_out;
                                 break;
                      case 0x06:                       //close+stop
                                 Receiver_LED_OUT=1;
@@ -341,7 +343,8 @@ void ID_Decode_OUT(void)
                                 Receiver_OUT_OPEN=FG_NOT_allow_out;
 				Receiver_OUT_VENT=FG_NOT_allow_out;
                                 Receiver_OUT_STOP=FG_allow_out;
-                                Receiver_OUT_CLOSE=FG_allow_out;   
+				if(FG_OUT_OPEN_CLOSE==0){FG_OUT_OPEN_CLOSE=1;TIME_OUT_OPEN_CLOSE=25;}
+                                if(TIME_OUT_OPEN_CLOSE==0)Receiver_OUT_CLOSE=FG_allow_out;   
                                 break;
                      case 0x0A:                       //close+OPEN
                                 Receiver_LED_OUT=1;
@@ -392,10 +395,11 @@ void ID_Decode_OUT(void)
 	   else   Receiver_OUT_CLOSE=FG_NOT_allow_out;
            FLAG_Receiver_BEEP=0;
            if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1)||(TIME_auto_close));
-           else Receiver_LED_OUT=0;
+           else if(TIME_Receiver_LED_OUT>0)Receiver_LED_OUT=1;
+	   else Receiver_LED_OUT=0;
            Receiver_OUT_OPEN=FG_NOT_allow_out;
 	   Receiver_OUT_VENT=FG_NOT_allow_out;
-           if(TIMER250ms_STOP==0)Receiver_OUT_STOP=FG_NOT_allow_out;
+           if(TIMER250ms_STOP==0){Receiver_OUT_STOP=FG_NOT_allow_out;FG_OUT_OPEN_CLOSE=0;}
           }
     if(TIMER300ms==0)Receiver_LED_RX=0;
 }

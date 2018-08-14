@@ -112,3 +112,7 @@ UINT8  COUNT_Receiver_Login=0;
 UINT16 TIME_Receiver_Login=0;
 UINT16 TIME_Login_EXIT_rest=0;
 UINT16 TIME_Receiver_Login_led=0;
+
+UINT8 TIME_OUT_OPEN_CLOSE=0;
+UINT16 TIME_Receiver_LED_OUT=0;
+UINT16 TIME_Login_EXIT_Button=0;
