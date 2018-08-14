@@ -213,15 +213,7 @@ void ALL_ID_EEPROM_Erase(void)
        xm[0]=0;
        xm[1]=0;
        xm[2]=0;
-       
-     UnlockFlash( UNLOCK_EEPROM_TYPE );
-	WriteByteToFLASH( addr_eeprom_sys+0x3FE, xm[1]);
-	WriteByteToFLASH( addr_eeprom_sys+0x3FF, xm[0]);
-     LockFlash( UNLOCK_EEPROM_TYPE );
-     
-       for(i=0;i<100;i++){
-           ID_Decode_OUT();
-           if(TIMER300ms==0)Receiver_LED_RX=0;
+       for(i=0;i<260;i++){
            m2=3*i;
            UnlockFlash( UNLOCK_EEPROM_TYPE );
 	   WriteByteToFLASH( addr_eeprom_sys+m2, xm[0]);
@@ -232,14 +224,13 @@ void ALL_ID_EEPROM_Erase(void)
            LockFlash( UNLOCK_EEPROM_TYPE );  
            ClearWDT(); // Service the WDT
        }
-       while(TIMER1s!=0){ID_Decode_OUT();ClearWDT();}
-       ID_Decode_OUT();
 }
 void ID_EEPROM_write(void)
 {
     UINT8 xm[3]={0};
     UINT16 i,j,m1;
     uni_rom_id xn,xd;
+    
      ID_DATA_PCS++;
      xm[0]=ID_DATA_PCS%256;
      xm[1]=ID_DATA_PCS/256;
@@ -251,6 +242,7 @@ void ID_EEPROM_write(void)
 	
      ID_Receiver_DATA[ID_DATA_PCS-1]=ID_Receiver_Login;
      xn.IDL=ID_Receiver_Login;
+     
      
      for(i=0;i<260;i++){
         j=3*i;
@@ -280,6 +272,7 @@ void ID_EEPROM_write(void)
      LockFlash( UNLOCK_EEPROM_TYPE );
 
      if(ID_DATA_PCS>=256){ID_Login_EXIT_Initial();DATA_Packet_Control=0;time_Login_exit_256=110;}
+     
 }
 
 
@@ -396,7 +389,6 @@ void ID_learn(void)
          if(TIME_Receiver_Login>=250){
              TIME_Receiver_Login=0;
              FLAG_ID_Erase_Login=1;
-             TIME_BEEP_ID_Erase_Login=50;
              FLAG_ID_Erase_Login_PCS=1;    //追加多次ID登录
              TIME_Login_EXIT_rest=5380;
 	     TIME_Login_EXIT_Button=500;
@@ -408,50 +400,20 @@ void ID_learn(void)
 		 if(TIME_Receiver_LED_OUT>0)Receiver_LED_OUT=1;
                  else Receiver_LED_OUT=!Receiver_LED_OUT;
              }
-             
-             if(FLAG_ID_Login==1){
-                if(FG_beep_on==0){FG_beep_on=1;FG_beep_off=0;BEEP_CSR2_BEEPEN=1;}
-                if((FLAG_ID_Login_OK==1)&&(FLAG_ID_Login_OK_bank==0)){
-                     //FLAG_ID_Login_OK_bank=1;             //追加多次ID登录
-                     FLAG_ID_Login_OK=0;                   //追加多次ID登录
-                     if(FLAG_IDCheck_OK==1)FLAG_IDCheck_OK=0;
-                     else{
-                         BEEP_and_LED_ID_Login();
-                         TIME_Login_EXIT_rest=5380;       //追加多次ID登录
-                         if(ID_Receiver_Login!=0xFFFFFE)ID_EEPROM_write();
-                     }//end else
-                }//  end  if((FLAG_ID_Login_OK==1)&&(FLAG_ID_Login_OK_bank==0))               
-             }
-             
-             if(FLAG_ID_Erase_Login==1){
-                 TIME_BEEP_ID_Erase_Login++;
-                 if(TIME_BEEP_ID_Erase_Login>=17){
-                     TIME_BEEP_ID_Erase_Login=0;
-                     if(FG_beep_on==0){FG_beep_on=1;FG_beep_off=0;BEEP_CSR2_BEEPEN=1;}
-                     else if(FG_beep_off==0){FG_beep_on=0;FG_beep_off=1;BEEP_CSR2_BEEPEN=0;}
-                 }                
-                if((FLAG_ID_Login_OK==1)&&(FLAG_ID_Login_OK_bank==0)){
-                     //FLAG_ID_Login_OK_bank=1;             //追加多次ID登录
-                     FLAG_ID_Login_OK=0;                   //追加多次ID登录
-                     if(FLAG_IDCheck_OK==1)FLAG_IDCheck_OK=0;
-                     else{
-                         TIME_Login_EXIT_rest=5380;       //追加多次ID登录
-                             if(FG_beep_off==0){FG_beep_on=0;FG_beep_off=1;BEEP_CSR2_BEEPEN=0;}
-                             ID_Login_EXIT_Initial();
-                             TIMER1s=600;
-                             TIMER300ms=500;
-                             Receiver_LED_RX=1;
-                             DATA_Packet_Control=DATA_Packet_Contro_buf;
-                             if(FLAG_ID_Erase_Login_PCS==1){FLAG_ID_Erase_Login_PCS=0;ID_DATA_PCS=0;ALL_ID_EEPROM_Erase();}//追加多次ID登录
-                             if(ID_Receiver_Login!=0xFFFFFE)ID_EEPROM_write();   
-                             BEEP_and_LED_ID_Erase_Login();
-                             RAM_rssi_SUM=0;
-                             RAM_rssi_AVG=0;
-                     }//end else
-                }//  end  if((FLAG_ID_Login_OK==1)&&(FLAG_ID_Login_OK_bank==0))               
-             }
-             
-             
+             if((FLAG_ID_Login_OK==1)&&(FLAG_ID_Login_OK_bank==0)){
+                 //FLAG_ID_Login_OK_bank=1;             //追加多次ID登录
+                 FLAG_ID_Login_OK=0;                   //追加多次ID登录
+                 if(FLAG_IDCheck_OK==1)FLAG_IDCheck_OK=0;
+                 else{
+                     BEEP_and_LED();
+                     TIME_Login_EXIT_rest=5380;       //追加多次ID登录
+                     if((FLAG_ID_Login==1)&&(ID_Receiver_Login!=0xFFFFFE)){ID_EEPROM_write();}
+                     else if(FLAG_ID_Erase_Login==1){
+                         if(FLAG_ID_Erase_Login_PCS==1){FLAG_ID_Erase_Login_PCS=0;ID_DATA_PCS=0;ALL_ID_EEPROM_Erase();}//追加多次ID登录
+                         if(ID_Receiver_Login!=0xFFFFFE){ID_EEPROM_write();}
+                     }
+                 }//end else
+             }//  end  if((FLAG_ID_Login_OK==1)&&(FLAG_ID_Login_OK_bank==0))
              if(TIME_Login_EXIT_rest)--TIME_Login_EXIT_rest;
               else ID_Login_EXIT_Initial();
          } //end if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1))
@@ -473,10 +435,6 @@ void ID_Login_EXIT_Initial(void)
      FLAG_ID_Erase_Login=0;
      Receiver_LED_OUT=0;
      COUNT_Receiver_Login=0;
-     
-     BEEP_CSR2_BEEPEN=0;
-     FG_beep_on=0;
-     FG_beep_off=0;
 //#endif
 //#if defined(__Product_PIC32MX2_WIFI__)
 //     FLAG_ID_Login_EXIT=1;

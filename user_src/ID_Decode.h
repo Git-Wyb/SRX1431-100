@@ -13,8 +13,6 @@ void ID_Decode_IDCheck(void);
 void Signal_DATA_Decode(UINT8 NUM_Type);
 void eeprom_IDcheck(void);
 void BEEP_and_LED(void);
-void BEEP_and_LED_ID_Login(void);
-void BEEP_and_LED_ID_Erase_Login(void);
 void ID_Decode_OUT(void);
 void Receiver_BEEP(void);
 void  Freq_Scanning(void);

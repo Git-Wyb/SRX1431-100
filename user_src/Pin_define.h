@@ -43,6 +43,7 @@
 
 #define  Receiver_test          PB_IDR_IDR0    // Input 受信机测试脚  高电平有效
 
+#define PIN_ID_no_LOGIN_TEST                PA_ODR_ODR3     // Output   ID_no_LOGIN_TEST
 /************************以下是方向寄存器*****************************/
 /* ADF7012 register interface */
 #define ADF7021_SCLK_direc      PB_DDR_DDR4     // Output   时钟线
@@ -77,6 +78,7 @@
 
 #define Receiver_test_direc     PB_DDR_DDR0    // Input 受信机测试脚  高电平有效
 
+#define PIN_ID_no_LOGIN_TEST_direc          PA_DDR_DDR3     // Output   ID_no_LOGIN_TEST
 /************************以下是控制寄存器*****************************/
 /* ADF7012 register interface */
 #define ADF7021_SCLK_CR1        PB_CR1_C14     // Output   时钟线
@@ -112,3 +114,5 @@
 
 
 #define ADF7021_DATA_CLK_CR2    PB_CR2_C22     // 输入   调制同步时钟线
+
+#define PIN_ID_no_LOGIN_TEST_CR1    PA_CR1_C13    // Output   ID_no_LOGIN_TEST
