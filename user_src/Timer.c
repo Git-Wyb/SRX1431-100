@@ -29,6 +29,8 @@ void TIM4_UPD_OVF(void){                             //725==1秒
     else{                            // 10mS FLAG
 	  TIME_10ms = 10;
 	  FG_10ms = 1;
+      if (TIME_auto_useful)
+        --TIME_auto_useful;      
     }
 	TIM4_SR1_bit.UIF=0;						// 清除中断标记
 }

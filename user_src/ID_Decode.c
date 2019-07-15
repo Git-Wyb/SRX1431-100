@@ -138,29 +138,54 @@ void ID_Decode_IDCheck(void)
 //#endif
 //#if defined(__Product_PIC32MX2_Receiver__)
 //                    if(Freq_Scanning_CH_bak==0){
+                        static UINT32 DATA_Packet_ID_auto = 0;
                         if((DATA_Packet_Control==0x40)&&(Manual_override_TIMER==0)){
-                          FG_auto_manual_mode=1;
-                          TIME_auto_out=3150;    // 890
-                          if(FG_First_auto==0){
-                              FG_First_auto=1;
-                              TIMER1s=3000;    //2500 
-                          }
+                            if ((TIME_auto_useful > 0) && (TIME_auto_useful < 27000)) //27000*10ms=5min*60*90
+                            {
+                                if (FREQ_auto_useful_count==0)
+                                {
+                                    if (DATA_Packet_ID_auto != DATA_Packet_ID)
+                                        FREQ_auto_useful = 0;
+                                    DATA_Packet_ID_auto = DATA_Packet_ID;
+                                    FREQ_auto_useful++;
+                                    FREQ_auto_useful_count = 90;//90=1s
+                                }
+                            }
+                            else {
+                                FREQ_auto_useful=0;
+                                FREQ_auto_useful_count=0;
+                            }
+                            if ((TIME_auto_useful == 0) || (TIME_auto_useful >= 27000) || ((TIME_auto_useful < 27000) && (FREQ_auto_useful >= 2)))
+                            {
+                                TIME_auto_useful = 0;
+                                FREQ_auto_useful = 0;
+                                FG_auto_manual_mode = 1;
+                                if(TIME_auto_out==0)
+                                    TIME_auto_out = 3150; //time*90; time=35s
+                                else if(TIME_auto_out<900)
+                                    TIME_auto_out = 900; //time*90; time=10s
+                                if(FG_First_auto==0){
+                                    FG_First_auto=1;
+                                    TIMER1s=3000;    //2500 
+                                }
+                            }
                         }       
                         else if(DATA_Packet_Control==0x40);
-			else{
-			   FG_auto_out=0;
-			   TIME_auto_close=0;
-                           FG_auto_open_time=0;
-                           if(FG_auto_manual_mode==1)//Manual_override_TIMER=13500;   //2分30秒自动无效
-                              Manual_override_TIMER=24480;   //4分30秒自动无效
-		           if((DATA_Packet_Control&0x14)==0x14){if(TIMER1s==0)TIMER1s=3800-30;}
-			   else  TIMER1s=1000;
-			}
+                        else{
+                            FG_auto_out=0;
+                            TIME_auto_useful = 0;
+                            TIME_auto_close=0;
+                            FG_auto_open_time=0;
+                            if(FG_auto_manual_mode==1)//Manual_override_TIMER=13500;   //2分30秒自动无效
+                                Manual_override_TIMER=24480;   //4分30秒自动无效
+                            if((DATA_Packet_Control&0x14)==0x14){if(TIMER1s==0)TIMER1s=3800-30;}
+                            else  TIMER1s=1000;
+			            }
 //                    }
 //                    else TIMER1s=1000;
                     TIMER300ms=500;
                     //Receiver_LED_RX=1;
-		    FG_Receiver_LED_RX=1;
+		            FG_Receiver_LED_RX=1;
 //#endif
                    }
             }
@@ -401,13 +426,18 @@ void ID_Decode_OUT(void)
      else {
 //           if(FLAG_APP_Reply==1){FLAG_APP_Reply=0;ID_data.IDL=DATA_Packet_ID;Control_code=HA_Status;FLAG_HA_START=1;}
 //           if(FLAG_426MHz_Reply==1){FLAG_426MHz_Reply=0;ID_data.IDL=DATA_Packet_ID;Control_code=HA_Status+4;FLAG_HA_START=1;}   //受信器自动发送HA状态码为实际HA码+4
-           if((FG_auto_out==1)&&(TIME_auto_out==0)){FG_auto_out=0;TIME_auto_close=270;Receiver_LED_OUT=1;}   //300
+           if((FG_auto_out==1)&&(TIME_auto_out==0)){FG_auto_out=0;TIME_auto_close=270;Receiver_LED_OUT=1;
+                TIME_auto_useful = 35100; //35100*10ms=(5min*60+90s)*90
+           }   //300
 	   if(TIME_auto_close){
                 if(TIME_auto_close>180){Receiver_OUT_STOP=FG_allow_out;Receiver_OUT_CLOSE=FG_NOT_allow_out;}  //200
                 else if(TIME_auto_close>90){Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_CLOSE=FG_NOT_allow_out;}   //100
-	        else {Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_CLOSE=FG_allow_out;}	     
+	        else {Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_CLOSE=FG_allow_out;
+                if (TIME_auto_close <= 1)
+                    FG_auto_manual_mode = 0;
+            }	     
 	   }
-	   else   {FG_auto_manual_mode=0;Receiver_OUT_CLOSE=FG_NOT_allow_out;}
+	   else   {Receiver_OUT_CLOSE=FG_NOT_allow_out;}
            FG_First_auto=0;
            FLAG_Receiver_BEEP=0;
            if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1)||(TIME_auto_close));
@@ -419,6 +449,10 @@ void ID_Decode_OUT(void)
            if((TIMER250ms_STOP==0)&&(TIME_auto_close==0)){Receiver_OUT_STOP=FG_NOT_allow_out;FG_OUT_OPEN_CLOSE=0;}
           }
     if(TIMER300ms==0)FG_Receiver_LED_RX=0;   //Receiver_LED_RX=0;
+    if (FG_auto_manual_mode == 1)
+        AUTO_OR_MANUAL = 1;
+    else
+        AUTO_OR_MANUAL = 0;    
 }
 
 

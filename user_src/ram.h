@@ -126,6 +126,9 @@ extern const ADF70XX_REG_T Default_adf7012_value[16];
 
 
 extern UINT8  TIME_10ms;
+extern UINT16 TIME_auto_useful;
+extern UINT8 FREQ_auto_useful;
+extern UINT8 FREQ_auto_useful_count;
 extern UINT16  TIMER1s;
 extern UINT16  TIMER300ms;
 extern UINT16  TIMER18ms;

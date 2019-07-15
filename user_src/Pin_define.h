@@ -112,3 +112,9 @@
 
 
 #define ADF7021_DATA_CLK_CR2    PB_CR2_C22     // 输入   调制同步时钟线
+
+/******************************************************************************/
+#define AUTO_OR_MANUAL PC_ODR_ODR3        //Output   自动模式、非自动模式状态输出  高电平有效
+#define AUTO_OR_MANUAL_direc PC_DDR_DDR3  // Output   
+#define AUTO_OR_MANUAL_CR1 PC_CR1_C13     // Output   
+#define AUTO_OR_MANUAL_CR2 PC_CR2_C23     //输出频率

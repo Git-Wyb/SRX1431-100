@@ -86,6 +86,9 @@ const ADF70XX_REG_T Default_adf7012_value[16]={0x00000000,0x031B5011,0x00000000,
                                                };
 
 UINT8  TIME_10ms=0;
+UINT16 TIME_auto_useful = 0;
+UINT8 FREQ_auto_useful = 0;
+UINT8 FREQ_auto_useful_count = 0;
 UINT16  TIMER1s=0;
 UINT16  TIMER300ms=0;
 UINT16  TIMER18ms=0;
