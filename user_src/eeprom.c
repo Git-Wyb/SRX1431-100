@@ -393,6 +393,14 @@ void ID_learn(void)
 	     TIME_Login_EXIT_Button=500;
          }
          if((FLAG_ID_Erase_Login==1)||(FLAG_ID_Login==1)){
+
+                FG_auto_manual_mode = 0;
+                TIMER1s=0;
+			    FG_auto_out=0;
+                TIME_auto_useful = 0;
+			    TIME_auto_close=0; 
+                Manual_override_TIMER=0;              
+
              TIME_Receiver_Login_led++;
              if(TIME_Receiver_Login_led>=46){
                  TIME_Receiver_Login_led=0;
