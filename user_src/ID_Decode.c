@@ -450,10 +450,7 @@ void ID_Decode_OUT(void)
            if((TIMER250ms_STOP==0)&&(TIME_auto_close==0)){Receiver_OUT_STOP=FG_NOT_allow_out;FG_OUT_OPEN_CLOSE=0;}
           }
     if(TIMER300ms==0)FG_Receiver_LED_RX=0;   //Receiver_LED_RX=0;
-    if (FG_auto_manual_mode == 1)
-        AUTO_OR_MANUAL = 1;
-    else
-        AUTO_OR_MANUAL = 0;    
+    
 }
 
 

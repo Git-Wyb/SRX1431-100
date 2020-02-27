@@ -59,10 +59,8 @@ void main(void)
     eeprom_sys_load();
     EXIT_init();
     TIM4_Init();
-    //UART1_INIT();  // UART1 for PC Software 
-    AUTO_OR_MANUAL_direc = Output; // Output   ?????¨²?????¡Â??¡Á¡Â????  ??????????
-    AUTO_OR_MANUAL_CR1 = 1;
-    AUTO_OR_MANUAL = 0;    
+    UART1_INIT();  // UART1 for PC Software 
+   
     _EI();       // ÔÊÐíÖÐ¶Ï
     beep_init();
     dd_set_ADF7021_Power_on();
