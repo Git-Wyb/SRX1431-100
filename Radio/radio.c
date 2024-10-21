@@ -114,9 +114,9 @@ void vRadioInit(void)
 
 	//packet preamble config
 	g_radio.preamble_cfg.PREAM_LENG_UNIT = 0;					//8-bits mode
-	g_radio.preamble_cfg.PREAM_VALUE     = 0x00;				//
-	g_radio.preamble_cfg.RX_PREAM_SIZE   = 0;					//
-	g_radio.preamble_cfg.TX_PREAM_SIZE   = 0;
+	g_radio.preamble_cfg.PREAM_VALUE     = 0x55;				//
+	g_radio.preamble_cfg.RX_PREAM_SIZE   = 16;					//
+	g_radio.preamble_cfg.TX_PREAM_SIZE   = 96;
 	vRadioCfgPreamble(&g_radio.preamble_cfg);
 
 	//packet syncword config
@@ -124,9 +124,9 @@ void vRadioInit(void)
 	g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_SIZE     = 2;			//(N+1).enable 3 bytes for syncword
 	g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_TOL      = 0;
 	g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_MODE_SEL = 0;			//normal packet
-	g_radio.sync_cfg.SYNC_VALUE[0] = 0x00;
-	g_radio.sync_cfg.SYNC_VALUE[1] = 0x00;
-	g_radio.sync_cfg.SYNC_VALUE[2] = 0x00;
+	g_radio.sync_cfg.SYNC_VALUE[0] = 0x55;
+	g_radio.sync_cfg.SYNC_VALUE[1] = 0x55;
+	g_radio.sync_cfg.SYNC_VALUE[2] = 0x55;
 	g_radio.sync_cfg.SYNC_VALUE_SEL= 0;							//select SYN_VAL
 	vRadioCfgSyncWord(&g_radio.sync_cfg);
 

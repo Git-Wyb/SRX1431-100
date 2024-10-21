@@ -9,7 +9,7 @@
 	#include "CMT2310A_def.h"
 	#include "CMT2310A_reg.h"
 
-	#define	 	UHF_LEN				10					//
+	#define	 	UHF_LEN				12					//
 
     typedef enum
     {
