@@ -13,8 +13,8 @@
 #define	UINT32	    unsigned long
 #define	INT32	    long
 
-#define uchar       unsigned char 
-#define uint        unsigned int 
+#define uchar       unsigned char
+#define uint        unsigned int
 #define ulong       unsigned long
 
 #define _NOP()      asm( " nop " )
@@ -39,14 +39,7 @@
       }uni_rom_id;
 
 
-
-
-
-
-
-
-        
-void RAM_clean(void);						// 清除RAM 
+void RAM_clean(void);						// 清除RAM
 void VHF_GPIO_INIT(void);					// CPU端口设置
 void SysClock_Init( void ); 				// 系统时钟（外部时钟）
 void beep_init( void );
@@ -54,3 +47,9 @@ void Delayus(unsigned char timer);
 void RF_test_mode(void );
 void WDT_init(void);
 void ClearWDT(void);
+void CMT2310A_Test_Mode(void);
+void RF_BRE_Check(void);
+void CG2214M6_GPIO_Init(void);
+void BerExtiInit(void);
+void BerExtiUnInit(void);
+void CMT2310A_GPIO3_INT1_EN(void);

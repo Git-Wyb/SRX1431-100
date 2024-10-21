@@ -9,12 +9,12 @@
 #include  <iostm8l151g4.h>				// CPU型号
 //#include "stm8l15x.h"
 #include "Pin_define.h"		// 管脚定义
-#include "initial.h"		// 初始化  预定义
-
+//#include "ram.h"
+#include "initial.h"
 
 volatile union{
-	unsigned char BYTE;	
-	struct { 
+	unsigned char BYTE;
+	struct {
 		unsigned char	Bit0:	1;
 		unsigned char	Bit1:	1;
 		unsigned char	Bit2:	1;
@@ -23,12 +23,12 @@ volatile union{
 		unsigned char	Bit5:	1;
 		unsigned char	Bit6:	1;
 		unsigned char	Bit7:	1;
-	}BIT; 	
+	}BIT;
 }FLAG0;
 
 volatile union{
-	unsigned char BYTE;	
-	struct { 
+	unsigned char BYTE;
+	struct {
 		unsigned char	Bit0:	1;
 		unsigned char	Bit1:	1;
 		unsigned char	Bit2:	1;
@@ -37,12 +37,12 @@ volatile union{
 		unsigned char	Bit5:	1;
 		unsigned char	Bit6:	1;
 		unsigned char	Bit7:	1;
-	}BIT; 	
+	}BIT;
 }FLAG1;
 
 volatile union{
-	unsigned char BYTE;	
-	struct { 
+	unsigned char BYTE;
+	struct {
 		unsigned char	Bit0:	1;
 		unsigned char	Bit1:	1;
 		unsigned char	Bit2:	1;
@@ -51,12 +51,12 @@ volatile union{
 		unsigned char	Bit5:	1;
 		unsigned char	Bit6:	1;
 		unsigned char	Bit7:	1;
-	}BIT; 	
+	}BIT;
 }FLAG_test;
 
 volatile union{
-	unsigned char BYTE;	
-	struct { 
+	unsigned char BYTE;
+	struct {
 		unsigned char	Bit0:	1;
 		unsigned char	Bit1:	1;
 		unsigned char	Bit2:	1;
@@ -65,13 +65,23 @@ volatile union{
 		unsigned char	Bit5:	1;
 		unsigned char	Bit6:	1;
 		unsigned char	Bit7:	1;
-	}BIT; 	
+	}BIT;
 }FLAG_test1;
 
+volatile union{
+	unsigned char BYTE;
+	struct {
+		unsigned char	Bit0:	1;
+		unsigned char	Bit1:	1;
+		unsigned char	Bit2:	1;
+		unsigned char	Bit3:	1;
+		unsigned char	Bit4:	1;
+		unsigned char	Bit5:	1;
+		unsigned char	Bit6:	1;
+		unsigned char	Bit7:	1;
+	}BIT;
+}Mark0 = {0};
 
-
-UINT16 X_COUNT = 0;
-UINT16 X_ERR  = 0 ;//记录错误的个数
 unsigned int rssi;
 
 UINT8 SIO_cnt;
@@ -84,6 +94,7 @@ const ADF70XX_REG_T Default_adf7012_value[16]={0x00000000,0x0176D051,0x00000000,
                                                0x00000000,0x00000000,0x00000000,0x00000000,
                                                0x00000000,0x00000000,0x00000000,0x00000000,
                                                };
+
 
 UINT8  TIME_10ms=0;
 UINT16 TIME_auto_useful = 0;
@@ -128,11 +139,53 @@ UINT16 RAM_rssi_SUM=0;
 UINT8 RAM_rssi_CNT=0;
 UINT8 RAM_rssi_AVG=0;
 
+UINT16 X_COUNT = 0;
+UINT16 X_ERR = 0; //记录错误的个敿
+UINT16 X_ERRTimer = 0;
+
 UINT16 time_Login_exit_256=0;
 
 UINT16 TIME_Fine_Calibration=0;   //窄带下中频滤波器100KHz精校
 
 ADF70XX_REG_T RSSI_value_buf;  //RSSI 测试
 
+UINT32 Freq_Value = 426075000ul;
 
+UINT32 Time_Nms = 0;
 
+void delay_nms(UINT32 nms)
+{
+    Time_Nms = nms;
+    while(Time_Nms)
+    {
+        ClearWDT();
+    }
+}
+
+void delay1ms(UINT32 u32Cnt)
+{
+    delay_nms(u32Cnt);
+}
+
+void delay_nus(UINT8 nus)
+{
+    UINT8 i = 0;
+    while(nus)
+    {
+        for(i=0; i<5; i++)
+        {
+            __asm("nop");//163.9ns
+        }
+        nus--;
+        ClearWDT();
+    }
+}
+
+void delay10us(UINT8 nus)
+{
+    UINT8 i = 0;
+    for(i=0; i<nus; i++)
+    {
+        delay_nus(10);
+    }
+}

@@ -6,13 +6,12 @@
 /*  DESCRIPTION :                                                      */
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
-#include  <iostm8l151g4.h>				// CPU型号 
+#include  <iostm8l151g4.h>				// CPU型号
 #include "Pin_define.h"		// 管脚定义
-#include "initial.h"		// 初始化  预定义
 #include "ram.h"		// RAM定义
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Timer 4 start   1ms
-void TIM4_Init(void){				
+void TIM4_Init(void){
 	TIM4_PSCR = 0x06;	// Timer 4 prescaler  计数器时钟频率  f CK_CNT  =f CK_PSC  / 2的N次方
         //TIM4_PSCR = 0x08;	// Timer 4 prescaler  计数器时钟频率  f CK_CNT  = f CK_PSC/ 2(PSC[3:0])
 	TIM4_ARR  = 0xF9;						// Timer 4 period
@@ -30,9 +29,10 @@ void TIM4_UPD_OVF(void){                             //725==1秒
 	  TIME_10ms = 10;
 	  FG_10ms = 1;
       if (TIME_auto_useful)
-        --TIME_auto_useful; 
+        --TIME_auto_useful;
       if(FREQ_auto_useful_continuous)
-        --FREQ_auto_useful_continuous;             
+        --FREQ_auto_useful_continuous;
     }
+    if(Time_Nms) --Time_Nms;
 	TIM4_SR1_bit.UIF=0;						// 清除中断标记
 }

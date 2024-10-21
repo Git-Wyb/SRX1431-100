@@ -6,9 +6,8 @@
 /*  DESCRIPTION :                                                      */
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
-#include  <iostm8l151g4.h>				// CPU�ͺ� 
+#include  <iostm8l151g4.h>				// CPU�ͺ�
 #include "Pin_define.h"		// �ܽŶ���
-#include "initial.h"		// ��ʼ��  Ԥ����
 #include "ram.h"		// RAM����
 #include "ID_Decode.h"
 #include "eeprom.h"		// eeprom
@@ -18,8 +17,8 @@
 void EXIT_init(void){
    EXTI_CR1=0x20;             //PORT B2  ���жϴ���λ
    ADF7021_DATA_CLK_CR2=1;     //ʹ�ܸ�I/O���ж�  PA1
-//   EXTI_CR2=0X00;   
-//   PIN_PD7_CR2=1;      
+//   EXTI_CR2=0X00;
+//   PIN_PD7_CR2=1;
 }
 
 
@@ -42,7 +41,7 @@ void ID_Decode_function(void)
 		    rxphase=1;TIMER18ms=2000;DATA_Packet_Syn=0;DATA_Packet_Head=0;
                     //Receiver_LED_RX=1;
 		    FG_Receiver_LED_RX=1;
-                    TIMER300ms=500; 
+                    TIMER300ms=500;
                    }
                 break;
 	case 1:
@@ -167,10 +166,10 @@ void ID_Decode_IDCheck(void)
                                     TIME_auto_out = 2700; //time*90; time=30s
                                 if(FG_First_auto==0){
                                     FG_First_auto=1;
-                                    TIMER1s=3000;    //2500 
+                                    TIMER1s=3000;    //2500
                                 }
                             }
-                        }       
+                        }
                         else if(DATA_Packet_Control==0x40);
                         else{
                             FG_auto_out=0;
@@ -190,7 +189,7 @@ void ID_Decode_IDCheck(void)
 //#endif
                    }
             }
-        }   
+        }
     }
 }
 
@@ -221,7 +220,7 @@ void Signal_DATA_Decode(UINT8 NUM_Type)
           FLAG_Signal_DATA_OK=1;
           DATA_Packet_ID=(data_NRZ[1]&0x00FF)*65536+data_NRZ[0];
           if(DATA_Packet_ID==0)FLAG_Signal_DATA_OK=0;    //2014.3.21׷��  ������ʹ��ID=0
-          DATA_Packet_Contro_buf=(data_NRZ[1]&0xFF00)>>8;  //2015.3.24���� Control������ ID�ж��Ƿ�ѧϰ�������ʹ�� 
+          DATA_Packet_Contro_buf=(data_NRZ[1]&0xFF00)>>8;  //2015.3.24���� Control������ ID�ж��Ƿ�ѧϰ�������ʹ��
 //          if(Freq_Scanning_CH_bak==1)
 //              Control_bak=DATA_Packet_Control;
       }
@@ -254,13 +253,13 @@ void BEEP_and_LED(void)
      }
      //Receiver_Buzzer=0;
      FG_beep_on=0;
-     BEEP_CSR2_BEEPEN=0;     
+     BEEP_CSR2_BEEPEN=0;
      //Receiver_LED_OUT=0;
      TIME_Receiver_LED_OUT=185;
 //#endif
 //#if defined(__Product_PIC32MX2_WIFI__)
 //     WIFI_LED_RX=1;
-//     for(i=0;i<8000;i++){        
+//     for(i=0;i<8000;i++){
 //         Delayus(190);       //2.08KHZ
 //         ClearWDT(); // Service the WDT
 //     }
@@ -330,7 +329,7 @@ void ID_Decode_OUT(void)
                                     if(TIMER1s>2000){Receiver_OUT_STOP=FG_allow_out;Receiver_OUT_OPEN=FG_NOT_allow_out;}   //1830
                                     else if(TIMER1s>1000){Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_OPEN=FG_NOT_allow_out;}   //810
 				    else {FG_auto_open_time=1;Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_OPEN=FG_allow_out;}
-                                    
+
 		                }
                                 break;
                      case 0x01:                              //VENT
@@ -347,7 +346,7 @@ void ID_Decode_OUT(void)
 				   Receiver_OUT_CLOSE=FG_NOT_allow_out;
 				   Receiver_OUT_VENT=FG_allow_out;
 				}
-                                break;				
+                                break;
                      case 0x02:                              //close
                                 Receiver_LED_OUT=1;
                                 Receiver_OUT_OPEN=FG_NOT_allow_out;
@@ -385,28 +384,28 @@ void ID_Decode_OUT(void)
 				Receiver_OUT_VENT=FG_NOT_allow_out;
                                 Receiver_OUT_STOP=FG_allow_out;
 				if(FG_OUT_OPEN_CLOSE==0){FG_OUT_OPEN_CLOSE=1;TIME_OUT_OPEN_CLOSE=25;}
-                                if(TIME_OUT_OPEN_CLOSE==0)Receiver_OUT_CLOSE=FG_allow_out;   
+                                if(TIME_OUT_OPEN_CLOSE==0)Receiver_OUT_CLOSE=FG_allow_out;
                                 break;
                      case 0x0A:                       //close+OPEN
                                 Receiver_LED_OUT=1;
                                 Receiver_OUT_STOP=FG_NOT_allow_out;
 				Receiver_OUT_VENT=FG_NOT_allow_out;
                                 Receiver_OUT_OPEN=FG_allow_out;
-                                Receiver_OUT_CLOSE=FG_allow_out;   
+                                Receiver_OUT_CLOSE=FG_allow_out;
                                 break;
                      case 0x09:                       //vent+OPEN
                                 Receiver_LED_OUT=1;
                                 Receiver_OUT_STOP=FG_NOT_allow_out;
 				Receiver_OUT_CLOSE=FG_NOT_allow_out;
                                 Receiver_OUT_OPEN=FG_allow_out;
-                                Receiver_OUT_VENT=FG_allow_out;   
+                                Receiver_OUT_VENT=FG_allow_out;
                                 break;
                      case 0x03:                       //vent+close
                                 Receiver_LED_OUT=1;
                                 Receiver_OUT_STOP=FG_NOT_allow_out;
 				Receiver_OUT_OPEN=FG_NOT_allow_out;
                                 Receiver_OUT_CLOSE=FG_allow_out;
-                                Receiver_OUT_VENT=FG_allow_out;   
+                                Receiver_OUT_VENT=FG_allow_out;
                                 break;
                      default:
                                 break;
@@ -423,7 +422,7 @@ void ID_Decode_OUT(void)
 //                if((DATA_Packet_Control&0x02)==0x02)Receiver_OUT_CLOSE=1;
 //                if((DATA_Packet_Control&0x0C)==0x0C)TIMER250ms_STOP=250;
 //                if((DATA_Packet_Control&0x06)==0x06)TIMER250ms_STOP=250;
-          }       
+          }
      else {
 //           if(FLAG_APP_Reply==1){FLAG_APP_Reply=0;ID_data.IDL=DATA_Packet_ID;Control_code=HA_Status;FLAG_HA_START=1;}
 //           if(FLAG_426MHz_Reply==1){FLAG_426MHz_Reply=0;ID_data.IDL=DATA_Packet_ID;Control_code=HA_Status+4;FLAG_HA_START=1;}   //�������Զ�����HA״̬��Ϊʵ��HA��+4
@@ -436,7 +435,7 @@ void ID_Decode_OUT(void)
 	        else {Receiver_OUT_STOP=FG_NOT_allow_out;Receiver_OUT_CLOSE=FG_allow_out;
                 if (TIME_auto_close <= 1)
                     FG_auto_manual_mode = 0;
-            }	     
+            }
 	   }
 	   else   {Receiver_OUT_CLOSE=FG_NOT_allow_out;}
            FG_First_auto=0;
@@ -450,7 +449,7 @@ void ID_Decode_OUT(void)
            if((TIMER250ms_STOP==0)&&(TIME_auto_close==0)){Receiver_OUT_STOP=FG_NOT_allow_out;FG_OUT_OPEN_CLOSE=0;}
           }
     if(TIMER300ms==0)FG_Receiver_LED_RX=0;   //Receiver_LED_RX=0;
-    
+
 }
 
 
@@ -469,21 +468,61 @@ void  Freq_Scanning(void)
 //        if((Freq_Scanning_CH==1)||(Freq_Scanning_CH==3)||(Freq_Scanning_CH==5))TIMER18ms=36;
 //        else TIMER18ms=18;
 //    }
-  
-  
+
+
     //if((FLAG_Receiver_Scanning==1)&&(FLAG_APP_RX==1)&&(FLAG_UART_ok==0))
 //    if(((FLAG_Receiver_Scanning==1)||(TIME_EMC==0))&&(FLAG_APP_RX==1))
 //    {
 //        FLAG_Receiver_Scanning=0;
 //        TIMER18ms=36;
 //        dd_set_RX_mode();
-//    }  
-  
+//    }
+
     if(((FLAG_Receiver_Scanning==1)||(TIME_EMC==0)||(TIME_Fine_Calibration==0))&&(FLAG_APP_RX==1))
     {
         FLAG_Receiver_Scanning=0;
         if(TIME_Fine_Calibration==0){TIME_Fine_Calibration=9000;dd_set_ADF7021_Power_on();dd_set_RX_mode();}
         dd_set_ADF7021_Freq();
         TIMER18ms=36;
-    }  
+    }
+}
+
+void DataReceive(void)
+{
+    static UINT8 StateCache = 0;
+    static UINT8 Cache = 0;
+    static UINT8 X_HISbyte = 0;
+    switch (StateCache)
+    {
+    case 0:
+    {
+        Cache <<= 1;
+        if (CMT2310A_DATA)
+            Cache++;
+        if (Cache == 0x55)
+        {
+            StateCache = 1;
+            X_HISbyte = 0;
+            Cache = 0;
+        }
+    }
+    break;
+    case 1:
+    {
+        if (CMT2310A_DATA != X_HISbyte)
+            X_ERR++;
+        X_COUNT++;
+        X_HISbyte ^= 1;
+        if (X_COUNT >= 500)
+            StateCache = 2;
+    }
+    break;
+    case 2:
+        if (X_COUNT == 0)
+            StateCache = 0;
+        break;
+    default:
+        break;
+    }
+    EXTI_SR1_P4F = 1;
 }

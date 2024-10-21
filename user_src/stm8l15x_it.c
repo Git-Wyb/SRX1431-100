@@ -18,13 +18,12 @@
   *
   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
   ******************************************************************************
-  */  
+  */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8l15x_it.h"
 
 #include "Pin_define.h"		// 管脚定义
-#include "initial.h"		// 初始化  预定义
 #include "ram.h"		// RAM定义
 #include "adf7021.h"		// 初始化
 #include "Timer.h"		// 定时器
@@ -34,7 +33,7 @@
 /** @addtogroup STM8L15x_StdPeriph_Template
   * @{
   */
-	
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -48,7 +47,7 @@
   * @brief Dummy interrupt routine
   * @par Parameters:
   * None
-  * @retval 
+  * @retval
   * None
 */
 INTERRUPT_HANDLER(NonHandledInterrupt,0)
@@ -63,7 +62,7 @@ INTERRUPT_HANDLER(NonHandledInterrupt,0)
   * @brief TRAP interrupt routine
   * @par Parameters:
   * None
-  * @retval 
+  * @retval
   * None
 */
 INTERRUPT_HANDLER_TRAP(TRAP_IRQHandler)
@@ -169,11 +168,13 @@ INTERRUPT_HANDLER(EXTI0_IRQHandler,8)
   * @param  None
   * @retval None
   */
+void CMT2300A_TxDone(void);
 INTERRUPT_HANDLER(EXTI1_IRQHandler,9)
 {
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
+     CMT2300A_TxDone();
 }
 
 /**
@@ -186,8 +187,8 @@ INTERRUPT_HANDLER(EXTI2_IRQHandler,10)
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
-     ID_Decode_function();
-      
+     //ID_Decode_function();
+
 }
 
 /**
@@ -200,7 +201,7 @@ INTERRUPT_HANDLER(EXTI3_IRQHandler,11)
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
-  
+
 }
 
 /**
@@ -208,11 +209,13 @@ INTERRUPT_HANDLER(EXTI3_IRQHandler,11)
   * @param  None
   * @retval None
   */
+extern void DataReceive(void);
 INTERRUPT_HANDLER(EXTI4_IRQHandler,12)
 {
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
+    DataReceive();
 }
 
 /**
@@ -376,7 +379,7 @@ INTERRUPT_HANDLER(SPI1_IRQHandler,26)
 {
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
-    */		
+    */
 }
 
 /**
@@ -417,6 +420,6 @@ INTERRUPT_HANDLER(I2C1_SPI2_IRQHandler,29)
 }
 /**
   * @}
-  */ 
+  */
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
