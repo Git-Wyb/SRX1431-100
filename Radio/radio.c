@@ -461,3 +461,12 @@ void CMT2310A_Data_Mode(u8 mode)
         break;
     }
 }
+
+u8 CMT2310A_ReadReg(u8 page,u8 addr)
+{
+    u8 read = 0;
+    vRadioRegPageSel(page);
+    read = bSpiReadByte(addr);
+    vRadioRegPageSel(0);
+    return read;
+}

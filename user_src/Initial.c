@@ -335,6 +335,7 @@ void RF_test_mode(void )
 }
 
 //CMT2310A_CFG	g_radio;
+UINT8 rreg = 0;
 void CMT2310A_Test_Mode(void)
 {
     UINT8 Boot_i;
@@ -453,13 +454,16 @@ void CMT2310A_Test_Mode(void)
             FG_test_mode=0;
             FG_test_tx_on=0;
             FG_test_tx_1010=0;
+            //rreg = CMT2310A_ReadReg(0,0x28);
             if(FG_test_tx_off==0)
             {
                 CG2214M6_USE_R;
                 FG_test_tx_off=1;
                 g_radio.frame_cfg.DATA_MODE = 0;//0=direct mode, 	2=packet mode
                 vRadioCfgFrameFormat(&g_radio.frame_cfg);
+                //rreg = CMT2310A_ReadReg(0,0x28);
                 bRadioGoRx();
+                //rreg = CMT2310A_ReadReg(0,0x28);
             }
             if(Tx_Rx_mode==2)
             {

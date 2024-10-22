@@ -37,6 +37,7 @@
     void CMT2300A_Read_RxData(void);
     void CMT2300A_Write_TxData(void);
     void CMT2300A_TxDone(void);
+    u8 CMT2310A_ReadReg(u8 page,u8 addr);
 
 #endif
 
