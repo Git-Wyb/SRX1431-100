@@ -142,7 +142,7 @@ void BerExtiInit(void)
     CMT2310A_GPIO4_CR1 = 0;     //1: Input with pull-up 0: Floating input
     CMT2310A_GPIO4_CR2 = 1;     //使能中断
     EXTI_CR2 &= (~MASK_EXTI_CR2_P4IS);
-    EXTI_CR2 |= 0x02;
+    EXTI_CR2 |= 0x01;//0x01 Rising edge only; 0x02 Falling edge only
 
     CMT2310A_GPIO5_DDR = Input; //输入
     CMT2310A_GPIO5_CR1 = 1;     //1: Input with pull-up 0: Floating input

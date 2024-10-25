@@ -52,7 +52,7 @@ void main(void)
 {
     _DI();		// 关全局中断
     RAM_clean();       // 清除RAM
-    WDT_init();
+    //WDT_init();
     SysClock_Init();
     InitialFlashReg();
     VHF_GPIO_INIT();

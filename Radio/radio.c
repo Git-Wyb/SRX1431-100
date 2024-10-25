@@ -44,14 +44,14 @@ void vRadioInit(void)
 
 	vRadioSetNirq(CMT2310A_nIRQ_SEL);	//for TCXO need cofig as nIRQ pin at first
 	//vRadioTcxoDrvSel(0);				//drive power
-
+    /*
 	fw_rev = (byte)g_chip_id;			//dealwith Xtal
 	switch(fw_rev)
 		{
 		case 0xC0: vRadioXoWaitCfg(RADIO_CGU_DIV4); break;
 		default: break;
 		}
-
+          */
 
 	vRadioPowerUpBoot();
 	delay1ms(10);
@@ -62,17 +62,17 @@ void vRadioInit(void)
 	delay1ms(10);
 	bRadioApiCommand(0x01);				//IR Calibration, need some times
 
-	vRadioCapLoad(2);					//Xo Cap
+	//vRadioCapLoad(2);					//Xo Cap
 
 	//GPIOn default setting
-	vRadioSetGpio0(CMT2310A_GPIO0_SEL);
-	vRadioSetGpio1(CMT2310A_GPIO1_SEL);
+    vRadioSetGpio0(CMT2310A_GPIO0_DCLK);
+    vRadioSetGpio1(CMT2310A_GPIO1_DOUT);
 	vRadioSetGpio2(CMT2310A_GPIO2_SEL);
 	vRadioSetGpio3(CMT2310A_GPIO3_INT1);
-	vRadioSetGpio4(CMT2310A_GPIO4_DCLK);
-	vRadioSetGpio5(CMT2310A_GPIO5_DOUT);
+	vRadioSetGpio4(CMT2310A_GPIO4_SEL);//CMT2310A_GPIO4_DCLK
+	vRadioSetGpio5(CMT2310A_GPIO5_nRST);//CMT2310A_GPIO5_DOUT
 
-
+    /*
 	//INT1 = RX_FIFO_WBYTE,   INT2 = PKT_DONE
 	vRadioSetInt1Sel(INT_SRC_RX_FIFO_WBYTE);
 	vRadioSetInt2Sel(INT_SRC_PKT_DONE);
@@ -229,7 +229,7 @@ void vRadioInit(void)
 	g_radio.word_mode_cfg.SLEEP_TIMER_CSMA_M = 0;
 	g_radio.word_mode_cfg.SLEEP_TIMER_CSMA_R = 0;
 	vRadioCfgWorkMode(&g_radio.word_mode_cfg);
-
+    */
 	//FIFO Init
 	vRadioFifoMerge(FALSE);
 	vRadioSetFifoTH(30);
@@ -238,11 +238,11 @@ void vRadioInit(void)
 
 	vRadioFifoAutoClearGoRx(TRUE);								//when crc error, need to auto clear fifo, should enable
 
-	vRadioRssiUpdateSel(CMT2310A_RSSI_UPDATE_ALWAYS);
+	//vRadioRssiUpdateSel(CMT2310A_RSSI_UPDATE_ALWAYS);
 
 	vRadioSetAntSwitch(FALSE, FALSE);							//
 
-	vRadioDcdcCfg(TRUE);										//dc-dc off
+	//vRadioDcdcCfg(TRUE);										//dc-dc off
 }
 
 void vRadioClearInterrupt(void)
