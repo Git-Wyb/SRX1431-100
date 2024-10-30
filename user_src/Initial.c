@@ -199,6 +199,24 @@ void SysClock_Init( void ){ 				// 系统时钟（外部时钟）
 	while(CLK_ICKCR_LSIRDY == 0 );		// 检查内部LSI OSC
 }
 
+void CLK_DeInit(void);
+void SysClock_Init_HSE(void)
+{
+    CLK_DeInit();
+    CLK_ECKR_HSEON = 1;     //Enable HSE
+
+    while(( CLK_ECKR & 0x02 ) == 0 );      //Wait HSE clock ready
+
+    CLK_CKDIVR = 0x00;   //1 prescaler
+    CLK_SWR = 0x04;       //HSE selected as system clock source
+    CLK_SWCR_SWEN = 1;						// 执行切换
+
+    CLK_PCKENR1 = 0x64;						// T4,UART1,beep
+	CLK_PCKENR2 = 0x03;						// ADC,T1
+
+    CLK_ICKCR_LSION = 1;				// 使能内部LSI OSC（38KHz）
+	while(CLK_ICKCR_LSIRDY == 0 );		// 检查内部LSI OSC
+}
 
 void beep_init( void )
 {

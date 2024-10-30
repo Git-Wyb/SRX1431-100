@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=410499878
+Checksum=1529886731
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -82,7 +82,11 @@ LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\Radio\radio.c}.339.5" 1 0 0 0 "" 0 ""
-Count=1
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\user_src\stm8l15x_it.c}.218.5" 1 0 0 0 "" 0 ""
+Bp2=_ "STD_CODE" "{$PROJ_DIR$\user_src\stm8l15x_it.c}.177.6" 1 0 0 0 "" 0 ""
+Bp3=_ "STD_CODE" "{$PROJ_DIR$\user_src\stm8l15x_it.c}.407.4" 1 0 0 0 "" 0 ""
+Bp4=_ "STD_CODE" "{$PROJ_DIR$\user_src\Timer.c}.55.13" 0 0 0 0 "" 0 ""
+Count=5
 [Aliases]
 A0=_ "F:\Source Code\bunka-s\Bunka STM8L151G6 RX Source\Bunka STM8L151G6 RX Source Ver1.10.1\user_src\ID_Decode.c" ""
 A1=_ "F:\Source Code\bunka-s\Bunka STM8L151G6 RX Source\Bunka STM8L151G6 RX Source Ver1.10.1\user_src\adf7021.c" ""

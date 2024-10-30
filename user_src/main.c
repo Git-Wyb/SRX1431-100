@@ -47,23 +47,27 @@
   * @param  None
   * @retval None
   */
-
+void TIM4_Init_HSE(void);
+void SysClock_Init_HSE(void);
+void LED_TEST(void);
 void main(void)
 {
     _DI();		// 关全局中断
     RAM_clean();       // 清除RAM
     //WDT_init();
     SysClock_Init();
+    //SysClock_Init_HSE();
     InitialFlashReg();
     VHF_GPIO_INIT();
     eeprom_sys_load();
 
     TIM4_Init();
+    //TIM4_Init_HSE();
     SPI_Config_Init();
     //UART1_INIT();  // UART1 for PC Software
     _EI();       // 允许中断
     beep_init();
-
+    //LED_TEST();
     RF_CMT2310A_Init();
     CMT2310A_GPIO3_INT1_EN();
     CMT2310A_Test_Mode();

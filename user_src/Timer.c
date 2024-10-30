@@ -19,6 +19,14 @@ void TIM4_Init(void){
 	TIM4_IER |= 0x01;						// Timer 4 OVR interrupt
 }
 
+void TIM4_Init_HSE(void){
+	TIM4_PSCR = 0x04;	// Timer 4 prescaler  计数器时钟频率  f CK_CNT  =f CK_PSC  / 2的N次方
+        //TIM4_PSCR = 0x08;	// Timer 4 prescaler  计数器时钟频率  f CK_CNT  = f CK_PSC/ 2(PSC[3:0])
+	TIM4_ARR  = 0xF9;						// Timer 4 period
+	TIM4_CR1 |= 0x01;						// Timer 4 Enable
+	TIM4_IER |= 0x01;						// Timer 4 OVR interrupt
+}
+
 void TIM4_UPD_OVF(void){                             //725==1秒
     if(TIMER1s)--TIMER1s;
     if(TIMER300ms)--TIMER300ms;
@@ -35,4 +43,16 @@ void TIM4_UPD_OVF(void){                             //725==1秒
     }
     if(Time_Nms) --Time_Nms;
 	TIM4_SR1_bit.UIF=0;						// 清除中断标记
+}
+
+void LED_TEST(void)
+{
+    while(1)
+    {
+        if(Time_Nms == 0)
+        {
+            Time_Nms = 500;
+            Receiver_LED_RX=!Receiver_LED_RX;
+        }
+    }
 }
