@@ -5,8 +5,11 @@ CMT2310A_CFG	g_radio;					//
 uint32_t 		g_chip_id = 0x00000000;
 
 unsigned char g_reg_read_buf[128];
-byte    radio_rx_buf[UHF_LEN];
-byte 	radio_tx_buf[UHF_LEN];
+u8 radio_tx_buf[UHF_LEN] = {0};
+u8 radio_rx_buf[UHF_LEN] = {0};
+
+u8 SPI_RECEIVE_BUFF[SPI_REV_BUFF_LONG] = {0};
+u32 SPI_Receive_DataForC[7] = {0};
 
 /******************************
 **Name:  vRadioInit
@@ -14,8 +17,8 @@ byte 	radio_tx_buf[UHF_LEN];
 **Input: None
 *Output: None
 ********************************/
-void RF_CMT2310A_Init(void)
-{
+void RF_CMT2310A_Init(u8 mode)
+{   /*
     while(1)
 	{
         vRadioSoftReset();
@@ -24,19 +27,14 @@ void RF_CMT2310A_Init(void)
         g_chip_id = lRadioChipVersion();
         if(0x00231000==(g_chip_id&0x00FFFF00))
             break;
-    }
+    }*/
 
-    vRadioInit();
-    //g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
-    //vRadioSetPayloadLength(&g_radio.frame_cfg);
-    //vRadioSetInt1Sel(CMT2310A_INT_PKT_DONE);
-    //vRadioSetInt2Sel(CMT2310A_INT_RX_FIFO_WBYTE);
-    //bRadioGoRx();
+    vRadioInit(mode);
 }
 
-void vRadioInit(void)
+void vRadioInit(u8 mode)
 {
-	byte fw_rev;
+	//byte fw_rev;
 	vRadioSoftReset();
 
 	vRadioConfigPageReg(0, g_cmt2310a_page0, CMT2310A_PAGE0_SIZE);		//config page 0
@@ -64,72 +62,85 @@ void vRadioInit(void)
 
 	//vRadioCapLoad(2);					//Xo Cap
 
-	//GPIOn default setting
-    vRadioSetGpio0(CMT2310A_GPIO0_DCLK);
-    vRadioSetGpio1(CMT2310A_GPIO1_DOUT);
-	vRadioSetGpio2(CMT2310A_GPIO2_SEL);
-	vRadioSetGpio3(CMT2310A_GPIO3_INT1);
-	vRadioSetGpio4(CMT2310A_GPIO4_DCLK);//CMT2310A_GPIO4_DCLK
-	vRadioSetGpio5(CMT2310A_GPIO5_DOUT);//CMT2310A_GPIO5_DOUT
 
+    if(mode == 1) //test mode
+    {
+        //GPIOn default setting
+        vRadioSetGpio0(CMT2310A_GPIO0_DCLK);
+        vRadioSetGpio1(CMT2310A_GPIO1_DOUT);
+        vRadioSetGpio2(CMT2310A_GPIO2_SEL);
+        vRadioSetGpio3(CMT2310A_GPIO3_INT1);
+        vRadioSetGpio4(CMT2310A_GPIO4_DCLK);//CMT2310A_GPIO4_DCLK
+        vRadioSetGpio5(CMT2310A_GPIO5_DOUT);//CMT2310A_GPIO5_DOUT
+    }
+    else //work mode
+    {
+        //GPIOn default setting
+        vRadioSetGpio0(CMT2310A_GPIO0_SEL);
+        vRadioSetGpio1(CMT2310A_GPIO1_SEL);
+        vRadioSetGpio2(CMT2310A_GPIO2_SEL);
+        vRadioSetGpio3(CMT2310A_GPIO3_INT1);
+        vRadioSetGpio4(CMT2310A_GPIO4_SEL);
+        vRadioSetGpio5(CMT2310A_GPIO5_SEL);
+
+        //INT1 = RX_FIFO_WBYTE,   INT2 = PKT_DONE
+        vRadioSetInt1Sel(INT_SRC_PKT_DONE);
+        vRadioSetInt2Sel(INT_SRC_RX_FIFO_WBYTE);
+        vRadioSetInt1Polar(FALSE); //Interrupt falling edge
+        vRadioSetInt2Polar(FALSE);
+        vRadioSetInt3Polar(FALSE);
+
+        //interrupt source enable config
+        g_radio.int_src_en._BITS.PKT_DONE_EN   		= 1;
+        g_radio.int_src_en._BITS.CRC_PASS_EN   		= 1;
+        g_radio.int_src_en._BITS.ADDR_PASS_EN  		= 0;
+        g_radio.int_src_en._BITS.SYNC_PASS_EN  		= 1;
+        g_radio.int_src_en._BITS.PREAM_PASS_EN 		= 1;
+        g_radio.int_src_en._BITS.TX_DONE_EN    		= 1;
+        g_radio.int_src_en._BITS.RX_TOUT_EN    		= 1;
+        g_radio.int_src_en._BITS.LD_STOP_EN    		= 0;
+        g_radio.int_src_en._BITS.LBD_STOP_EN   		= 0;
+        g_radio.int_src_en._BITS.LBD_STAT_EN   		= 0;
+        g_radio.int_src_en._BITS.PKT_ERR_EN    		= 0;
+        g_radio.int_src_en._BITS.RSSI_COLL_EN  		= 0;
+        g_radio.int_src_en._BITS.OP_CMD_FAILED_EN 	= 0;
+        g_radio.int_src_en._BITS.RSSI_PJD_EN   		= 0;
+        g_radio.int_src_en._BITS.SEQ_MATCH_EN  		= 0;
+        g_radio.int_src_en._BITS.NACK_RECV_EN       = 0;
+        g_radio.int_src_en._BITS.TX_RESEND_DONE_EN  = 0;
+        g_radio.int_src_en._BITS.ACK_RECV_FAILED_EN = 0;
+        g_radio.int_src_en._BITS.TX_DC_DONE_EN      = 0;
+        g_radio.int_src_en._BITS.CSMA_DONE_EN       = 0;
+        g_radio.int_src_en._BITS.CCA_STAT_EN        = 0;
+        g_radio.int_src_en._BITS.API_DONE_EN        = 0;
+        g_radio.int_src_en._BITS.TX_FIFO_TH_EN		= 1;
+        g_radio.int_src_en._BITS.TX_FIFO_NMTY_EN	= 1;
+        g_radio.int_src_en._BITS.TX_FIFO_FULL_EN	= 1;
+        g_radio.int_src_en._BITS.RX_FIFO_OVF_EN		= 1;
+        g_radio.int_src_en._BITS.RX_FIFO_TH_EN		= 1;
+        g_radio.int_src_en._BITS.RX_FIFO_NMTY_EN	= 1;
+        g_radio.int_src_en._BITS.RX_FIFO_FULL_EN 	= 1;
+        vRadioInterruptSoucreCfg(&g_radio.int_src_en);
+
+        //packet preamble config
+        g_radio.preamble_cfg.PREAM_LENG_UNIT = 0;					//8-bits mode
+        g_radio.preamble_cfg.PREAM_VALUE     = 0x55;				//
+        g_radio.preamble_cfg.RX_PREAM_SIZE   = 16;					//
+        g_radio.preamble_cfg.TX_PREAM_SIZE   = 96;
+        vRadioCfgPreamble(&g_radio.preamble_cfg);
+
+        //packet syncword config
+        g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_MAN_EN   = 0;			//disable syncword manchester coding
+        g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_SIZE     = 2;			//(N+1).enable 3 bytes for syncword
+        g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_TOL      = 0;
+        g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_MODE_SEL = 0;			//normal packet
+        g_radio.sync_cfg.SYNC_VALUE[0] = 0x55;
+        g_radio.sync_cfg.SYNC_VALUE[1] = 0x55;
+        g_radio.sync_cfg.SYNC_VALUE[2] = 0x15;
+        g_radio.sync_cfg.SYNC_VALUE_SEL= 0;							//select SYN_VAL
+        vRadioCfgSyncWord(&g_radio.sync_cfg);
+    }
     /*
-	//INT1 = RX_FIFO_WBYTE,   INT2 = PKT_DONE
-	vRadioSetInt1Sel(INT_SRC_RX_FIFO_WBYTE);
-	vRadioSetInt2Sel(INT_SRC_PKT_DONE);
-	vRadioSetInt1Polar(FALSE);
-	vRadioSetInt2Polar(FALSE);
-	vRadioSetInt3Polar(FALSE);
-
-	//interrupt source enable config
-	g_radio.int_src_en._BITS.PKT_DONE_EN   		= 1;
-	g_radio.int_src_en._BITS.CRC_PASS_EN   		= 1;
-	g_radio.int_src_en._BITS.ADDR_PASS_EN  		= 0;
-	g_radio.int_src_en._BITS.SYNC_PASS_EN  		= 1;
-	g_radio.int_src_en._BITS.PREAM_PASS_EN 		= 1;
-	g_radio.int_src_en._BITS.TX_DONE_EN    		= 1;
-	g_radio.int_src_en._BITS.RX_TOUT_EN    		= 1;
-	g_radio.int_src_en._BITS.LD_STOP_EN    		= 0;
-	g_radio.int_src_en._BITS.LBD_STOP_EN   		= 0;
-	g_radio.int_src_en._BITS.LBD_STAT_EN   		= 0;
-	g_radio.int_src_en._BITS.PKT_ERR_EN    		= 0;
-	g_radio.int_src_en._BITS.RSSI_COLL_EN  		= 0;
-	g_radio.int_src_en._BITS.OP_CMD_FAILED_EN 	= 0;
-	g_radio.int_src_en._BITS.RSSI_PJD_EN   		= 0;
-	g_radio.int_src_en._BITS.SEQ_MATCH_EN  		= 0;
-	g_radio.int_src_en._BITS.NACK_RECV_EN       = 0;
-	g_radio.int_src_en._BITS.TX_RESEND_DONE_EN  = 0;
-	g_radio.int_src_en._BITS.ACK_RECV_FAILED_EN = 0;
-	g_radio.int_src_en._BITS.TX_DC_DONE_EN      = 0;
-	g_radio.int_src_en._BITS.CSMA_DONE_EN       = 0;
-	g_radio.int_src_en._BITS.CCA_STAT_EN        = 0;
-	g_radio.int_src_en._BITS.API_DONE_EN        = 0;
-	g_radio.int_src_en._BITS.TX_FIFO_TH_EN		= 1;
-	g_radio.int_src_en._BITS.TX_FIFO_NMTY_EN	= 1;
-	g_radio.int_src_en._BITS.TX_FIFO_FULL_EN	= 1;
-	g_radio.int_src_en._BITS.RX_FIFO_OVF_EN		= 1;
-	g_radio.int_src_en._BITS.RX_FIFO_TH_EN		= 1;
-	g_radio.int_src_en._BITS.RX_FIFO_NMTY_EN	= 1;
-	g_radio.int_src_en._BITS.RX_FIFO_FULL_EN 	= 1;
-	vRadioInterruptSoucreCfg(&g_radio.int_src_en);
-
-	//packet preamble config
-	g_radio.preamble_cfg.PREAM_LENG_UNIT = 0;					//8-bits mode
-	g_radio.preamble_cfg.PREAM_VALUE     = 0x55;				//
-	g_radio.preamble_cfg.RX_PREAM_SIZE   = 16;					//
-	g_radio.preamble_cfg.TX_PREAM_SIZE   = 96;
-	vRadioCfgPreamble(&g_radio.preamble_cfg);
-
-	//packet syncword config
-	g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_MAN_EN   = 0;			//disable syncword manchester coding
-	g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_SIZE     = 2;			//(N+1).enable 3 bytes for syncword
-	g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_TOL      = 0;
-	g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_MODE_SEL = 0;			//normal packet
-	g_radio.sync_cfg.SYNC_VALUE[0] = 0x55;
-	g_radio.sync_cfg.SYNC_VALUE[1] = 0x55;
-	g_radio.sync_cfg.SYNC_VALUE[2] = 0x55;
-	g_radio.sync_cfg.SYNC_VALUE_SEL= 0;							//select SYN_VAL
-	vRadioCfgSyncWord(&g_radio.sync_cfg);
-
 	//packet node address config
 	g_radio.addr_cfg.ADDR_CFG_u._BITS.ADDR_DET_MODE = 0;		//disable Node Address
 	vRadioCfgNodeAddr(&g_radio.addr_cfg);
@@ -304,31 +315,42 @@ void vRadioCmpReg(byte const wr_ptr[], byte rd_ptr[], byte cmp_ptr[], byte lengt
 		}
 }
 
-void vRadioGoTxInit(void)
+void CMT2300A_RxData()
 {
-
-
+   EXTI_SR1_P1F = 1;
+   CMT2300A_ReadData(SPI_RECEIVE_BUFF,12);
+   vRadioClearRxFifo();
+   vRadioClearInterrupt();
+   bRadioGoRx();
+}
+void CMT2310A_SetRx(void)
+{
+    g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
+    vRadioSetPayloadLength(&g_radio.frame_cfg);
+    vRadioSetInt1Sel(CMT2310A_INT_PKT_DONE);
+    vRadioSetInt2Sel(CMT2310A_INT_RX_FIFO_WBYTE);
+    bRadioGoRx();
 }
 
-void vRadioGoRxInit(void)
+void CMT2310A_SetTx(void)
 {
-
-
+    vRadioSetInt1Sel(CMT2310A_INT_TX_DONE);
+    vRadioSetInt2Sel(CMT2310A_INT_TX_FIFO_NMTY);
+    g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
+    vRadioSetPayloadLength(&g_radio.frame_cfg);
 }
 
-void CMT2300A_Read_RxData(void)
+void CMT2300A_ReadData(u8 *rxbuff,u8 len)
 {
-    vRadioReadFifo(radio_rx_buf, UHF_LEN);
+    vRadioReadFifo(rxbuff, len);
     vRadioClearRxFifo();
     vRadioClearInterrupt();
     bRadioGoRx();
 }
 
-void CMT2300A_Write_TxData(void)
+void CMT2300A_TxData(u8 *txbuff,u8 len)
 {
-    vRadioSetInt1Sel(CMT2310A_INT_TX_DONE);
-    vRadioSetInt2Sel(CMT2310A_INT_TX_FIFO_NMTY);
-    vRadioWriteFifo(radio_tx_buf, UHF_LEN);
+    vRadioWriteFifo(txbuff, len);
     bRadioGoTx();
 }
 void CMT2300A_TxDone(void)
@@ -336,7 +358,30 @@ void CMT2300A_TxDone(void)
     bRadioGoStandby();
     vRadioClearTxFifo();
     vRadioClearInterrupt();
-    flag_tx_done = 1;
+}
+
+u8 CMT2310A_ReadReg(u8 page,u8 addr)
+{
+    u8 read = 0;
+    vRadioRegPageSel(page);
+    read = bSpiReadByte(addr);
+    vRadioRegPageSel(0);
+    return read;
+}
+
+void ID_Decode_IDCheck(void);
+void RX_ANALYSIS(void)
+{
+    u8 i;
+    for (i = 0; i < 7; i++)
+    {
+        SPI_Receive_DataForC[i] = (u32)SPI_RECEIVE_BUFF[i * 4 + 3] |
+                                  (u32)SPI_RECEIVE_BUFF[i * 4 + 2] << 8 |
+                                  (u32)SPI_RECEIVE_BUFF[i * 4 + 1] << 16 |
+                                  (u32)SPI_RECEIVE_BUFF[i * 4 + 0] << 24;
+    }
+
+    FLAG_Receiver_IDCheck = 1;
 }
 
 void CMT2310A_Set_Freq(u32 freq,DEVSET_ENUM dev) //dev -> The value depends on RFPDK how much the export is set to
@@ -460,13 +505,4 @@ void CMT2310A_Data_Mode(u8 mode)
             g_cmt2310a_page1[23] = 0xE0;
         break;
     }
-}
-
-u8 CMT2310A_ReadReg(u8 page,u8 addr)
-{
-    u8 read = 0;
-    vRadioRegPageSel(page);
-    read = bSpiReadByte(addr);
-    vRadioRegPageSel(0);
-    return read;
 }

@@ -13,6 +13,7 @@
 #include "eeprom.h"		// eeprom
 #include "uart.h"		// uart
 #include "adf7021.h"		// ��ʼ��ADF7021
+#include "radio.h"
 
 void EXIT_init(void){
    EXTI_CR1=0x20;             //PORT B2  ���жϴ���λ
@@ -89,7 +90,8 @@ void ID_Decode_IDCheck(void)
     if(FLAG_Receiver_IDCheck)
     {
         FLAG_Receiver_IDCheck=0;
-        Signal_DATA_Decode(0);
+        //Signal_DATA_Decode(0);
+        Packet_Signal_DATA_Decode(0);
         if(FLAG_Signal_DATA_OK==1)
         {
             eeprom_IDcheck();
@@ -109,7 +111,7 @@ void ID_Decode_IDCheck(void)
 //                if(DATA_Packet_Control==0x02){DATA_Packet_Control_err=0x02;FLAG_HA_ERR_bit=0;}
 //             #endif
 //                if(((DATA_Packet_Code[1]&0x0000FFFF)==0x5556)&&(Freq_Scanning_CH_bak==0)){
-		if((DATA_Packet_Code[1]&0x0000FFFF)==0x5556){
+		if((SPI_Receive_DataForC[1]&0x0000FFFF)==0x5556){
                     Signal_DATA_Decode(1);
                     if(FLAG_Signal_DATA_OK==1){
                             eeprom_IDcheck();
@@ -225,6 +227,47 @@ void Signal_DATA_Decode(UINT8 NUM_Type)
 //              Control_bak=DATA_Packet_Control;
       }
       else FLAG_Signal_DATA_OK=0;
+}
+
+void Packet_Signal_DATA_Decode(UINT8 NUM_Type)
+{
+    UINT32 data_in;
+    UINT16 data_out;
+    UINT16 data_NRZ[7];
+    UINT8 i, j,i_value;
+    ClearWDT();
+	if((NUM_Type==0)||(NUM_Type==1))i_value=3;
+	else if(NUM_Type==2)i_value=7;
+    for (i = 0; i < i_value; i++)
+    {
+        if ((NUM_Type == 0)||(NUM_Type == 2))
+            data_in = SPI_Receive_DataForC[i];
+        else
+            data_in = SPI_Receive_DataForC[i + 3];
+        data_out = 0;
+        data_in = data_in >> 1;
+        for (j = 0; j < 16; j++)
+        {
+            data_out = data_out << 1;
+            if (data_in & 0x00000001)
+                data_out += 1;
+            data_in = data_in >> 2;
+        }
+        data_NRZ[i] = data_out;
+    }
+	if((NUM_Type==0)||(NUM_Type==1))
+	{
+	    if (data_NRZ[2] == ((data_NRZ[0] + data_NRZ[1]) & 0xFFFF))
+	    {
+	        FLAG_Signal_DATA_OK = 1;
+	        DATA_Packet_ID = (data_NRZ[1] & 0x00FF) * 65536 + data_NRZ[0];
+	        if (DATA_Packet_ID == 0)
+	            FLAG_Signal_DATA_OK = 0;                          //2014.3.21čż˝ĺ   ä¸ĺčŽ¸ä˝żç¨ID=0
+	        DATA_Packet_Contro_buf = (data_NRZ[1] & 0xFF00) >> 8; //2015.3.24äżŽć­Ł Controlçźĺ­čľ?IDĺ¤ć­ćŻĺŚĺ­Śäš čżĺćč˝ä˝?
+	    }
+	    else
+	        FLAG_Signal_DATA_OK = 0;
+	}
 }
 
 void eeprom_IDcheck(void)

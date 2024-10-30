@@ -7,6 +7,7 @@
 /*  Mark        :ver 1.0                                               */
 /***********************************************************************/
 #include "initial.h"		// 初始化  预定义
+
 extern volatile union{
 	unsigned char BYTE;
 	struct {
@@ -124,7 +125,8 @@ extern volatile union{
 		unsigned char	Bit7:	1;
 	}BIT;
 }Mark0;
-#define flag_tx_done Mark0.BIT.Bit0
+#define Flag_TxDone Mark0.BIT.Bit0
+#define Flag_RxDone Mark0.BIT.Bit1
 
 extern unsigned int rssi;
 

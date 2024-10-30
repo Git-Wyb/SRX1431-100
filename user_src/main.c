@@ -50,47 +50,55 @@
 void TIM4_Init_HSE(void);
 void SysClock_Init_HSE(void);
 void LED_TEST(void);
+
 void main(void)
 {
+    u8 mode = 0;
     _DI();		// 关全局中断
     RAM_clean();       // 清除RAM
-    //WDT_init();
+    WDT_init();
     SysClock_Init();
-    //SysClock_Init_HSE();
     InitialFlashReg();
     VHF_GPIO_INIT();
     eeprom_sys_load();
-
     TIM4_Init();
-    //TIM4_Init_HSE();
     SPI_Config_Init();
-    //UART1_INIT();  // UART1 for PC Software
+    UART1_INIT();  // UART1 for PC Software
     _EI();       // 允许中断
     beep_init();
-    //LED_TEST();
-    RF_CMT2310A_Init();
+    if(Receiver_test == 0) mode = 1;
+    else mode = 0;
+    RF_CMT2310A_Init(mode);
     CMT2310A_GPIO3_INT1_EN();
     CMT2310A_Test_Mode();
+
     FLAG_APP_RX=1;
-
     TIME_EMC=10;
-    while(1)
-    {
-        ClearWDT();
-    }
-
+    CMT2310A_SetRx();
+    CG2214M6_USE_R;
   while (1)
   {
     ClearWDT(); // Service the WDT
+    if(Flag_RxDone == 1 || CMT2310A_GPIO3 == 1)
+    {
+        Flag_RxDone = 0;
+        FG_Receiver_LED_RX = 1;
+        TIMER300ms = 500;
+        CMT2300A_RxData();
+        RX_ANALYSIS();
+    }
     ID_Decode_IDCheck();
     if(time_Login_exit_256==0)ID_Decode_OUT();
-    Freq_Scanning();
+    //Freq_Scanning();
     ID_learn();
-    READ_RSSI_avg();
 
-    if((RAM_rssi_AVG>=60)||(FG_Receiver_LED_RX==1))Receiver_LED_RX=1;   //26   35
-    else if((RAM_rssi_AVG<=59)&&(FG_Receiver_LED_RX==0))Receiver_LED_RX=0;  //25  34
-
+    if (FG_Receiver_LED_RX == 1)
+        Receiver_LED_RX = 1;
+    else if (FG_Receiver_LED_RX == 0)
+        Receiver_LED_RX = 0;
+    //READ_RSSI_avg();
+    //if((RAM_rssi_AVG>=60)||(FG_Receiver_LED_RX==1))Receiver_LED_RX=1;   //26   35
+    //else if((RAM_rssi_AVG<=59)&&(FG_Receiver_LED_RX==0))Receiver_LED_RX=0;  //25  34
   }
 }
 

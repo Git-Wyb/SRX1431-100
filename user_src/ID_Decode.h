@@ -16,3 +16,4 @@ void BEEP_and_LED(void);
 void ID_Decode_OUT(void);
 void Receiver_BEEP(void);
 void  Freq_Scanning(void);
+void Packet_Signal_DATA_Decode(UINT8 NUM_Type);

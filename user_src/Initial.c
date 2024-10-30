@@ -118,11 +118,11 @@ CR1寄存器  输出 Output（1=推挽、0=OC）
 
 void CMT2310A_GPIO3_INT1_EN(void)
 {
-    CMT2310A_GPIO3_INT1_DDR = 0;   //0:Floating input,1:Input with pull-up
-    CMT2310A_GPIO3_INT1_CR1 = 0;
+    CMT2310A_GPIO3_INT1_DDR = 0;   //Input mode
+    CMT2310A_GPIO3_INT1_CR1 = 0;   //0:Floating input,1:Input with pull-up
     CMT2310A_GPIO3_INT1_CR2 = 0;   //开启中断 ;
     EXTI_CR1 &= (~MASK_EXTI_CR1_P1IS);
-    EXTI_CR1 |= 0x01;   //0x08 Falling edge only,0x01 Rising edge only
+    EXTI_CR1 |= 0x04;   //0x08 Falling edge only,0x04 Rising edge only
 }
 
 void CG2214M6_GPIO_Init(void)
@@ -416,13 +416,6 @@ void CMT2310A_Test_Mode(void)
                     vRadioClearInterrupt();
                     bRadioGoTx();
                 }
-                if(FG_test_tx_on == 1)
-                {
-                    if(CMT2310A_GPIO3 == 1)
-                    {
-                        flag_tx_done = 0;
-                    }
-                }
             }
             else
             {    //发载波，有调制信号
@@ -456,7 +449,7 @@ void CMT2310A_Test_Mode(void)
                 {
                     if(CMT2310A_GPIO3 == 1)
                     {
-                        flag_tx_done = 0;
+                        Flag_TxDone = 0;
                         bRadioGoStandby();
                         vRadioClearInterrupt();
                         bRadioGoTx();
@@ -498,6 +491,7 @@ void CMT2310A_Test_Mode(void)
         }
         PC_PRG();	       // PC控制
     }
+
     BerExtiUnInit();
     UART1_end();
     FG_test_rx=0;
@@ -508,7 +502,7 @@ void CMT2310A_Test_Mode(void)
     Receiver_LED_OUT=0;
 
     FLAG_APP_RX=1;
-    dd_set_RX_mode();
+    //dd_set_RX_mode();
     TIME_Fine_Calibration=9000;
     TIME_EMC=10;
 }
