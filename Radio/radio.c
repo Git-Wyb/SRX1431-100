@@ -72,6 +72,9 @@ void vRadioInit(u8 mode)
         vRadioSetGpio3(CMT2310A_GPIO3_INT1);
         vRadioSetGpio4(CMT2310A_GPIO4_DCLK);//CMT2310A_GPIO4_DCLK
         vRadioSetGpio5(CMT2310A_GPIO5_DOUT);//CMT2310A_GPIO5_DOUT
+        vRadioSetInt1Polar(TRUE); //FALSE:Interrupt ative-high,TRUE:Interrupt ative-low
+        vRadioSetInt2Polar(TRUE);
+        vRadioSetInt3Polar(TRUE);
     }
     else //work mode
     {
@@ -86,9 +89,9 @@ void vRadioInit(u8 mode)
         //INT1 = RX_FIFO_WBYTE,   INT2 = PKT_DONE
         vRadioSetInt1Sel(INT_SRC_PKT_DONE);
         vRadioSetInt2Sel(INT_SRC_RX_FIFO_WBYTE);
-        vRadioSetInt1Polar(FALSE); //Interrupt falling edge
-        vRadioSetInt2Polar(FALSE);
-        vRadioSetInt3Polar(FALSE);
+        vRadioSetInt1Polar(TRUE); //FALSE:Interrupt ative-high,TRUE:Interrupt ative-low
+        vRadioSetInt2Polar(TRUE);
+        vRadioSetInt3Polar(TRUE);
 
         //interrupt source enable config
         g_radio.int_src_en._BITS.PKT_DONE_EN   		= 1;
@@ -315,7 +318,7 @@ void vRadioCmpReg(byte const wr_ptr[], byte rd_ptr[], byte cmp_ptr[], byte lengt
 		}
 }
 
-void CMT2300A_RxData()
+void CMT2300A_RxData(void)
 {
    EXTI_SR1_P1F = 1;
    CMT2300A_ReadData(SPI_RECEIVE_BUFF,12);

@@ -69,7 +69,7 @@ void main(void)
     if(Receiver_test == 0) mode = 1;
     else mode = 0;
     RF_CMT2310A_Init(mode);
-    CMT2310A_GPIO3_INT1_EN();
+    CMT2310A_GPIO3_INT1_OFF();
     CMT2310A_Test_Mode();
 
     FLAG_APP_RX=1;
@@ -79,12 +79,11 @@ void main(void)
   while (1)
   {
     ClearWDT(); // Service the WDT
-    if(Flag_RxDone == 1 || CMT2310A_GPIO3 == 1)
+    if(Flag_RxDone == 1)
     {
         Flag_RxDone = 0;
         FG_Receiver_LED_RX = 1;
         TIMER300ms = 500;
-        CMT2300A_RxData();
         RX_ANALYSIS();
     }
     ID_Decode_IDCheck();

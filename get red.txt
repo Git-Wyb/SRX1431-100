@@ -1,3 +1,5 @@
 git@github.com:Git-Wyb/SRX1431-100-CMT2310A.git
 
 2024.10.21 SRX1431-100无线芯片由ADF7021改为华普CMT2310A
+
+2024.10.31  中断方式接收数据。

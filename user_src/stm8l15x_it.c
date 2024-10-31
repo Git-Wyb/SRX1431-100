@@ -169,13 +169,13 @@ INTERRUPT_HANDLER(EXTI0_IRQHandler,8)
   * @retval None
   */
 void CMT2300A_TxDone(void);
-void Clear_Flag();
+void CMT2300A_RxData(void);
 INTERRUPT_HANDLER(EXTI1_IRQHandler,9)
 {
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
-     //CMT2300A_TxDone();
+    CMT2300A_RxData();
     Flag_RxDone = 1;
 }
 

@@ -52,4 +52,5 @@ void RF_BRE_Check(void);
 void CG2214M6_GPIO_Init(void);
 void BerExtiInit(void);
 void BerExtiUnInit(void);
-void CMT2310A_GPIO3_INT1_EN(void);
+void CMT2310A_GPIO3_INT1_ON(void);
+void CMT2310A_GPIO3_INT1_OFF(void);
