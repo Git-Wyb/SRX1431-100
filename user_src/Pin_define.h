@@ -142,6 +142,10 @@
 #define CMT2310A_GPIO3_INT1_CR1     PC_CR1_C11
 #define CMT2310A_GPIO3_INT1_CR2     PC_CR2_C21
 
+#define CMT2310A_GPIO2              PC_IDR_IDR0
+#define CMT2310A_GPIO2_INT2_DDR     PC_DDR_DDR0
+#define CMT2310A_GPIO2_INT2_CR1     PC_CR1_C10
+#define CMT2310A_GPIO2_INT2_CR2     PC_CR2_C20
 
 /********************天线切换 CG2214M6控制引脚寄存器*****************************************/
 #define CG2214M6_VC1 PC_ODR_ODR6     //VC1

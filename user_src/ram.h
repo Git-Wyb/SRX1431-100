@@ -125,19 +125,24 @@ extern volatile union{
 		unsigned char	Bit7:	1;
 	}BIT;
 }Mark0;
-#define Flag_TxDone Mark0.BIT.Bit0
-#define Flag_RxDone Mark0.BIT.Bit1
+#define Flag_TxDone  Mark0.BIT.Bit0
+#define Flag_RxDone  Mark0.BIT.Bit1
+#define Flag_TxEn    Mark0.BIT.Bit2
+#define FLAG_APP_TX  Mark0.BIT.Bit3
 
-extern unsigned int rssi;
-
+extern char rssi;
+extern short RAM_RSSI_AVG;
+extern long RAM_RSSI_SUM;
+extern UINT8 RSSI_Read_Counter;
+extern UINT8 Time_APP_blank_TX;
 extern UINT8 SIO_cnt;
 extern UINT8 SIO_buff[16];
 extern UINT8 SIO_DATA[16];
 extern UINT8 Tx_Rx_mode;
-extern ADF70XX_REG_T ROM_adf7012_value[16];
-extern const ADF70XX_REG_T Default_adf7012_value[16];
+//extern ADF70XX_REG_T ROM_adf7012_value[16];
+//extern const ADF70XX_REG_T Default_adf7012_value[16];
 
-
+extern UINT8 CONST_TXPACKET_DATA_20000AF0[28];
 extern UINT8  TIME_10ms;
 extern UINT16 TIME_auto_useful;
 extern UINT8 FREQ_auto_useful;
@@ -187,11 +192,12 @@ extern UINT16 X_ERRTimer;
 
 extern UINT16 time_Login_exit_256;
 
-extern UINT16 TIME_Fine_Calibration;   //窄带下中频滤波器100KHz精校
+//extern UINT16 TIME_Fine_Calibration;   //窄带下中频滤波器100KHz精校
 
-extern ADF70XX_REG_T RSSI_value_buf;  //RSSI 测试
+//extern ADF70XX_REG_T RSSI_value_buf;  //RSSI 测试
 
-extern UINT32 Time_Nms;
+extern UINT16 Time_Nms;
+extern UINT16 Time_Tx_Out;
 extern UINT32 Freq_Value;
 void delay_nms(UINT32 nms);
 void delay1ms(UINT32 u32Cnt);

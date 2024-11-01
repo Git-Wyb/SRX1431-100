@@ -13,7 +13,6 @@
 #include "uart.h"		// uart
 #include "radio.h"
 
-
 void RAM_clean(void){						// 清除RAM
 	/*asm("ldw X,#0");
 	asm("clear_ram:");
@@ -134,6 +133,24 @@ void CMT2310A_GPIO3_INT1_OFF(void)
     EXTI_CR1 |= 0x08;   //0x08 Falling edge only,0x04 Rising edge only,0x0C  Rising and falling edge
 }
 
+void CMT2310A_GPIO2_INT2_ON(void)
+{
+    CMT2310A_GPIO2_INT2_DDR = 0;   //Input mode
+    CMT2310A_GPIO2_INT2_CR1 = 1;   //0:Floating input,1:Input with pull-up
+    CMT2310A_GPIO2_INT2_CR2 = 1;   //开启中断 ;
+    EXTI_CR1 &= (~MASK_EXTI_CR1_P0IS);
+    EXTI_CR1 |= 0x02;   //0x02 Falling edge only,0x01 Rising edge only,0x03  Rising and falling edge
+}
+
+void CMT2310A_GPIO2_INT2_OFF(void)
+{
+    CMT2310A_GPIO2_INT2_DDR = 0;   //Input mode
+    CMT2310A_GPIO2_INT2_CR1 = 1;   //0:Floating input,1:Input with pull-up
+    CMT2310A_GPIO2_INT2_CR2 = 0;   //关闭中断 ;
+    EXTI_CR1 &= (~MASK_EXTI_CR1_P0IS);
+    EXTI_CR1 |= 0x02;
+}
+
 void CG2214M6_GPIO_Init(void)
 {
     CG2214M6_VC1_DDR = Output; /* 设置数据方向寄存噿1为输出，0为输兿-查看STM8寄存器RM0031.pdf 10.9 */
@@ -245,7 +262,7 @@ unsigned char x;                   //延时T=((timer-1)*0.313+2 us
      __asm("nop");
 }
 
-
+/*
 void RF_test_mode(void )
 {
   UINT8 uart_data,Boot_i;
@@ -357,9 +374,9 @@ void RF_test_mode(void )
 
     FLAG_APP_RX=1;
     dd_set_RX_mode();
-    TIME_Fine_Calibration=9000;
+    //TIME_Fine_Calibration=9000;
     TIME_EMC=10;
-}
+}  */
 
 //CMT2310A_CFG	g_radio;
 UINT8 rreg = 0;
@@ -408,6 +425,8 @@ void CMT2310A_Test_Mode(void)
                 {
                     CG2214M6_USE_T;
                     FG_test_tx_on=1;
+                    bRadioGoStandby();
+                    CMT2310A_Freq_Select(429175000);
                     g_radio.frame_cfg.DATA_MODE = 2;//0=direct mode, 	2=packet mode
                     vRadioCfgFrameFormat(&g_radio.frame_cfg);
                     g_radio.word_mode_cfg.WORK_MODE_CFG1_u._BITS.TX_EXIT_STATE = EXIT_TO_TX;	//exit Tx mode for transmit prefix
@@ -439,6 +458,8 @@ void CMT2310A_Test_Mode(void)
                 {
                     CG2214M6_USE_T;
                     FG_test_tx_1010=1;
+                    bRadioGoStandby();
+                    CMT2310A_Freq_Select(429175000);
                     g_radio.frame_cfg.DATA_MODE = 2;//0=direct mode, 	2=packet mode
                     vRadioCfgFrameFormat(&g_radio.frame_cfg);
                     g_radio.word_mode_cfg.WORK_MODE_CFG1_u._BITS.TX_EXIT_STATE = EXIT_TO_TX;	//exit Tx mode for transmit prefix
@@ -459,7 +480,6 @@ void CMT2310A_Test_Mode(void)
                     if(CMT2310A_GPIO3 == 0)
                     {
                         Flag_TxDone = 0;
-                        bRadioGoStandby();
                         vRadioClearInterrupt();
                         bRadioGoTx();
                     }
@@ -474,16 +494,15 @@ void CMT2310A_Test_Mode(void)
             FG_test_mode=0;
             FG_test_tx_on=0;
             FG_test_tx_1010=0;
-            //rreg = CMT2310A_ReadReg(0,0x28);
             if(FG_test_tx_off==0)
             {
                 CG2214M6_USE_R;
                 FG_test_tx_off=1;
+                bRadioGoStandby();
+                CMT2310A_Freq_Select(426075000);
                 g_radio.frame_cfg.DATA_MODE = 0;//0=direct mode, 	2=packet mode
                 vRadioCfgFrameFormat(&g_radio.frame_cfg);
-                //rreg = CMT2310A_ReadReg(0,0x28);
                 bRadioGoRx();
-                //rreg = CMT2310A_ReadReg(0,0x28);
             }
             if(Tx_Rx_mode==2)
             {
@@ -513,7 +532,7 @@ void CMT2310A_Test_Mode(void)
 
     FLAG_APP_RX=1;
     //dd_set_RX_mode();
-    TIME_Fine_Calibration=9000;
+    //TIME_Fine_Calibration=9000;
     TIME_EMC=10;
 }
 
@@ -522,6 +541,7 @@ void RF_BRE_Check(void)
     ClearWDT();
     if (X_COUNT >= 500)
     {
+        rssi = CMT2310A_Get_RSSI();
         if (X_ERR >= 25)
             Receiver_LED_RX = 0;
         else

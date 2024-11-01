@@ -82,20 +82,22 @@ volatile union{
 	}BIT;
 }Mark0 = {0};
 
-unsigned int rssi;
+char rssi = 0;
+short RAM_RSSI_AVG = 0;
+long RAM_RSSI_SUM = 0;
+UINT8 RSSI_Read_Counter = 0;
 
 UINT8 SIO_cnt;
 UINT8 SIO_buff[16];
 UINT8 SIO_DATA[16];
 UINT8 Tx_Rx_mode=0;
-ADF70XX_REG_T ROM_adf7012_value[16];
-const ADF70XX_REG_T Default_adf7012_value[16]={0x00000000,0x0176D051,0x00000000,0x00000000,
+//ADF70XX_REG_T ROM_adf7012_value[16];
+/*const ADF70XX_REG_T Default_adf7012_value[16]={0x00000000,0x0176D051,0x00000000,0x00000000,
                                                0x00000000,0x00000000,0x00000000,0x00000000,
                                                0x00000000,0x00000000,0x00000000,0x00000000,
                                                0x00000000,0x00000000,0x00000000,0x00000000,
-                                               };
-
-
+                                               };*/
+UINT8 Time_APP_blank_TX = 0;
 UINT8  TIME_10ms=0;
 UINT16 TIME_auto_useful = 0;
 UINT8 FREQ_auto_useful = 0;
@@ -145,13 +147,14 @@ UINT16 X_ERRTimer = 0;
 
 UINT16 time_Login_exit_256=0;
 
-UINT16 TIME_Fine_Calibration=0;   //窄带下中频滤波器100KHz精校
+//UINT16 TIME_Fine_Calibration=0;   //窄带下中频滤波器100KHz精校
 
-ADF70XX_REG_T RSSI_value_buf;  //RSSI 测试
+//ADF70XX_REG_T RSSI_value_buf;  //RSSI 测试
 
 UINT32 Freq_Value = 426075000ul;
 
-UINT32 Time_Nms = 0;
+UINT16 Time_Nms = 0;
+UINT16 Time_Tx_Out = 0;
 
 UINT8 CONST_TXPACKET_DATA_20000AF0[28] = {
 	0X95, 0X55, 0X55, 0X55,
@@ -162,7 +165,7 @@ UINT8 CONST_TXPACKET_DATA_20000AF0[28] = {
 	0X95, 0X55, 0X55, 0X55,
 	0X95, 0X55, 0X55, 0X55};
 
-void delay_nms(UINT32 nms)
+void delay_nms(UINT16 nms)
 {
     Time_Nms = nms;
     while(Time_Nms)
@@ -171,9 +174,9 @@ void delay_nms(UINT32 nms)
     }
 }
 
-void delay1ms(UINT32 u32Cnt)
+void delay1ms(UINT16 u16Cnt)
 {
-    delay_nms(u32Cnt);
+    delay_nms(u16Cnt);
 }
 
 void delay_nus(UINT8 nus)

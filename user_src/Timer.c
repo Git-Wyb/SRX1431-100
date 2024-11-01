@@ -42,6 +42,9 @@ void TIM4_UPD_OVF(void){                             //725==1秒
         --FREQ_auto_useful_continuous;
     }
     if(Time_Nms) --Time_Nms;
+    if(Time_APP_blank_TX)
+        --Time_APP_blank_TX;
+    if(Time_Tx_Out) --Time_Tx_Out;
 	TIM4_SR1_bit.UIF=0;						// 清除中断标记
 }
 

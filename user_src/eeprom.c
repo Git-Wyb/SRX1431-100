@@ -191,7 +191,7 @@ void eeprom_sys_load(void){
         ClearWDT(); // Service the WDT
     }
 
-
+  /*
   for (i=1;i<2;i++)
   {
     j=0x380+i*4;
@@ -201,7 +201,7 @@ void eeprom_sys_load(void){
     ROM_adf7012_value[i].byte[3]= ReadByteEEPROM( addr_eeprom_sys+j+3 );
     if((ROM_adf7012_value[i].whole_reg==0)||(ROM_adf7012_value[i].whole_reg==0xFFFFFFFF))ROM_adf7012_value[i]=Default_adf7012_value[i];
   }
-
+ */
 
 }
 
@@ -357,7 +357,7 @@ void ID_learn(void)
      if(TIME_Login_EXIT_Button)--TIME_Login_EXIT_Button;
      if(Manual_override_TIMER)--Manual_override_TIMER;
      if(time_Login_exit_256)--time_Login_exit_256;
-     if(TIME_Fine_Calibration)--TIME_Fine_Calibration;
+     //if(TIME_Fine_Calibration)--TIME_Fine_Calibration;
 //     if(rssi_TIME)--rssi_TIME;
 //     if(TIMER60s)--TIMER60s;
 //     if(TIMER_err_1s)--TIMER_err_1s;

@@ -41,7 +41,7 @@ void UART1_end(void){		//
 }
 //--------------------------------------------
 void UART1_RX_RXNE(void){		// RXD中断服务程序
-	unsigned char dat;
+	/*unsigned char dat;
 	dat = USART1_DR;							// 接收数据
 
 	if (dat=='(')  SIO_cnt = 0;
@@ -53,11 +53,11 @@ void UART1_RX_RXNE(void){		// RXD中断服务程序
 		}
 		BIT_SIO = 1;						// 标志
 		//SIO_TOT = 20;
-	}
+	}  */
 
 }
 
-
+ /*
 //--------------------------------------------
 void Send_char(unsigned char ch){			// 发送字符
 	TXD1_enable;							// 允许发送
@@ -78,7 +78,7 @@ void Send_String(unsigned char *string){	// 发送字符串
 	while(!USART1_SR_TC);					// 等待完成发送
 	RXD1_enable;							// 允许接收及其中断
 //	BIT_SIO = 0;							// 标志
-}
+}  */
 
 
 /***********************************************************************/
@@ -111,7 +111,7 @@ unsigned char asc_hex_2(unsigned char asc1,unsigned char asc0)
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 void PC_PRG(void)								// 串口命令
-{
+{   /*
 	unsigned int  i,j;
 	unsigned char  d3,d2,d1,d0;
 
@@ -210,5 +210,5 @@ void PC_PRG(void)								// 串口命令
 			break;
 
 		}
-	}
+	} */
 }

@@ -13,7 +13,7 @@
 #include  <iostm8l151g4.h>				// CPU型号
 #include "Pin_define.h"		// 管脚定义
 #include "ram.h"		// RAM定义
-
+#if 0
 void dd_write_7021_reg(unsigned char* reg_bytes)
 {
     UINT8 i, j;
@@ -126,7 +126,7 @@ void dd_set_TX_mode(void)
 }
 
 void dd_set_TX_mode_carrier(void)
-{
+{ /*
   UINT16 i;
 
 
@@ -159,12 +159,12 @@ void dd_set_TX_mode_carrier(void)
 
 	register_value.whole_reg = 0x0000010F;                      //TX test
 	dd_write_7021_reg(&register_value.byte[0]);
-        Delayus(122);		//delay 40us
+        Delayus(122);		//delay 40us  */
 }
 
 
 void dd_set_TX_mode_1010pattern(void)
-{
+{  /*
   UINT16 i;
 
 	ADF70XX_REG_T register_value;
@@ -196,7 +196,7 @@ void dd_set_TX_mode_1010pattern(void)
 
 	register_value.whole_reg = 0x0000040F;                      //TX test
 	dd_write_7021_reg(&register_value.byte[0]);
-        Delayus(122);		//delay 40us
+        Delayus(122);		//delay 40us   */
 }
 
 
@@ -337,7 +337,7 @@ void dd_set_ADF7021_Power_on(void)
 const unsigned char gain_correction[] =
     { 2*86, 2*78, 2*68, 2*52, 2*58, 2*38, 2*24, 0,
 	0, 0, 0, 0, 0, 0, 0, 0 }; // 7021
-
+/*
 void dd_read_RSSI(void)
 {
 	ADF70XX_REG_T RSSI_value;
@@ -355,7 +355,7 @@ void dd_read_RSSI(void)
     rssi = rssi /4 ;
 	//RSSI(dBm) = rssi + 130
 
-}
+}*/
 
 void READ_RSSI_avg(void)
 {
@@ -371,3 +371,4 @@ void READ_RSSI_avg(void)
                         }
                    }
 }
+#endif

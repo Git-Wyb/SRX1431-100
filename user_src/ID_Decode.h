@@ -10,7 +10,7 @@
 void EXIT_init(void);
 void ID_Decode_function(void);
 void ID_Decode_IDCheck(void);
-void Signal_DATA_Decode(UINT8 NUM_Type);
+//void Signal_DATA_Decode(UINT8 NUM_Type);
 void eeprom_IDcheck(void);
 void BEEP_and_LED(void);
 void ID_Decode_OUT(void);

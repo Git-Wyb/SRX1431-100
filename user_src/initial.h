@@ -54,3 +54,5 @@ void BerExtiInit(void);
 void BerExtiUnInit(void);
 void CMT2310A_GPIO3_INT1_ON(void);
 void CMT2310A_GPIO3_INT1_OFF(void);
+void CMT2310A_GPIO2_INT2_ON(void);
+void CMT2310A_GPIO2_INT2_OFF(void);

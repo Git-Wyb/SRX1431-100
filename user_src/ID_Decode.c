@@ -24,7 +24,7 @@ void EXIT_init(void){
 
 
 void ID_Decode_function(void)
-{
+{  /*
   UINT16 DATA_Packet_Syn_bak=0;
   if(FLAG_APP_RX==1){
      TIME_EMC=10;
@@ -79,7 +79,7 @@ void ID_Decode_function(void)
       X_COUNT ++;
       if((ADF7021_DATA_rx== X_HIS)&&(X_COUNT != 1))X_ERR++;
       X_HIS = ADF7021_DATA_rx;
-  }
+  }  */
   EXTI_SR1_bit.P2F=1;
 }
 
@@ -112,7 +112,7 @@ void ID_Decode_IDCheck(void)
 //             #endif
 //                if(((DATA_Packet_Code[1]&0x0000FFFF)==0x5556)&&(Freq_Scanning_CH_bak==0)){
 		if((SPI_Receive_DataForC[1]&0x0000FFFF)==0x5556){
-                    Signal_DATA_Decode(1);
+                    Packet_Signal_DATA_Decode(1);
                     if(FLAG_Signal_DATA_OK==1){
                             eeprom_IDcheck();
                             if(DATA_Packet_Contro_buf==0xFF){                   //2015.4.2����  �������Աߵĵ�¼�� ׷�ӵ�¼����
@@ -197,7 +197,7 @@ void ID_Decode_IDCheck(void)
 
 
 
-
+ /*
 void Signal_DATA_Decode(UINT8 NUM_Type)
 {
     UINT32 data_in;
@@ -228,7 +228,7 @@ void Signal_DATA_Decode(UINT8 NUM_Type)
       }
       else FLAG_Signal_DATA_OK=0;
 }
-
+ */
 void Packet_Signal_DATA_Decode(UINT8 NUM_Type)
 {
     UINT32 data_in;
@@ -520,14 +520,14 @@ void  Freq_Scanning(void)
 //        TIMER18ms=36;
 //        dd_set_RX_mode();
 //    }
-
+    /*
     if(((FLAG_Receiver_Scanning==1)||(TIME_EMC==0)||(TIME_Fine_Calibration==0))&&(FLAG_APP_RX==1))
     {
         FLAG_Receiver_Scanning=0;
         if(TIME_Fine_Calibration==0){TIME_Fine_Calibration=9000;dd_set_ADF7021_Power_on();dd_set_RX_mode();}
         dd_set_ADF7021_Freq();
         TIMER18ms=36;
-    }
+    } */
 }
 
 void DataReceive(void)

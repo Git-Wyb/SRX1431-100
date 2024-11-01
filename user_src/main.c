@@ -55,7 +55,7 @@ void main(void)
 {
     u8 mode = 0;
     _DI();		// 关全局中断
-    RAM_clean();       // 清除RAM
+    //RAM_clean();       // 清除RAM
     WDT_init();
     SysClock_Init();
     InitialFlashReg();
@@ -63,7 +63,7 @@ void main(void)
     eeprom_sys_load();
     TIM4_Init();
     SPI_Config_Init();
-    UART1_INIT();  // UART1 for PC Software
+    //UART1_INIT();  // UART1 for PC Software
     _EI();       // 允许中断
     beep_init();
     if(Receiver_test == 0) mode = 1;
@@ -75,7 +75,9 @@ void main(void)
     FLAG_APP_RX=1;
     TIME_EMC=10;
     CMT2310A_SetRx();
-    CG2214M6_USE_R;
+    vRadioClearTxFifo();
+    vRadioClearInterrupt();
+    CMT2310A_GPIO2_INT2_ON();
   while (1)
   {
     ClearWDT(); // Service the WDT
@@ -85,10 +87,15 @@ void main(void)
         FG_Receiver_LED_RX = 1;
         TIMER300ms = 500;
         RX_ANALYSIS();
+        Flag_TxEn = 1;
+        Time_APP_blank_TX = 200;
     }
+
+    APP_TX_PACKET();
+
     ID_Decode_IDCheck();
     if(time_Login_exit_256==0)ID_Decode_OUT();
-    //Freq_Scanning();
+
     ID_learn();
 
     if (FG_Receiver_LED_RX == 1)
