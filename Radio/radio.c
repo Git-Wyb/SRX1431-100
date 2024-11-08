@@ -104,7 +104,7 @@ void vRadioInit(u8 mode)
         vRadioSetInt1Polar(TRUE); //FALSE:Interrupt ative-high,TRUE:Interrupt ative-low
         vRadioSetInt2Polar(TRUE);
         vRadioSetInt3Polar(TRUE);
-
+    }
         //interrupt source enable config
         g_radio.int_src_en._BITS.PKT_DONE_EN   		= 1;
         g_radio.int_src_en._BITS.CRC_PASS_EN   		= 1;
@@ -154,7 +154,7 @@ void vRadioInit(u8 mode)
         g_radio.sync_cfg.SYNC_VALUE[2] = 0x55;
         g_radio.sync_cfg.SYNC_VALUE_SEL= 0;							//select SYN_VAL
         vRadioCfgSyncWord(&g_radio.sync_cfg); */
-    }
+
     /*
 	//packet node address config
 	g_radio.addr_cfg.ADDR_CFG_u._BITS.ADDR_DET_MODE = 0;		//disable Node Address
@@ -264,7 +264,7 @@ void vRadioInit(u8 mode)
 
 	vRadioFifoAutoClearGoRx(TRUE);								//when crc error, need to auto clear fifo, should enable
 
-	vRadioRssiUpdateSel(CMT2310A_RSSI_UPDATE_ALWAYS);
+	vRadioRssiUpdateSel(CMT2310A_RSSI_UPDATE_ALWAYS);           //Read Rssi must set
 
 	vRadioSetAntSwitch(FALSE, FALSE);							//
 
@@ -346,9 +346,10 @@ void CMT2300A_RxDone(void)
 void CMT2310A_SetRx(void)
 {
     CG2214M6_USE_R;
+    bRadioGoStandby();
     g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
     vRadioSetPayloadLength(&g_radio.frame_cfg);
-    vRadioSetInt1Sel(CMT2310A_INT_PKT_DONE);
+    vRadioSetInt1Sel(INT_SRC_PKT_DONE);
     CMT2310A_Freq_Select(426075000);
     CMT2310A_DataRate_Select(RATE_1_2K);
     bRadioGoRx();
@@ -360,7 +361,7 @@ void CMT2310A_SetTx(void)
     bRadioGoStandby();
     CMT2310A_Freq_Select(429350000);
     CMT2310A_DataRate_Select(RATE_4_8K);
-    vRadioSetInt2Sel(CMT2310A_INT_TX_DONE);
+    vRadioSetInt2Sel(INT_SRC_TX_DONE);
     g_radio.frame_cfg.PAYLOAD_LENGTH = 28;
     vRadioSetPayloadLength(&g_radio.frame_cfg);
 }
@@ -419,7 +420,7 @@ void RX_ANALYSIS(void)
 
 void APP_TX_PACKET(void)
 {
-    if(Flag_TxEn == 1 && Time_APP_blank_TX == 0)
+    if(Flag_TxEn == 1 && Time_APP_blank_TX == 0 && FLAG_ID_Erase_Login == 0 && FLAG_ID_Login == 0)
     {
         Flag_TxEn = 0;
         Uart_Struct_DATA_Packet_Contro.Fno_Type.UN.fno = 0;
@@ -495,6 +496,39 @@ void CMT2310A_Freq_Select(u32 freq)
             g_cmt2310a_page1[52] = 0xD8;
             break;
 
+        case 426100000:
+            g_cmt2310a_page1[16] = 0x6A;
+            g_cmt2310a_page1[17] = 0x66;
+            g_cmt2310a_page1[18] = 0x66;
+            g_cmt2310a_page1[19] = 0x08;
+            g_cmt2310a_page1[49] = 0x6A;
+            g_cmt2310a_page1[50] = 0x66;
+            g_cmt2310a_page1[51] = 0xE6;
+            g_cmt2310a_page1[52] = 0xD8;
+            break;
+
+        case 426200000:
+            g_cmt2310a_page1[16] = 0x6A;
+            g_cmt2310a_page1[17] = 0xCC;
+            g_cmt2310a_page1[18] = 0xCC;
+            g_cmt2310a_page1[19] = 0x08;
+            g_cmt2310a_page1[49] = 0x6A;
+            g_cmt2310a_page1[50] = 0xCC;
+            g_cmt2310a_page1[51] = 0x4C;
+            g_cmt2310a_page1[52] = 0xD9;
+            break;
+
+        case 426750000:
+            g_cmt2310a_page1[16] = 0x6A;
+            g_cmt2310a_page1[17] = 0x00;
+            g_cmt2310a_page1[18] = 0x00;
+            g_cmt2310a_page1[19] = 0x0B;
+            g_cmt2310a_page1[49] = 0x6A;
+            g_cmt2310a_page1[50] = 0x00;
+            g_cmt2310a_page1[51] = 0x80;
+            g_cmt2310a_page1[52] = 0xDB;
+            break;
+
         case 429175000:
             g_cmt2310a_page1[16] = 0x6B;
             g_cmt2310a_page1[17] = 0x33;
@@ -503,6 +537,17 @@ void CMT2310A_Freq_Select(u32 freq)
             g_cmt2310a_page1[49] = 0x6B;
             g_cmt2310a_page1[50] = 0x33;
             g_cmt2310a_page1[51] = 0x33;
+            g_cmt2310a_page1[52] = 0xD5;
+            break;
+
+        case 429200000:
+            g_cmt2310a_page1[16] = 0x6B;
+            g_cmt2310a_page1[17] = 0xCC;
+            g_cmt2310a_page1[18] = 0xCC;
+            g_cmt2310a_page1[19] = 0x04;
+            g_cmt2310a_page1[49] = 0x6B;
+            g_cmt2310a_page1[50] = 0xCC;
+            g_cmt2310a_page1[51] = 0x4C;
             g_cmt2310a_page1[52] = 0xD5;
             break;
 
@@ -515,6 +560,17 @@ void CMT2310A_Freq_Select(u32 freq)
             g_cmt2310a_page1[50] = 0x66;
             g_cmt2310a_page1[51] = 0xE6;
             g_cmt2310a_page1[52] = 0xD5;
+            break;
+
+        case 429550000:
+            g_cmt2310a_page1[16] = 0x6B;
+            g_cmt2310a_page1[17] = 0x33;
+            g_cmt2310a_page1[18] = 0x33;
+            g_cmt2310a_page1[19] = 0x06;
+            g_cmt2310a_page1[49] = 0x6B;
+            g_cmt2310a_page1[50] = 0x33;
+            g_cmt2310a_page1[51] = 0xB3;
+            g_cmt2310a_page1[52] = 0xD6;
             break;
     }
     vRadioRegPageSel(1);
@@ -551,6 +607,24 @@ void CMT2310A_DataRate_Select(DataRate_ENUM rate)
             g_cmt2310a_page1[85] = 0x04;
             break;
 
+        case RATE_2_4K:
+            g_cmt2310a_page1[21] = 0xEA;
+            g_cmt2310a_page1[22] = 0x04;
+            g_cmt2310a_page1[26] = 0x05;
+            g_cmt2310a_page1[60] = 0xEA;
+            g_cmt2310a_page1[61] = 0x04;
+            g_cmt2310a_page1[64] = 0x01;
+            g_cmt2310a_page1[69] = 0x15;
+            g_cmt2310a_page1[70] = 0x34;
+            g_cmt2310a_page1[73] = 0x70;
+            g_cmt2310a_page1[75] = 0xD0;
+            g_cmt2310a_page1[78] = 0x1B;
+            g_cmt2310a_page1[81] = 0x08;
+            g_cmt2310a_page1[82] = 0x09;
+            g_cmt2310a_page1[84] = 0x48;
+            g_cmt2310a_page1[85] = 0x08;
+            break;
+
         case RATE_4_8K:
             g_cmt2310a_page1[21] = 0xD5;
             g_cmt2310a_page1[22] = 0x09;
@@ -566,6 +640,24 @@ void CMT2310A_DataRate_Select(DataRate_ENUM rate)
             g_cmt2310a_page1[81] = 0x0C;
             g_cmt2310a_page1[82] = 0x09;
             g_cmt2310a_page1[84] = 0x24;
+            g_cmt2310a_page1[85] = 0x08;
+            break;
+
+        case RATE_9_6K:
+            g_cmt2310a_page1[21] = 0xA9;
+            g_cmt2310a_page1[22] = 0x13;
+            g_cmt2310a_page1[26] = 0x04;
+            g_cmt2310a_page1[60] = 0xA9;
+            g_cmt2310a_page1[61] = 0x13;
+            g_cmt2310a_page1[64] = 0x01;
+            g_cmt2310a_page1[69] = 0x05;
+            g_cmt2310a_page1[70] = 0x0D;
+            g_cmt2310a_page1[73] = 0x72;
+            g_cmt2310a_page1[75] = 0xD0;
+            g_cmt2310a_page1[78] = 0x1B;
+            g_cmt2310a_page1[81] = 0x0C;
+            g_cmt2310a_page1[82] = 0x09;
+            g_cmt2310a_page1[84] = 0x12;
             g_cmt2310a_page1[85] = 0x08;
             break;
     }

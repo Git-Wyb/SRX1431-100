@@ -427,21 +427,21 @@ void CMT2310A_Test_Mode(void)
                     FG_test_tx_on=1;
                     bRadioGoStandby();
                     CMT2310A_Freq_Select(429175000);
-                    g_radio.frame_cfg.DATA_MODE = 2;//0=direct mode, 	2=packet mode
+                    g_radio.frame_cfg.DATA_MODE = 0;//0=direct mode, 	2=packet mode
                     vRadioCfgFrameFormat(&g_radio.frame_cfg);
                     g_radio.word_mode_cfg.WORK_MODE_CFG1_u._BITS.TX_EXIT_STATE = EXIT_TO_TX;	//exit Tx mode for transmit prefix
                     vRadioCfgWorkMode(&g_radio.word_mode_cfg);
-                    g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
-                    vRadioSetPayloadLength(&g_radio.frame_cfg);
-                    vRadioSetInt1Sel(CMT2310A_INT_TX_DONE);
+                    //g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
+                    //vRadioSetPayloadLength(&g_radio.frame_cfg);
+                    //vRadioSetInt1Sel(INT_SRC_TX_DONE);
 
-                    for(Boot_i=0; Boot_i<UHF_LEN; Boot_i++)
-                    {
-                        radio_tx_buf[Boot_i] = 0x00;
-                    }
-                    vRadioWriteFifo(radio_tx_buf, UHF_LEN);
-                    vRadioClearTxFifo();
-                    vRadioClearInterrupt();
+                    //for(Boot_i=0; Boot_i<UHF_LEN; Boot_i++)
+                    //{
+                       // radio_tx_buf[Boot_i] = 0x00;
+                    //}
+                    //vRadioWriteFifo(radio_tx_buf, UHF_LEN);
+                    //vRadioClearTxFifo();
+                    //vRadioClearInterrupt();
                     bRadioGoTx();
                 }
             }
@@ -466,7 +466,7 @@ void CMT2310A_Test_Mode(void)
                     vRadioCfgWorkMode(&g_radio.word_mode_cfg);
                     g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
                     vRadioSetPayloadLength(&g_radio.frame_cfg);
-                    vRadioSetInt1Sel(CMT2310A_INT_TX_DONE);
+                    vRadioSetInt1Sel(INT_SRC_TX_DONE);
 
                     for(Boot_i=0; Boot_i<UHF_LEN; Boot_i++)
                     {
@@ -480,7 +480,10 @@ void CMT2310A_Test_Mode(void)
                     if(CMT2310A_GPIO3 == 0)
                     {
                         Flag_TxDone = 0;
+                        bRadioGoStandby();  //must
+                        vRadioClearTxFifo();
                         vRadioClearInterrupt();
+                        vRadioWriteFifo(radio_tx_buf, UHF_LEN); //must
                         bRadioGoTx();
                     }
                 }
@@ -499,6 +502,8 @@ void CMT2310A_Test_Mode(void)
                 CG2214M6_USE_R;
                 FG_test_tx_off=1;
                 bRadioGoStandby();
+                vRadioClearTxFifo();
+                vRadioClearInterrupt();
                 CMT2310A_Freq_Select(426075000);
                 g_radio.frame_cfg.DATA_MODE = 0;//0=direct mode, 	2=packet mode
                 vRadioCfgFrameFormat(&g_radio.frame_cfg);
@@ -541,7 +546,6 @@ void RF_BRE_Check(void)
     ClearWDT();
     if (X_COUNT >= 500)
     {
-        rssi = CMT2310A_Get_RSSI();
         if (X_ERR >= 25)
             Receiver_LED_RX = 0;
         else
