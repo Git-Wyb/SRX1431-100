@@ -379,7 +379,7 @@ void RF_test_mode(void )
 }  */
 
 //CMT2310A_CFG	g_radio;
-UINT8 rreg = 0;
+
 void CMT2310A_Test_Mode(void)
 {
     UINT8 Boot_i;
@@ -527,7 +527,6 @@ void CMT2310A_Test_Mode(void)
 
     BerExtiUnInit();
     UART1_end();
-    CMT2310A_GPIO3_INT1_ON();
     FG_test_rx=0;
     TIMER1s=0;
     Receiver_LED_TX=0;

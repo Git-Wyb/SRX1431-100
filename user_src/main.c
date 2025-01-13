@@ -50,7 +50,7 @@
 void TIM4_Init_HSE(void);
 void SysClock_Init_HSE(void);
 void LED_TEST(void);
-
+u8 read_reg = 0;
 void main(void)
 {
     u8 mode = 0;
@@ -77,6 +77,7 @@ void main(void)
     CMT2310A_SetRx();
     vRadioClearTxFifo();
     vRadioClearInterrupt();
+    CMT2310A_GPIO3_INT1_ON();
     CMT2310A_GPIO2_INT2_ON();
   while (1)
   {
@@ -84,15 +85,17 @@ void main(void)
     if(Flag_RxDone == 1)
     {
         Flag_RxDone = 0;
-        FG_Receiver_LED_RX = 1;
-        TIMER300ms = 500;
+        Flag_FREQ_Scan = 0;
         RX_ANALYSIS();
         Flag_TxEn = 1;
         Time_APP_blank_TX = 200;
     }
 
-    APP_TX_PACKET();
-
+    //APP_TX_PACKET();
+    if(FLAG_APP_RX == 1)
+    {
+        CMT2310A_Freq_Scanning();
+    }
     ID_Decode_IDCheck();
     if(time_Login_exit_256==0)ID_Decode_OUT();
 

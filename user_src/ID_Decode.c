@@ -112,6 +112,7 @@ void ID_Decode_IDCheck(void)
 //             #endif
 //                if(((DATA_Packet_Code[1]&0x0000FFFF)==0x5556)&&(Freq_Scanning_CH_bak==0)){
 		if((SPI_Receive_DataForC[1]&0x0000FFFF)==0x5556){
+                    Flag_TX_ID_load = 1;
                     Packet_Signal_DATA_Decode(1);
                     if(FLAG_Signal_DATA_OK==1){
                             eeprom_IDcheck();
@@ -139,6 +140,7 @@ void ID_Decode_IDCheck(void)
 //#endif
 //#if defined(__Product_PIC32MX2_Receiver__)
 //                    if(Freq_Scanning_CH_bak==0){
+                       Flag_TX_ID_load = 0;
                         static UINT32 DATA_Packet_ID_auto = 0;
                         if((DATA_Packet_Control==0x40)&&(Manual_override_TIMER==0)){
                             if ((TIME_auto_useful > 0) && (TIME_auto_useful < 27000)) //27000*10ms=5min*60*90

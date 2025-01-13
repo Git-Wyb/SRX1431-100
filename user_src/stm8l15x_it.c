@@ -156,13 +156,13 @@ INTERRUPT_HANDLER(EXTID_H_IRQHandler,7)
   * @param  None
   * @retval None
   */
-void CMT2300A_TxDone(void);
+void CMT2300A_TRxDone(void);
 INTERRUPT_HANDLER(EXTI0_IRQHandler,8)
 {
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
-    CMT2300A_TxDone();
+    CMT2300A_TRxDone();
 }
 
 /**
@@ -170,13 +170,13 @@ INTERRUPT_HANDLER(EXTI0_IRQHandler,8)
   * @param  None
   * @retval None
   */
-void CMT2300A_RxDone(void);
+void CMT2300A_PramePass(void);
 INTERRUPT_HANDLER(EXTI1_IRQHandler,9)
 {
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
-    CMT2300A_RxDone();
+    CMT2300A_PramePass();
 }
 
 /**

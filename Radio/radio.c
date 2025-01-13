@@ -15,6 +15,7 @@ u8 radio_rx_buf[UHF_LEN] = {0};
 u8 SPI_RECEIVE_BUFF[SPI_REV_BUFF_LONG] = {0};
 u32 SPI_Receive_DataForC[7] = {0};
 u8 APP_TX_freq = 0;
+u8 Radio_Date_Type = 1;
 
 /******************************
 **Name:  vRadioInit
@@ -107,12 +108,12 @@ void vRadioInit(u8 mode)
     }
         //interrupt source enable config
         g_radio.int_src_en._BITS.PKT_DONE_EN   		= 1;
-        g_radio.int_src_en._BITS.CRC_PASS_EN   		= 1;
+        g_radio.int_src_en._BITS.CRC_PASS_EN   		= 0;
         g_radio.int_src_en._BITS.ADDR_PASS_EN  		= 0;
         g_radio.int_src_en._BITS.SYNC_PASS_EN  		= 1;
         g_radio.int_src_en._BITS.PREAM_PASS_EN 		= 1;
         g_radio.int_src_en._BITS.TX_DONE_EN    		= 1;
-        g_radio.int_src_en._BITS.RX_TOUT_EN    		= 1;
+        g_radio.int_src_en._BITS.RX_TOUT_EN    		= 0;
         g_radio.int_src_en._BITS.LD_STOP_EN    		= 0;
         g_radio.int_src_en._BITS.LBD_STOP_EN   		= 0;
         g_radio.int_src_en._BITS.LBD_STAT_EN   		= 0;
@@ -131,18 +132,18 @@ void vRadioInit(u8 mode)
         g_radio.int_src_en._BITS.TX_FIFO_TH_EN		= 1;
         g_radio.int_src_en._BITS.TX_FIFO_NMTY_EN	= 1;
         g_radio.int_src_en._BITS.TX_FIFO_FULL_EN	= 1;
-        g_radio.int_src_en._BITS.RX_FIFO_OVF_EN		= 1;
-        g_radio.int_src_en._BITS.RX_FIFO_TH_EN		= 1;
-        g_radio.int_src_en._BITS.RX_FIFO_NMTY_EN	= 1;
-        g_radio.int_src_en._BITS.RX_FIFO_FULL_EN 	= 1;
+        g_radio.int_src_en._BITS.RX_FIFO_OVF_EN		= 0;
+        g_radio.int_src_en._BITS.RX_FIFO_TH_EN		= 0;
+        g_radio.int_src_en._BITS.RX_FIFO_NMTY_EN	= 0;
+        g_radio.int_src_en._BITS.RX_FIFO_FULL_EN 	= 0;
         vRadioInterruptSoucreCfg(&g_radio.int_src_en);
-        /*
+
         //packet preamble config
         g_radio.preamble_cfg.PREAM_LENG_UNIT = 0;					//8-bits mode
         g_radio.preamble_cfg.PREAM_VALUE     = 0x55;				//
-        g_radio.preamble_cfg.RX_PREAM_SIZE   = 16;					//
-        g_radio.preamble_cfg.TX_PREAM_SIZE   = 96;
-        vRadioCfgPreamble(&g_radio.preamble_cfg);*/
+        g_radio.preamble_cfg.RX_PREAM_SIZE   = 2;					//2*8 = 16bit
+        g_radio.preamble_cfg.TX_PREAM_SIZE   = 12;                  //12*8 = 96bit
+        vRadioCfgPreamble(&g_radio.preamble_cfg);
         /*
         //packet syncword config
         g_radio.sync_cfg.SYN_CFG_u._BITS.SYNC_MAN_EN   = 0;			//disable syncword manchester coding
@@ -329,19 +330,36 @@ void vRadioCmpReg(byte const wr_ptr[], byte rd_ptr[], byte cmp_ptr[], byte lengt
 			cmp_ptr[i] = 0x00;
 		}
 }
-
-void CMT2300A_RxDone(void)
+u8 rreg = 0;
+void CMT2300A_PramePass(void)
 {
+    rreg = CMT2310A_ReadReg(0,0x1A);
+
+    if((rreg & 0x10) == 0x10) //PREAM_PASS_FLG
+    {
+        TIMER18ms = 550;
+        Flag_FREQ_Scan = 1;
+        FG_Receiver_LED_RX = 1;
+        TIMER300ms = 600;
+        CG2214M6_USE_R;
+        //Not needed here  bRadioGoStandby()
+        if(PROFILE_CH_FREQ_32bit_200002EC == 426075000)
+        {
+            if(Flag_TX_ID_load == 0)
+            {
+                g_radio.frame_cfg.PAYLOAD_LENGTH = 12;
+                vRadioSetPayloadLength(&g_radio.frame_cfg);
+            }
+            else
+            {
+                g_radio.frame_cfg.PAYLOAD_LENGTH = 24;
+                vRadioSetPayloadLength(&g_radio.frame_cfg);
+            }
+        }
+        vRadioClearInterrupt();
+        bRadioGoRx();
+    }
     EXTI_SR1_P1F = 1;
-    Flag_RxDone = 1;
-    rssi = CMT2310A_Get_RSSI();
-    RAM_RSSI_SUM += rssi;
-    RSSI_Read_Counter++;
-    RAM_RSSI_AVG = RAM_RSSI_SUM / RSSI_Read_Counter;
-    CMT2300A_ReadData(SPI_RECEIVE_BUFF,12);
-    vRadioClearRxFifo();
-    vRadioClearInterrupt();
-    bRadioGoRx();
 }
 void CMT2310A_SetRx(void)
 {
@@ -349,7 +367,8 @@ void CMT2310A_SetRx(void)
     bRadioGoStandby();
     g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
     vRadioSetPayloadLength(&g_radio.frame_cfg);
-    vRadioSetInt1Sel(INT_SRC_PKT_DONE);
+    vRadioSetInt1Sel(INT_SRC_PREAM_PASS);//INT_SRC_PKT_DONE ,INT_SRC_PREAM_PASS
+    vRadioSetInt2Sel(INT_SRC_PKT_DONE);
     CMT2310A_Freq_Select(426075000);
     CMT2310A_DataRate_Select(RATE_1_2K);
     bRadioGoRx();
@@ -379,14 +398,43 @@ void CMT2300A_TxData(u8 *txbuff,u8 len)
     vRadioWriteFifo(txbuff, len);
     bRadioGoTx();
 }
-void CMT2300A_TxDone(void)
+void CMT2300A_TRxDone(void)
 {
     EXTI_SR1_P0F = 1;
-    Flag_TxDone = 1;
-    Time_APP_blank_TX = 10;
-    bRadioGoStandby();
-    vRadioClearTxFifo();
-    vRadioClearInterrupt();
+
+    rreg = CMT2310A_ReadReg(0,0x1A);
+    if((rreg & 0x01) == 0x01) //PKT_DONE_FLG
+    {
+        Flag_RxDone = 1;
+        rssi = CMT2310A_Get_RSSI();
+        RAM_RSSI_SUM += rssi;
+        RSSI_Read_Counter++;
+        RAM_RSSI_AVG = RAM_RSSI_SUM / RSSI_Read_Counter;
+        if(PROFILE_CH_FREQ_32bit_200002EC == 426075000)
+        {
+            if(Flag_TX_ID_load == 0) CMT2300A_ReadData(SPI_RECEIVE_BUFF,12);
+            else CMT2300A_ReadData(SPI_RECEIVE_BUFF,24);
+        }
+        else CMT2300A_ReadData(SPI_RECEIVE_BUFF,28);
+        vRadioClearRxFifo();
+        vRadioClearInterrupt();
+        bRadioGoRx();
+        Flag_FREQ_Scan = 0;
+    }
+
+    rreg = CMT2310A_ReadReg(0,0x18);
+    if((rreg & 0x08) == 0x08) //TX_DONE_FLG
+    {
+        Flag_TxDone = 1;
+        Time_APP_blank_TX = 10;
+        bRadioGoStandby();
+        vRadioClearTxFifo();
+        vRadioClearInterrupt();
+    }
+}
+void CMT2300A_TxDone(void)
+{
+
 }
 
 u8 CMT2310A_ReadReg(u8 page,u8 addr)
@@ -401,6 +449,93 @@ u8 CMT2310A_ReadReg(u8 page,u8 addr)
 u8 CMT2310A_Get_RSSI(void)
 {
     return CMT2310A_ReadReg(0,0x22);//rssi
+}
+
+void CMT2310A_Freq_Scanning(void)
+{
+    if(TIMER18ms == 0)
+    {
+        if(Flag_FREQ_Scan)  return;
+        CMT2310A_Change_Channel();
+        CG2214M6_USE_R;
+        bRadioGoRx();
+
+        if(Radio_Date_Type==1)
+            TIMER18ms = 18;
+        else if(Radio_Date_Type > 1)
+            TIMER18ms = 18;
+        FLAG_APP_TX = 0;
+        RSSI_Read_Counter = 0;
+        RAM_RSSI_SUM = 0;
+    }
+    else Flag_FREQ_Scan = 0;
+}
+
+void CMT2310A_Change_Channel(void)
+{
+    if ((FLAG_ID_Erase_Login == 1)||(FLAG_ID_Login == 1)||(FLAG_ID_SCX1801_Login==1))
+    {
+        PROFILE_CH_FREQ_32bit_200002EC = 426075000;
+        Radio_Date_Type = 1;
+        Channels = 1;
+        CMT2310A_Frequency_Set(PROFILE_CH_FREQ_32bit_200002EC,Radio_Date_Type);
+    }
+    else
+    {
+        switch(Channels)
+        {
+            case 1:
+                    Radio_Date_Type = 1;
+                    PROFILE_CH_FREQ_32bit_200002EC = 426075000;
+                    CMT2310A_Frequency_Set(PROFILE_CH_FREQ_32bit_200002EC,Radio_Date_Type);
+                    if(ID_SCX1801_DATA == 0) Channels = 1;
+                    else Channels = 2;
+                    break;
+
+            case 2:
+                    Radio_Date_Type = 2;
+                    PROFILE_CH_FREQ_32bit_200002EC = PROFILE_CH1_FREQ_32bit_429HighSpeed;
+                    CMT2310A_Frequency_Set(PROFILE_CH_FREQ_32bit_200002EC,Radio_Date_Type);
+                    Channels = 3;
+                    break;
+
+            case 3:
+                    Radio_Date_Type = 2;
+                    PROFILE_CH_FREQ_32bit_200002EC = PROFILE_CH2_FREQ_32bit_429HighSpeed;
+                    CMT2310A_Frequency_Set(PROFILE_CH_FREQ_32bit_200002EC,Radio_Date_Type);
+                    Channels = 4;
+                    break;
+
+             case 4:
+                    Radio_Date_Type = 1;
+                    PROFILE_CH_FREQ_32bit_200002EC = 426075000;
+                    CMT2310A_Frequency_Set(PROFILE_CH_FREQ_32bit_200002EC,Radio_Date_Type);
+                    Channels = 1;
+                    break;
+
+             default:
+                break;
+        }
+    }
+}
+
+void CMT2310A_Frequency_Set(u32 freq,u8 radio_type)
+{
+    ClearWDT();
+    bRadioGoStandby();
+    CMT2310A_Freq_Select(freq);
+    if(radio_type == 1)
+    {
+        g_radio.frame_cfg.PAYLOAD_LENGTH = 12;
+        vRadioSetPayloadLength(&g_radio.frame_cfg);
+        CMT2310A_DataRate_Select(RATE_1_2K);
+    }
+    else if(radio_type == 2)
+    {
+        g_radio.frame_cfg.PAYLOAD_LENGTH = 28;
+        vRadioSetPayloadLength(&g_radio.frame_cfg);
+        CMT2310A_DataRate_Select(RATE_4_8K);
+    }
 }
 
 void ID_Decode_IDCheck(void);
@@ -474,12 +609,13 @@ void APP_TX_PACKET(void)
         Flag_TxDone = 0;
         FLAG_APP_TX = 0;
         Flag_TxEn = 0;
-        //Receiver_LED_TX = 0;
+        Receiver_LED_TX = 0;
         Time_APP_blank_TX = 0;
         bRadioGoStandby();
         CMT2310A_SetRx();
     }
 }
+
 //u8 regbuf[8] = {0};
 void CMT2310A_Freq_Select(u32 freq)
 {

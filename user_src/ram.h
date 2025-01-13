@@ -129,6 +129,8 @@ extern volatile union{
 #define Flag_RxDone  Mark0.BIT.Bit1
 #define Flag_TxEn    Mark0.BIT.Bit2
 #define FLAG_APP_TX  Mark0.BIT.Bit3
+#define Flag_FREQ_Scan  Mark0.BIT.Bit4
+#define FLAG_ID_SCX1801_Login  Mark0.BIT.Bit5
 
 extern char rssi;
 extern short RAM_RSSI_AVG;
@@ -191,6 +193,12 @@ extern UINT16 X_ERR; //记录错误的个敿
 extern UINT16 X_ERRTimer;
 
 extern UINT16 time_Login_exit_256;
+extern UINT32 PROFILE_CH_FREQ_32bit_200002EC;
+extern const UINT32 PROFILE_CH1_FREQ_32bit_429HighSpeed;
+extern const UINT32 PROFILE_CH2_FREQ_32bit_429HighSpeed;
+extern UINT8 Channels;
+extern UINT32 ID_SCX1801_DATA;
+extern UINT8 Flag_TX_ID_load;
 
 //extern UINT16 TIME_Fine_Calibration;   //窄带下中频滤波器100KHz精校
 

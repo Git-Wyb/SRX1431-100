@@ -33,6 +33,7 @@
     extern CMT2310A_CFG	g_radio;
     extern u32 SPI_Receive_DataForC[7];
     extern u8 APP_TX_freq;
+    extern u8 Radio_Date_Type;
 
 	extern unsigned char g_cmt2310a_page0[CMT2310A_PAGE0_SIZE];
 	extern unsigned char g_cmt2310a_page1[CMT2310A_PAGE1_SIZE];
@@ -63,6 +64,9 @@
     u8 CMT2310A_Get_RSSI(void);
     void CMT2310A_DataRate_Select(DataRate_ENUM rate);
     void TX_DataLoad_HighSpeed(u32 IDCache, Wireless_Body CtrCmd, u8 *Packet);
+    void CMT2310A_Freq_Scanning(void);
+    void CMT2310A_Change_Channel(void);
+    void CMT2310A_Frequency_Set(u32 freq,u8 radio_type);
 
 #endif
 
