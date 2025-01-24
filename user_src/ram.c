@@ -97,7 +97,7 @@ UINT8 Tx_Rx_mode=0;
                                                0x00000000,0x00000000,0x00000000,0x00000000,
                                                0x00000000,0x00000000,0x00000000,0x00000000,
                                                };*/
-UINT8 Time_APP_blank_TX = 0;
+UINT16 Time_APP_blank_TX = 0;
 UINT8  TIME_10ms=0;
 UINT16 TIME_auto_useful = 0;
 UINT8 FREQ_auto_useful = 0;

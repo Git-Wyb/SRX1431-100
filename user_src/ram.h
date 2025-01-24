@@ -136,7 +136,7 @@ extern char rssi;
 extern short RAM_RSSI_AVG;
 extern long RAM_RSSI_SUM;
 extern UINT8 RSSI_Read_Counter;
-extern UINT8 Time_APP_blank_TX;
+extern UINT16 Time_APP_blank_TX;
 extern UINT8 SIO_cnt;
 extern UINT8 SIO_buff[16];
 extern UINT8 SIO_DATA[16];

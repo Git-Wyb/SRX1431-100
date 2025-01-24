@@ -91,7 +91,8 @@ void ID_Decode_IDCheck(void)
     {
         FLAG_Receiver_IDCheck=0;
         //Signal_DATA_Decode(0);
-        Packet_Signal_DATA_Decode(0);
+        if(Radio_Date_Type==1) Packet_Signal_DATA_Decode(0);
+        else if(Radio_Date_Type==2) Packet_Signal_DATA_Decode(2);
         if(FLAG_Signal_DATA_OK==1)
         {
             eeprom_IDcheck();
@@ -266,6 +267,21 @@ void Packet_Signal_DATA_Decode(UINT8 NUM_Type)
 	        if (DATA_Packet_ID == 0)
 	            FLAG_Signal_DATA_OK = 0;                          //2014.3.21čż˝ĺ   ä¸ĺčŽ¸ä˝żç¨ID=0
 	        DATA_Packet_Contro_buf = (data_NRZ[1] & 0xFF00) >> 8; //2015.3.24äżŽć­Ł Controlçźĺ­čľ?IDĺ¤ć­ćŻĺŚĺ­Śäš čżĺćč˝ä˝?
+	    }
+	    else
+	        FLAG_Signal_DATA_OK = 0;
+	}
+    else if(NUM_Type==2)
+	{
+	    if (data_NRZ[6] == ((data_NRZ[0] + data_NRZ[1] + data_NRZ[2] + data_NRZ[3] + data_NRZ[4] + data_NRZ[5]) & 0xFFFF))
+	    {
+	        FLAG_Signal_DATA_OK = 1;
+	        DATA_Packet_ID = (data_NRZ[1] & 0x00FF) * 65536 + data_NRZ[0];
+	        if (DATA_Packet_ID == 0)
+	            FLAG_Signal_DATA_OK = 0;                          //2014.3.21čż˝ĺ   ä¸ĺčŽ¸ä˝żç¨ID=0
+	        Struct_DATA_Packet_Contro_buf.Fno_Type.byte = (data_NRZ[1] & 0xFF00) >> 8; //2015.3.24äżŽć­Ł Controlçźĺ­čľ?IDĺ¤ć­ćŻĺŚĺ­Śäš čżĺćč˝ä˝?
+            for (i = 0; i < 4; i++)
+				Struct_DATA_Packet_Contro_buf.data[i].ui=data_NRZ[i+2];
 	    }
 	    else
 	        FLAG_Signal_DATA_OK = 0;

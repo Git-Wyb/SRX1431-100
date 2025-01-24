@@ -79,6 +79,7 @@ void main(void)
     vRadioClearInterrupt();
     CMT2310A_GPIO3_INT1_ON();
     CMT2310A_GPIO2_INT2_ON();
+      PROFILE_CH_FREQ_32bit_200002EC = 429350000;
   while (1)
   {
     ClearWDT(); // Service the WDT
@@ -86,12 +87,27 @@ void main(void)
     {
         Flag_RxDone = 0;
         Flag_FREQ_Scan = 0;
+        rssi = CMT2310A_Get_RSSI();
+        RAM_RSSI_SUM += rssi;
+        RSSI_Read_Counter++;
+        RAM_RSSI_AVG = RAM_RSSI_SUM / RSSI_Read_Counter;
+        if(PROFILE_CH_FREQ_32bit_200002EC == 426075000)
+        {
+            if(Flag_TX_ID_load == 0) CMT2300A_ReadData(SPI_RECEIVE_BUFF,12);
+            else CMT2300A_ReadData(SPI_RECEIVE_BUFF,24);
+        }
+        else CMT2300A_ReadData(SPI_RECEIVE_BUFF,28);
+        vRadioClearRxFifo();
+        vRadioClearInterrupt();
+        bRadioGoRx();
+        Flag_FREQ_Scan = 0;
+
         RX_ANALYSIS();
         Flag_TxEn = 1;
-        Time_APP_blank_TX = 200;
+        Time_APP_blank_TX = 100;
     }
 
-    //APP_TX_PACKET();
+    APP_TX_PACKET();
     if(FLAG_APP_RX == 1)
     {
         CMT2310A_Freq_Scanning();
