@@ -103,6 +103,7 @@ void ID_Decode_IDCheck(void)
             else if((FLAG_IDCheck_OK==1)||(DATA_Packet_ID==0xFFFFFE))
             {
                 FLAG_IDCheck_OK=0;
+                Flag_TxEn = 1;
                 if(DATA_Packet_ID==0xFFFFFE)DATA_Packet_Control=DATA_Packet_Contro_buf;      //2015.3.24���� Control������ ID�ж��Ƿ�ѧϰ�������ʹ��
 //                if(Freq_Scanning_CH_bak==0){Freq_Scanning_CH_save=1;Freq_Scanning_CH_save_HA=0; }  //��ǰ�յ�426M����   �������¼���յ��źŵ�Ƶ���ŵ�,0����426M
 //                else Freq_Scanning_CH_save_HA=1;  //                       1����429M

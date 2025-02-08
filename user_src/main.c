@@ -74,12 +74,14 @@ void main(void)
 
     FLAG_APP_RX=1;
     TIME_EMC=10;
+    /* Frequency hopping setting */
+    CMT2310A_FreqHopping_Set();
     CMT2310A_SetRx();
     vRadioClearTxFifo();
     vRadioClearInterrupt();
     CMT2310A_GPIO3_INT1_ON();
     CMT2310A_GPIO2_INT2_ON();
-      PROFILE_CH_FREQ_32bit_200002EC = 429350000;
+
   while (1)
   {
     ClearWDT(); // Service the WDT
@@ -103,7 +105,6 @@ void main(void)
         Flag_FREQ_Scan = 0;
 
         RX_ANALYSIS();
-        Flag_TxEn = 1;
         Time_APP_blank_TX = 100;
     }
 

@@ -54,6 +54,7 @@
     void CMT2300A_RxDone(void);
     void CMT2300A_TxDone(void);
     u8 CMT2310A_ReadReg(u8 page,u8 addr);
+    void CMT2310A_SetReg_Bits(u8 page,u8 addr,u8 val,u8 bits);
     void CMT2310A_SetRx(void);
     void CMT2310A_SetTx(void);
     void RX_ANALYSIS(void);
@@ -67,6 +68,7 @@
     void CMT2310A_Freq_Scanning(void);
     void CMT2310A_Change_Channel(void);
     void CMT2310A_Frequency_Set(u32 freq,u8 radio_type);
+    void CMT2310A_FreqHopping_Set(void);
 
 #endif
 

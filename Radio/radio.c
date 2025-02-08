@@ -17,6 +17,17 @@ u32 SPI_Receive_DataForC[7] = {0};
 u8 APP_TX_freq = 0;
 u8 Radio_Date_Type = 1;
 
+/*
+RSSI Compare TH = -110 dBm --> g_cmt2310a_page1[99] = 0x92;
+RSSI Compare TH = -113 dBm --> g_cmt2310a_page1[99] = 0x8F;
+RSSI Compare TH = -114 dBm --> g_cmt2310a_page1[99] = 0x8E;
+RSSI Compare TH = -115 dBm --> g_cmt2310a_page1[99] = 0x8D;
+RSSI Compare TH = -116 dBm --> g_cmt2310a_page1[99] = 0x8C;
+RSSI Compare TH = -117 dBm --> g_cmt2310a_page1[99] = 0x8B;
+RSSI Compare TH = -120 dBm --> g_cmt2310a_page1[99] = 0x88;
+RSSI Compare TH = -127 dBm --> g_cmt2310a_page1[99] = 0x81;
+*/
+
 /******************************
 **Name:  vRadioInit
 **Func:  Radio config spi & reset
@@ -42,14 +53,7 @@ void vRadioInit(u8 mode)
 {
 	//byte fw_rev;
 	vRadioSoftReset();
-    /*g_cmt2310a_page1[16] = 0x6B;
-    g_cmt2310a_page1[17] = 0x33;
-    g_cmt2310a_page1[18] = 0xB3;
-    g_cmt2310a_page1[19] = 0x04; //TX 429.175
-    g_cmt2310a_page1[49] = 0x6A; //RX 426.075
-    g_cmt2310a_page1[50] = 0xCC;
-    g_cmt2310a_page1[51] = 0xCC;
-    g_cmt2310a_page1[52] = 0xD8;*/
+    g_cmt2310a_page1[99] = 0x8D; //RSSI Compare TH = -115 dBm
 	vRadioConfigPageReg(0, g_cmt2310a_page0, CMT2310A_PAGE0_SIZE);		//config page 0
 	vRadioConfigPageReg(1, g_cmt2310a_page1, CMT2310A_PAGE1_SIZE);   	//config page 1
 
@@ -330,6 +334,51 @@ void vRadioCmpReg(byte const wr_ptr[], byte rd_ptr[], byte cmp_ptr[], byte lengt
 			cmp_ptr[i] = 0x00;
 		}
 }
+
+void CMT2310A_FreqHopping_Set(void) //Frequency hopping setting
+{
+    bSpiWriteByte(CMT2310A_CTL_REG_12,25); //set FREQ_SPACE = 25KHz.
+    CMT2310A_SetReg_Bits(0,CMT2310A_CTL_REG_22,1,7);//set FREQ_HOP_MANU_EN = 1
+}
+
+void CMT2310A_FreqHopping_Select(u32 freq)
+{   /*FREQ = BASE_FREQ + 1KHz X FREQ_SPACE X FREQ_CHANNEL_MANU,
+      BASE_FREQ = 426075000; FREQ_SPACE = 25.*/
+    u8 num = (freq - 426075000) / 25000;
+    bSpiWriteByte(CMT2310A_CTL_REG_03,num);
+    /*
+    switch(freq)
+    {
+        case 426075000:
+            bSpiWriteByte(CMT2310A_CTL_REG_03,0);
+            break;
+
+        case 426750000:
+            bSpiWriteByte(CMT2310A_CTL_REG_03,27);
+            break;
+
+        case 429175000:
+            bSpiWriteByte(CMT2310A_CTL_REG_03,124);
+            break;
+
+        case 429200000:
+            bSpiWriteByte(CMT2310A_CTL_REG_03,125);
+            break;
+
+        case 429350000:
+            bSpiWriteByte(CMT2310A_CTL_REG_03,131);
+            break;
+
+        case 429550000:
+            bSpiWriteByte(CMT2310A_CTL_REG_03,139);
+            break;
+
+        default:
+            bSpiWriteByte(CMT2310A_CTL_REG_03,0);
+            break;
+    } */
+}
+
 u8 rreg = 0;
 void CMT2300A_PramePass(void)
 {
@@ -359,6 +408,7 @@ void CMT2300A_PramePass(void)
         vRadioClearInterrupt();
         bRadioGoRx();
     }
+    rreg = 0;
     EXTI_SR1_P1F = 1;
 }
 void CMT2310A_SetRx(void)
@@ -369,9 +419,10 @@ void CMT2310A_SetRx(void)
     bRadioGoStandby();
     g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
     vRadioSetPayloadLength(&g_radio.frame_cfg);
-    vRadioSetInt1Sel(INT_SRC_PREAM_PASS);//INT_SRC_PKT_DONE ,INT_SRC_PREAM_PASS
+    vRadioSetInt1Sel(INT_SRC_PREAM_PASS);//INT_SRC_PKT_DONE ,INT_SRC_PREAM_PASS,INT_SRC_RSSI_PJD_VALID
     vRadioSetInt2Sel(INT_SRC_PKT_DONE);
-    CMT2310A_Freq_Select(426075000);
+    //CMT2310A_Freq_Select(426075000);
+    CMT2310A_FreqHopping_Select(426075000);
     CMT2310A_DataRate_Select(RATE_1_2K);
     bRadioGoRx();
     CMT2310A_GPIO3_INT1_ON();
@@ -384,7 +435,8 @@ void CMT2310A_SetTx(void)
     CMT2310A_GPIO3_INT1_OFF();
     CMT2310A_GPIO2_INT2_OFF();
     bRadioGoStandby();
-    CMT2310A_Freq_Select(429350000);
+    //CMT2310A_Freq_Select(429350000);
+    CMT2310A_FreqHopping_Select(429350000);
     CMT2310A_DataRate_Select(RATE_4_8K);
     vRadioSetInt2Sel(INT_SRC_TX_DONE);
     g_radio.frame_cfg.PAYLOAD_LENGTH = 28;
@@ -426,6 +478,7 @@ void CMT2300A_TRxDone(void)
         vRadioClearTxFifo();
         vRadioClearInterrupt();
     }
+    rreg = 0;
 }
 void CMT2300A_TxDone(void)
 {
@@ -439,6 +492,18 @@ u8 CMT2310A_ReadReg(u8 page,u8 addr)
     read = bSpiReadByte(addr);
     vRadioRegPageSel(0);
     return read;
+}
+
+void CMT2310A_SetReg_Bits(u8 page,u8 addr,u8 val,u8 bits)
+{
+    u8 readval = 0;
+    if(bits > 7) bits = 7;
+    vRadioRegPageSel(page);
+    readval = bSpiReadByte(addr);
+    if(val == 0) readval &= ~(0x01 << bits);
+    else readval |= (0x01 << bits);
+    bSpiWriteByte(addr,readval);
+    vRadioRegPageSel(0);
 }
 
 u8 CMT2310A_Get_RSSI(void)
@@ -521,7 +586,8 @@ void CMT2310A_Frequency_Set(u32 freq,u8 radio_type)
     CMT2310A_GPIO3_INT1_OFF();
     CMT2310A_GPIO2_INT2_OFF();
     bRadioGoStandby();
-    CMT2310A_Freq_Select(freq);
+    //CMT2310A_Freq_Select(freq);
+    CMT2310A_FreqHopping_Select(freq);
     if(radio_type == 1)
     {
         g_radio.frame_cfg.PAYLOAD_LENGTH = 12;
