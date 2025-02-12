@@ -504,6 +504,19 @@ u8 CMT2310A_WriteReg(u8 page,u8 addr,u8 val)
     return read;
 }
 
+void CMT2310A_SetSyncValue(u8 sync2,u8 sync1,u8 sync0)
+{
+    CMT2310A_WriteReg(0,0x34,sync2);
+    CMT2310A_WriteReg(0,0x33,sync1);
+    CMT2310A_WriteReg(0,0x32,sync0);
+}
+
+void CMT2310A_SetPreamble(u8 pram)
+{
+    g_radio.preamble_cfg.PREAM_VALUE  = pram;
+    vRadioCfgPreamble(&g_radio.preamble_cfg);
+}
+
 void CMT2310A_SetDataMode(u8 mode)
 {
     if(mode == 0) CMT2310A_WriteReg(0,0x28,CMT2310A_ReadReg(0,0x28) & 0xFC); //0 = direct mode.

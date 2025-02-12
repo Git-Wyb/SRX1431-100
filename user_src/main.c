@@ -50,7 +50,7 @@
 void TIM4_Init_HSE(void);
 void SysClock_Init_HSE(void);
 void LED_TEST(void);
-u8 read_reg = 0;
+//u8 read_reg = 0;
 void main(void)
 {
     u8 mode = 0;
@@ -74,8 +74,7 @@ void main(void)
     CMT2310A_Test_Mode();
 
     FLAG_APP_RX=1;
-    TIME_EMC=10;
-    /* Frequency hopping setting */
+    //TIME_EMC=10;
 
     CMT2310A_SetRx();
     vRadioClearTxFifo();

@@ -72,6 +72,8 @@
     void CMT2310A_FreqHopping_Set(void);
     void CMT2310A_SetDataMode(u8 mode);
     void CMT2310A_SetDataLength(u8 len);
+    void CMT2310A_SetSyncValue(u8 sync2,u8 sync1,u8 sync0);
+    void CMT2310A_SetPreamble(u8 pram);
 
 #endif
 

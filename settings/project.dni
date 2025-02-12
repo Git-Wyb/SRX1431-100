@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1538787163
+Checksum=-319277211
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -70,6 +70,7 @@ Fmt4={W}1:Cache	4	0
 Fmt5={W}1:g_chip_id	4	0
 Fmt6={W}1:rreg	4	0
 Fmt7={W}1:rssi	3	0
+Fmt8={W}1:tt	3	0
 [DataSample]
 LogEnabled=0
 GraphEnabled=0

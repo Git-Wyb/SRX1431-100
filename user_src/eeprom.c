@@ -349,7 +349,7 @@ void ID_learn(void)
 //     if(time_3sec)--time_3sec;
     if(FREQ_auto_useful_count)
         --FREQ_auto_useful_count;
-     if(TIME_EMC)--TIME_EMC;
+     //if(TIME_EMC)--TIME_EMC;
      if(TIME_auto_out)--TIME_auto_out;
      if(TIME_auto_close)--TIME_auto_close;
      if(TIME_OUT_OPEN_CLOSE)--TIME_OUT_OPEN_CLOSE;

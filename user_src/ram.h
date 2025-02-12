@@ -162,9 +162,9 @@ extern UINT16 ID_DATA_PCS;
 extern UINT8 rxphase;
 extern UINT32 DATA_Packet_Syn;     //A部
 extern UINT16 DATA_Packet_Head;    //B部
-extern UINT32 DATA_Packet_Code[6];   //C部
-extern UINT8  DATA_Packet_Code_g;
-extern UINT8  DATA_Packet_Code_i;
+//extern UINT32 DATA_Packet_Code[6];   //C部
+//extern UINT8  DATA_Packet_Code_g;
+//extern UINT8  DATA_Packet_Code_i;
 extern UINT32 DATA_Packet_ID;
 extern UINT8  DATA_Packet_Control;
 extern UINT8  DATA_Packet_Contro_buf;   //2015.3.24修正
@@ -206,8 +206,8 @@ extern UINT8 Flag_TX_ID_load;
 
 extern UINT16 Time_Nms;
 extern UINT16 Time_Tx_Out;
-extern UINT32 Freq_Value;
-void delay_nms(UINT32 nms);
-void delay1ms(UINT32 u32Cnt);
+//extern UINT32 Freq_Value;
+void delay_nms(UINT16 nms);
+void delay1ms(UINT16 u16Cnt);
 void delay_nus(UINT8 nus);
 void delay10us(UINT8 nus);
