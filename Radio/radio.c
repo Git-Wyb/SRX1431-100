@@ -2,7 +2,7 @@
 #include "ram.h"
 #include "Pin_define.h"
 
-CMT2310A_CFG	g_radio;					//
+CMT2310A_CFG	g_radio = {0};					//
 uint32_t 		g_chip_id = 0x00000000;
 Wireless_Body Struct_DATA_Packet_Contro,Struct_DATA_Packet_Contro_buf;
 Wireless_Body Uart_Struct_DATA_Packet_Contro,Last_Uart_Struct_DATA_Packet_Contro;
@@ -145,7 +145,7 @@ void vRadioInit(u8 mode)
         //packet preamble config
         g_radio.preamble_cfg.PREAM_LENG_UNIT = 0;					//8-bits mode
         g_radio.preamble_cfg.PREAM_VALUE     = 0x55;				//
-        g_radio.preamble_cfg.RX_PREAM_SIZE   = 2;					//2*8 = 16bit
+        g_radio.preamble_cfg.RX_PREAM_SIZE   = 3;					//2*8 = 16bit
         g_radio.preamble_cfg.TX_PREAM_SIZE   = 12;                  //12*8 = 96bit
         vRadioCfgPreamble(&g_radio.preamble_cfg);
         /*
@@ -244,7 +244,7 @@ void vRadioInit(u8 mode)
 
 	g_radio.word_mode_cfg.FREQ_CHANL_NANU  = 0;
 	g_radio.word_mode_cfg.FREQ_DONE_TIMES  = 0;
-	g_radio.word_mode_cfg.FREQ_SPACE       = 0;
+	g_radio.word_mode_cfg.FREQ_SPACE       = 25;  //set FREQ_SPACE = 25KHz.
 	g_radio.word_mode_cfg.FREQ_TIMES       = 0;
 	g_radio.word_mode_cfg.SLEEP_TIMER_M    = 0;
 	g_radio.word_mode_cfg.SLEEP_TIMER_R    = 0;
@@ -259,6 +259,7 @@ void vRadioInit(u8 mode)
 	g_radio.word_mode_cfg.CSMA_TIMES       = 0;
 	g_radio.word_mode_cfg.SLEEP_TIMER_CSMA_M = 0;
 	g_radio.word_mode_cfg.SLEEP_TIMER_CSMA_R = 0;
+    g_radio.word_mode_cfg.WORK_MODE_CFG6_u._BITS.FREQ_HOP_MANU_EN = 1;  //Frequency hopping setting
 	vRadioCfgWorkMode(&g_radio.word_mode_cfg);
 
 	//FIFO Init
@@ -494,6 +495,27 @@ u8 CMT2310A_ReadReg(u8 page,u8 addr)
     return read;
 }
 
+u8 CMT2310A_WriteReg(u8 page,u8 addr,u8 val)
+{
+    u8 read = 0;
+    vRadioRegPageSel(page);
+    bSpiWriteByte(addr,val);
+    vRadioRegPageSel(0);
+    return read;
+}
+
+void CMT2310A_SetDataMode(u8 mode)
+{
+    if(mode == 0) CMT2310A_WriteReg(0,0x28,CMT2310A_ReadReg(0,0x28) & 0xFC); //0 = direct mode.
+    else CMT2310A_WriteReg(0,0x28,(CMT2310A_ReadReg(0,0x28) & 0xFC) | mode); //2 = Packet mode;1/3 = NA.
+}
+
+void CMT2310A_SetDataLength(u8 len)
+{
+    g_radio.frame_cfg.PAYLOAD_LENGTH = len;
+    vRadioSetPayloadLength(&g_radio.frame_cfg);
+}
+
 void CMT2310A_SetReg_Bits(u8 page,u8 addr,u8 val,u8 bits)
 {
     u8 readval = 0;
@@ -521,7 +543,7 @@ void CMT2310A_Freq_Scanning(void)
         bRadioGoRx();
 
         if(Radio_Date_Type==1)
-            TIMER18ms = 18;
+            TIMER18ms = 25;
         else if(Radio_Date_Type > 1)
             TIMER18ms = 18;
         FLAG_APP_TX = 0;

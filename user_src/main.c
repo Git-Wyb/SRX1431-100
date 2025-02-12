@@ -70,12 +70,13 @@ void main(void)
     else mode = 0;
     RF_CMT2310A_Init(mode);
     CMT2310A_GPIO3_INT1_OFF();
+    CMT2310A_FreqHopping_Set();
     CMT2310A_Test_Mode();
 
     FLAG_APP_RX=1;
     TIME_EMC=10;
     /* Frequency hopping setting */
-    CMT2310A_FreqHopping_Set();
+
     CMT2310A_SetRx();
     vRadioClearTxFifo();
     vRadioClearInterrupt();

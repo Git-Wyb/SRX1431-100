@@ -380,6 +380,7 @@ void RF_test_mode(void )
 
 //CMT2310A_CFG	g_radio;
 
+void CMT2310A_FreqHopping_Select(u32 freq);
 void CMT2310A_Test_Mode(void)
 {
     UINT8 Boot_i;
@@ -426,11 +427,11 @@ void CMT2310A_Test_Mode(void)
                     CG2214M6_USE_T;
                     FG_test_tx_on=1;
                     bRadioGoStandby();
-                    CMT2310A_Freq_Select(429175000);
-                    g_radio.frame_cfg.DATA_MODE = 0;//0=direct mode, 	2=packet mode
-                    vRadioCfgFrameFormat(&g_radio.frame_cfg);
-                    g_radio.word_mode_cfg.WORK_MODE_CFG1_u._BITS.TX_EXIT_STATE = EXIT_TO_TX;	//exit Tx mode for transmit prefix
-                    vRadioCfgWorkMode(&g_radio.word_mode_cfg);
+                    //g_radio.frame_cfg.DATA_MODE = 0;//0=direct mode, 	2=packet mode
+                    //vRadioCfgFrameFormat(&g_radio.frame_cfg);
+                    //g_radio.word_mode_cfg.WORK_MODE_CFG1_u._BITS.TX_EXIT_STATE = EXIT_TO_TX;	//exit Tx mode for transmit prefix
+                    //vRadioCfgWorkMode(&g_radio.word_mode_cfg);
+
                     //g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
                     //vRadioSetPayloadLength(&g_radio.frame_cfg);
                     //vRadioSetInt1Sel(INT_SRC_TX_DONE);
@@ -442,6 +443,11 @@ void CMT2310A_Test_Mode(void)
                     //vRadioWriteFifo(radio_tx_buf, UHF_LEN);
                     //vRadioClearTxFifo();
                     //vRadioClearInterrupt();
+
+                    CMT2310A_SetDataMode(0); //0=direct mode
+                    //CMT2310A_Freq_Select(429550000);
+                    CMT2310A_FreqHopping_Select(429175000);
+                    //CMT2310A_DataRate_Select(RATE_4_8K);
                     bRadioGoTx();
                 }
             }
@@ -459,15 +465,18 @@ void CMT2310A_Test_Mode(void)
                     CG2214M6_USE_T;
                     FG_test_tx_1010=1;
                     bRadioGoStandby();
-                    CMT2310A_Freq_Select(429175000);
-                    g_radio.frame_cfg.DATA_MODE = 2;//0=direct mode, 	2=packet mode
-                    vRadioCfgFrameFormat(&g_radio.frame_cfg);
-                    g_radio.word_mode_cfg.WORK_MODE_CFG1_u._BITS.TX_EXIT_STATE = EXIT_TO_TX;	//exit Tx mode for transmit prefix
-                    vRadioCfgWorkMode(&g_radio.word_mode_cfg);
-                    g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
-                    vRadioSetPayloadLength(&g_radio.frame_cfg);
+
+                    //g_radio.frame_cfg.DATA_MODE = 2;//0=direct mode, 	2=packet mode
+                    //vRadioCfgFrameFormat(&g_radio.frame_cfg);
+                    //g_radio.word_mode_cfg.WORK_MODE_CFG1_u._BITS.TX_EXIT_STATE = EXIT_TO_TX;	//exit Tx mode for transmit prefix
+                    //vRadioCfgWorkMode(&g_radio.word_mode_cfg);
+                    CMT2310A_SetDataLength(UHF_LEN);
                     vRadioSetInt1Sel(INT_SRC_TX_DONE);
 
+                    CMT2310A_SetDataMode(2); //2=packet mode
+                    //CMT2310A_Freq_Select(429550000);
+                    CMT2310A_FreqHopping_Select(429175000);
+                    //CMT2310A_DataRate_Select(RATE_4_8K);
                     for(Boot_i=0; Boot_i<UHF_LEN; Boot_i++)
                     {
                         radio_tx_buf[Boot_i] = 0x55;
@@ -504,9 +513,13 @@ void CMT2310A_Test_Mode(void)
                 bRadioGoStandby();
                 vRadioClearTxFifo();
                 vRadioClearInterrupt();
-                CMT2310A_Freq_Select(426075000);
-                g_radio.frame_cfg.DATA_MODE = 0;//0=direct mode, 	2=packet mode
-                vRadioCfgFrameFormat(&g_radio.frame_cfg);
+                //g_radio.frame_cfg.DATA_MODE = 0;//0=direct mode, 	2=packet mode
+                //vRadioCfgFrameFormat(&g_radio.frame_cfg);
+
+                CMT2310A_SetDataMode(0); //0=direct mode
+                //CMT2310A_Freq_Select(429550000);
+                CMT2310A_FreqHopping_Select(426075000);
+                //CMT2310A_DataRate_Select(RATE_4_8K);
                 bRadioGoRx();
             }
             if(Tx_Rx_mode==2)
