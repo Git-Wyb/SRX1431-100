@@ -103,7 +103,6 @@ void ID_Decode_IDCheck(void)
             else if((FLAG_IDCheck_OK==1)||(DATA_Packet_ID==0xFFFFFE))
             {
                 FLAG_IDCheck_OK=0;
-                Flag_TxEn = 1;
                 if(DATA_Packet_ID==0xFFFFFE)DATA_Packet_Control=DATA_Packet_Contro_buf;      //2015.3.24���� Control������ ID�ж��Ƿ�ѧϰ�������ʹ��
 //                if(Freq_Scanning_CH_bak==0){Freq_Scanning_CH_save=1;Freq_Scanning_CH_save_HA=0; }  //��ǰ�յ�426M����   �������¼���յ��źŵ�Ƶ���ŵ�,0����426M
 //                else Freq_Scanning_CH_save_HA=1;  //                       1����429M
@@ -143,6 +142,7 @@ void ID_Decode_IDCheck(void)
 //#if defined(__Product_PIC32MX2_Receiver__)
 //                    if(Freq_Scanning_CH_bak==0){
                        Flag_TX_ID_load = 0;
+                       Flag_TxEn = 1;
                         static UINT32 DATA_Packet_ID_auto = 0;
                         if((DATA_Packet_Control==0x40)&&(Manual_override_TIMER==0)){
                             if ((TIME_auto_useful > 0) && (TIME_auto_useful < 27000)) //27000*10ms=5min*60*90

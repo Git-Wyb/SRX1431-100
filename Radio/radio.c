@@ -18,7 +18,22 @@ u8 APP_TX_freq = 0;
 u8 Radio_Date_Type = 1;
 
 /*
+RSSI Compare TH = -90 dBm --> g_cmt2310a_page1[99] = 0xA6;
+RSSI Compare TH = -98 dBm --> g_cmt2310a_page1[99] = 0x9E;
+RSSI Compare TH = -99 dBm --> g_cmt2310a_page1[99] = 0x9D;
+RSSI Compare TH = -100 dBm --> g_cmt2310a_page1[99] = 0x9C;
+RSSI Compare TH = -101 dBm --> g_cmt2310a_page1[99] = 0x9B;
+RSSI Compare TH = -102 dBm --> g_cmt2310a_page1[99] = 0x9A;
+RSSI Compare TH = -103 dBm --> g_cmt2310a_page1[99] = 0x99;
+RSSI Compare TH = -104 dBm --> g_cmt2310a_page1[99] = 0x98;
+RSSI Compare TH = -105 dBm --> g_cmt2310a_page1[99] = 0x97;
+RSSI Compare TH = -106 dBm --> g_cmt2310a_page1[99] = 0x96;
+RSSI Compare TH = -107 dBm --> g_cmt2310a_page1[99] = 0x95;
+RSSI Compare TH = -108 dBm --> g_cmt2310a_page1[99] = 0x94;
+RSSI Compare TH = -109 dBm --> g_cmt2310a_page1[99] = 0x93;
 RSSI Compare TH = -110 dBm --> g_cmt2310a_page1[99] = 0x92;
+RSSI Compare TH = -111 dBm --> g_cmt2310a_page1[99] = 0x91;
+RSSI Compare TH = -112 dBm --> g_cmt2310a_page1[99] = 0x90;
 RSSI Compare TH = -113 dBm --> g_cmt2310a_page1[99] = 0x8F;
 RSSI Compare TH = -114 dBm --> g_cmt2310a_page1[99] = 0x8E;
 RSSI Compare TH = -115 dBm --> g_cmt2310a_page1[99] = 0x8D;
@@ -397,13 +412,11 @@ void CMT2300A_PramePass(void)
         {
             if(Flag_TX_ID_load == 0)
             {
-                g_radio.frame_cfg.PAYLOAD_LENGTH = 12;
-                vRadioSetPayloadLength(&g_radio.frame_cfg);
+                CMT2310A_SetDataLength(12);
             }
             else
             {
-                g_radio.frame_cfg.PAYLOAD_LENGTH = 24;
-                vRadioSetPayloadLength(&g_radio.frame_cfg);
+                CMT2310A_SetDataLength(24);
             }
         }
         vRadioClearInterrupt();
@@ -418,8 +431,7 @@ void CMT2310A_SetRx(void)
     CMT2310A_GPIO3_INT1_OFF();
     CMT2310A_GPIO2_INT2_OFF();
     bRadioGoStandby();
-    g_radio.frame_cfg.PAYLOAD_LENGTH = UHF_LEN;
-    vRadioSetPayloadLength(&g_radio.frame_cfg);
+    CMT2310A_SetDataLength(UHF_LEN);
     vRadioSetInt1Sel(INT_SRC_PREAM_PASS);//INT_SRC_PKT_DONE ,INT_SRC_PREAM_PASS,INT_SRC_RSSI_PJD_VALID
     vRadioSetInt2Sel(INT_SRC_PKT_DONE);
     //CMT2310A_Freq_Select(426075000);
@@ -440,8 +452,7 @@ void CMT2310A_SetTx(void)
     CMT2310A_FreqHopping_Select(429350000);
     CMT2310A_DataRate_Select(RATE_4_8K);
     vRadioSetInt2Sel(INT_SRC_TX_DONE);
-    g_radio.frame_cfg.PAYLOAD_LENGTH = 28;
-    vRadioSetPayloadLength(&g_radio.frame_cfg);
+    CMT2310A_SetDataLength(28);
     CMT2310A_GPIO3_INT1_ON();
     CMT2310A_GPIO2_INT2_ON();
 }
@@ -625,14 +636,12 @@ void CMT2310A_Frequency_Set(u32 freq,u8 radio_type)
     CMT2310A_FreqHopping_Select(freq);
     if(radio_type == 1)
     {
-        g_radio.frame_cfg.PAYLOAD_LENGTH = 12;
-        vRadioSetPayloadLength(&g_radio.frame_cfg);
+        CMT2310A_SetDataLength(12);
         CMT2310A_DataRate_Select(RATE_1_2K);
     }
     else if(radio_type == 2)
     {
-        g_radio.frame_cfg.PAYLOAD_LENGTH = 28;
-        vRadioSetPayloadLength(&g_radio.frame_cfg);
+        CMT2310A_SetDataLength(28);
         CMT2310A_DataRate_Select(RATE_4_8K);
     }
     CMT2310A_GPIO3_INT1_ON();

@@ -430,36 +430,13 @@ void CMT2310A_Test_Mode(void)
                     bRadioGoStandby();
                     vRadioClearTxFifo();
                     vRadioClearInterrupt();
-                    //CMT2310A_SetDataLength(UHF_LEN);
-                    //vRadioSetInt1Sel(INT_SRC_TX_DONE);
-                    //CMT2310A_SetPreamble(0x00);
-                    //CMT2310A_SetSyncValue(0x00,0x00,0x00);
+
                     CMT2310A_SetDataMode(0); //0=direct mode
                     CMT2310A_FreqHopping_Select(429175000);
                     //CMT2310A_DataRate_Select(RATE_4_8K);
                     delay_nms(10);
-                    //for(Boot_i=0; Boot_i<UHF_LEN; Boot_i++)
-                    {
-                        //radio_tx_buf[Boot_i] = 0x00; //1(0xFF): 426.0776667 - 426.075 = 2.6667K;0(0X00): 426.0733333 - 426.075 = -1.6667K
-                    }
-                    //vRadioWriteFifo(radio_tx_buf, UHF_LEN);
                     bRadioGoTx();
                 }
-               /* if(FG_test_tx_on == 1)
-                {
-                    while(1)
-                    {
-                    if(CMT2310A_GPIO3 == 0)
-                    {
-                        Flag_TxDone = 0;
-                        bRadioGoStandby();  //must
-                        vRadioClearTxFifo();
-                        vRadioClearInterrupt();
-                        vRadioWriteFifo(radio_tx_buf, UHF_LEN); //must
-                        bRadioGoTx();
-                    }
-                    }
-                }*/
             }
             else
             {    //发载波，有调制信号
